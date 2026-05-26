@@ -1,0 +1,31 @@
+{
+    "Server": {
+        "Port": 9339,
+        "RC4Key": "fhsd6f86f67rt8fw78fw789we78r9789wer6re",
+        "Debug": true,
+        "StreamerMode": true,
+        "Fingerprint": "e2a6dc0f10219de73326f2795335615bc37d04e3",
+        "RedirectionURL": "192.168.116.1:9340/",
+        "ContentPatchEnabled": false,
+        "ContentURL": "http://192.168.116.1:9340/",
+        "UpdateURL": "https://github.com/Greedycell/AstralRoyale",
+        "MaintenanceSeconds": 600
+    },
+    "Database": {
+        "Host": "127.0.0.1",
+        "Name": "ardb",
+        "Password": null
+    },
+    "Player": {
+        "StartDefault": false,
+        "StartingArena": 1,
+        "StartingScore": 0,
+        "StartingLevel": 1,
+        "StartingExperience": 0,
+        "StartingResources": {
+            "Gold": 1000000000,
+            "Diamonds": 1000000000
+        },
+        "StartingBattleMana": 5
+    }
+}

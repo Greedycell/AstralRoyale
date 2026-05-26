@@ -1,0 +1,8 @@
+{
+    "Server": {
+        "Port": 9449,
+        "RC4Key": "fhsd6f86f67rt8fw78fw789we78r9789wer6re",
+        "Debug": true,
+        "StreamerMode": true
+    }
+}

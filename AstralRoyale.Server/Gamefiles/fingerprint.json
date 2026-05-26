@@ -1,0 +1,334 @@
+{
+    "files": [
+        {
+            "file": "csv_client/sorted_regions/CNT_regions.csv",
+            "sha": "5ccdb7193ae0d34b3c900842859c2ee6be98fec5"
+        },
+        {
+            "file": "csv_client/sorted_regions/CN_regions.csv",
+            "sha": "ddc17795963b728ebc33b8ce946568a84ded3118"
+        },
+        {
+            "file": "csv_client/sorted_regions/JP_regions.csv",
+            "sha": "a242f9d067496c74ba857d2625b3ace1f9506f4d"
+        },
+        {
+            "file": "csv_client/sorted_regions/KR_regions.csv",
+            "sha": "115f43c5d038e633350bbde52f91dec5cf92c12d"
+        },
+        {
+            "file": "csv_client/animations.csv",
+            "sha": "b6a6ab871fd2ea734c48349e05e2519f08a2254c"
+        },
+        {
+            "file": "csv_client/background_decos.csv",
+            "sha": "4039d75ce6c1e7aba4a677e5bb14212917e7d65e"
+        },
+        {
+            "file": "csv_client/billing_packages.csv",
+            "sha": "c483f6e13eaec27decd7a59aa328a312b81ccde4"
+        },
+        {
+            "file": "csv_client/client_globals.csv",
+            "sha": "90bf14c3bc5b0abaf9e68c84243e32b4e881f693"
+        },
+        {
+            "file": "csv_client/credits.csv",
+            "sha": "bdcc420e2736128662ab3fa5a1a8d1f9694fdf37"
+        },
+        {
+            "file": "csv_client/effects.csv",
+            "sha": "c5eeb9eed34333871810a68f95575de227e5102b"
+        },
+        {
+            "file": "csv_client/event_output.csv",
+            "sha": "fea5bfd78168abde624ec64c9191eff5b252323a"
+        },
+        {
+            "file": "csv_client/health_bars.csv",
+            "sha": "2c0e56a403f248f3c65b654b6f60897faa268191"
+        },
+        {
+            "file": "csv_client/helpshift.csv",
+            "sha": "4040861cbc82d43d060b1d13549b272026d2e77d"
+        },
+        {
+            "file": "csv_client/hints.csv",
+            "sha": "39c215b6639cbeee9a8129f180dcf92ea02ae1d7"
+        },
+        {
+            "file": "csv_client/locales.csv",
+            "sha": "5974724033c6d8b8976f34579819f2a0d79bfa3d"
+        },
+        {
+            "file": "csv_client/music.csv",
+            "sha": "3563b3c3e4ebd02f7cd974f166bbefe4069b5037"
+        },
+        {
+            "file": "csv_client/news.csv",
+            "sha": "753d5302ff7cea974a300ea2653f7383b409eef0"
+        },
+        {
+            "file": "csv_client/particle_emitters.csv",
+            "sha": "ff7a1b49383a6a4142918a39eeedfe3cb6c601fc"
+        },
+        {
+            "file": "csv_client/sounds.csv",
+            "sha": "da7a68370f20f40fec2fa27ffca7f15e4da1b44d"
+        },
+        {
+            "file": "csv_client/texts.csv",
+            "sha": "c5a8f7a78c1a518fdecd40c8c52c187d522294af"
+        },
+        {
+            "file": "csv_client/texts_patch.csv",
+            "sha": "d10117d0b543f67a624282a1f89a99cd9d98e748"
+        },
+        {
+            "file": "csv_logic/quests/attack.csv",
+            "sha": "d0dce2f5f565f8519a924f4818eff8d1847782f6"
+        },
+        {
+            "file": "csv_logic/quests/cast.csv",
+            "sha": "a3f5335b1aac1b79f6d70ec40371c28eb3bdfa9a"
+        },
+        {
+            "file": "csv_logic/quests/collect.csv",
+            "sha": "0551a064cee9db8d0578a09d9dc8711efe568adc"
+        },
+        {
+            "file": "csv_logic/quests/daily.csv",
+            "sha": "a96806024f19b8833f2794c9667869b99a3c0b4f"
+        },
+        {
+            "file": "csv_logic/quests/donate.csv",
+            "sha": "44ddbb6dc651c58b23063ba27bd8376ce6d7dd58"
+        },
+        {
+            "file": "csv_logic/quests/play.csv",
+            "sha": "870fe7b71278989b654c9980cb7e1813640dfb80"
+        },
+        {
+            "file": "csv_logic/quests/pve.csv",
+            "sha": "a5f8a15c3065d744091ada60b7975f5a7314e724"
+        },
+        {
+            "file": "csv_logic/achievements.csv",
+            "sha": "9703fe065ac91ea2b45ee56258baa5bd0f2626b2"
+        },
+        {
+            "file": "csv_logic/alliance_badges.csv",
+            "sha": "af50bcbc8cae3b4bb7deef7e4d0c6ca060ffbb8b"
+        },
+        {
+            "file": "csv_logic/alliance_roles.csv",
+            "sha": "a7d3414f8cad3aa81578e96030751538b4bf2d1a"
+        },
+        {
+            "file": "csv_logic/area_effect_objects.csv",
+            "sha": "8d1a89911552dade51952c1e2752f5bd8209a4c1"
+        },
+        {
+            "file": "csv_logic/arenas.csv",
+            "sha": "f893f5722be2832970ab7d7221b24112e72e702f"
+        },
+        {
+            "file": "csv_logic/buildings.csv",
+            "sha": "1e6d5a6e2138e60bd0b6ef417ae47fd5f8bf6d1d"
+        },
+        {
+            "file": "csv_logic/characters.csv",
+            "sha": "c2cb5c9804f7cd8e77c89a2b1069cda60968b3f5"
+        },
+        {
+            "file": "csv_logic/character_buffs.csv",
+            "sha": "c1fdbb6f617d0fb1c8518d3ecaa4b966db884851"
+        },
+        {
+            "file": "csv_logic/chest_order.csv",
+            "sha": "76d880c2b863cb39ec39d9f01b209b890779f736"
+        },
+        {
+            "file": "csv_logic/configuration_definitions.csv",
+            "sha": "082971ef1c301aae6466ed1ab3dc65a10764cdba"
+        },
+        {
+            "file": "csv_logic/content_tests.csv",
+            "sha": "d2616b112e41661bd7fa6550279f2872260ddea0"
+        },
+        {
+            "file": "csv_logic/decos.csv",
+            "sha": "b2a8416629917e66f543b2d8e0c3124b1ed2b34b"
+        },
+        {
+            "file": "csv_logic/draft_deck.csv",
+            "sha": "0b1905752adb15d12d11b38fc1b1f30e77d70893"
+        },
+        {
+            "file": "csv_logic/event_categories.csv",
+            "sha": "62beff8ac4282837ac7816df83c7fa443bc7b610"
+        },
+        {
+            "file": "csv_logic/event_category_definitions.csv",
+            "sha": "5d2502b8d18b19989a73c62f3e0b742a05860594"
+        },
+        {
+            "file": "csv_logic/event_category_enums.csv",
+            "sha": "842ace43e586111f5858281d636e75eeaf5506f1"
+        },
+        {
+            "file": "csv_logic/event_category_object_definitions.csv",
+            "sha": "040c0e0fcfe1a47181ff779f735c5467eacb18e6"
+        },
+        {
+            "file": "csv_logic/event_targeting_definitions.csv",
+            "sha": "5fa8730a7bed13fbc96fa14ccedb3ac992e76f4c"
+        },
+        {
+            "file": "csv_logic/exp_levels.csv",
+            "sha": "d6cdadbe168ffb20f7db648396c68d79cbbe978c"
+        },
+        {
+            "file": "csv_logic/fortune.csv",
+            "sha": "5f500951374cb448e808061c24a5056fbe1f2898"
+        },
+        {
+            "file": "csv_logic/gamble_chests.csv",
+            "sha": "a0ccaac81cfa8217027bd2b78e8d28488d7be9c8"
+        },
+        {
+            "file": "csv_logic/game_modes.csv",
+            "sha": "76fb925fe49d4dbbaf6c0a39a26b0c992a9050fd"
+        },
+        {
+            "file": "csv_logic/globals.csv",
+            "sha": "fcfe653ff84dbe70c8b2332719b6f2f5824746a4"
+        },
+        {
+            "file": "csv_logic/heroes.csv",
+            "sha": "3fc0c373e0556331c97d54915f873a24c8fd7669"
+        },
+        {
+            "file": "csv_logic/locations.csv",
+            "sha": "73e9b37d6b7ef5f90dc92a9d1627da2fba4defb2"
+        },
+        {
+            "file": "csv_logic/npcs.csv",
+            "sha": "b71df293d88130993471f093c6501af80f623f6e"
+        },
+        {
+            "file": "csv_logic/predefined_decks.csv",
+            "sha": "9e937df2967434440e092d6cfb58776b68683518"
+        },
+        {
+            "file": "csv_logic/projectiles.csv",
+            "sha": "8446b1d3db12896ef9aa5176164e6ce2f1cc03e8"
+        },
+        {
+            "file": "csv_logic/pve_gamemodes.csv",
+            "sha": "9eb456a6888807c0f0e3a04b7d6f3e4ac5526418"
+        },
+        {
+            "file": "csv_logic/quest_main_rewards.csv",
+            "sha": "cf88a2a32c6030a7dbfd0fc6af7a7bd4b287094d"
+        },
+        {
+            "file": "csv_logic/quest_order.csv",
+            "sha": "9015616ea20a9245b5958d7452b7be273d242316"
+        },
+        {
+            "file": "csv_logic/rarities.csv",
+            "sha": "733883ce1abdb710abd662f3d1052b9913c1c2ff"
+        },
+        {
+            "file": "csv_logic/regions.csv",
+            "sha": "bbba55329c846d44fa6bb304a4d8a6fafdcbb8d4"
+        },
+        {
+            "file": "csv_logic/resources.csv",
+            "sha": "6e8df0ac05609d41338853d227a163a85b9eb35a"
+        },
+        {
+            "file": "csv_logic/resource_packs.csv",
+            "sha": "89017e6148b118d689fcdac1633a6901e9cd3034"
+        },
+        {
+            "file": "csv_logic/shop.csv",
+            "sha": "84f45841ce0a4aaf21db1c9dafbd116ba42be1d6"
+        },
+        {
+            "file": "csv_logic/shop_chests.csv",
+            "sha": "63c5328a98d8f345e6c0f4f2355a488bab14e8e7"
+        },
+        {
+            "file": "csv_logic/shop_cycle.csv",
+            "sha": "fb3c12cdd005e0d36b6589c21de181bf45aef465"
+        },
+        {
+            "file": "csv_logic/skins.csv",
+            "sha": "a2eaa6b6e80f7bbfffc13ba2d3612d5a6b89ee59"
+        },
+        {
+            "file": "csv_logic/skin_sets.csv",
+            "sha": "8c1672976224861ec20965364f3f3337e4cc93f2"
+        },
+        {
+            "file": "csv_logic/spells_buildings.csv",
+            "sha": "6002ff2c1fc3dfa10319a44ab6ab1a2bc2607db5"
+        },
+        {
+            "file": "csv_logic/spells_characters.csv",
+            "sha": "9a1ce97fdc2f808b92adddaa450b490486ebfee7"
+        },
+        {
+            "file": "csv_logic/spells_heroes.csv",
+            "sha": "086953dc33ec594bb32cb2db41886ea98a64c696"
+        },
+        {
+            "file": "csv_logic/spells_hero_abilities.csv",
+            "sha": "c05a363af67633059ceec312ccb718c8197c1ca2"
+        },
+        {
+            "file": "csv_logic/spells_other.csv",
+            "sha": "fc1ddd6255bbd3ec4000102303d0a67b308d10a0"
+        },
+        {
+            "file": "csv_logic/spell_sets.csv",
+            "sha": "45b1e814a37ea00acfcfa755f8e58b46bc931679"
+        },
+        {
+            "file": "csv_logic/survival_modes.csv",
+            "sha": "9ef057a88787e468d2f07a6cd0e51b4e7de06770"
+        },
+        {
+            "file": "csv_logic/taunts.csv",
+            "sha": "4f39e94608c2b4e55a643aba35969bc8f50f335f"
+        },
+        {
+            "file": "csv_logic/tournament_tiers.csv",
+            "sha": "b6ee05d5f1031f3036e2022f9159d818e7e877b4"
+        },
+        {
+            "file": "csv_logic/treasure_chests.csv",
+            "sha": "08db9f97abc5ef43c5ae5bb2fd3e64a1e5ac3562"
+        },
+        {
+            "file": "csv_logic/tutorials_home.csv",
+            "sha": "375d38715ec3d7c416ecca234977203304547589"
+        },
+        {
+            "file": "csv_logic/tutorials_npc.csv",
+            "sha": "646b4d0652d40ddf1687c3ca967ec0dee691fc03"
+        },
+        {
+            "file": "csv_logic/tutorial_chest_order.csv",
+            "sha": "bd98a54723707c61c8571411771ebf1b0e78f0ae"
+        },
+        {
+            "file": "csv_logic/tve_gamemodes.csv",
+            "sha": "07a6ae2ece5d7809c7c6b9a428d2b17451a1c735"
+        }
+    ],
+    "sha": "e2a6dc0f10219de73326f2795335615bc37d04e3",
+    "version": "3.830.2"
+}
