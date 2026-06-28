@@ -1,4 +1,34 @@
+const fs = require("fs");
+
 const PiranhaMessage = require('../../PiranhaMessage')
+const cardUtils = require('../../../Utils/cardUtils')
+const utils = require('../../../Utils')
+const Cards = require('../../../Utils/json/cards.json')
+const LoginFailedMessage = require('../Server/LoginFailedMessage')
+
+const config = require('../../../config.json')
+
+const RarityMaxLevel = {
+  common: 12, // 13
+  rare: 10, // 11
+  epic: 7, // 8
+  legendary: 4 // 5
+}
+
+function GetCardDataByID(id) {
+  const realID = 26000000 + (id - 1)
+  return Cards.find(c => c.id === realID)
+}
+
+function GetMaxLevel(id) {
+  const data = GetCardDataByID(id)
+  if (!data) {
+    return 12
+  }
+  return RarityMaxLevel[data.rarity.toLowerCase()] ?? 12
+}
+
+const AllCardIDS = Cards.map(c => c.id)
 
 class ChatToAllianceStreamMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -19,17 +49,292 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
   async process () {
     if (!this.client.player.inClan) return
 
-    this.writeString(this.data.Message)
-    
-    this.writeVInt(2) // StreamEntryType
-    this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-    this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-    this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-    this.writeString(this.client.player.name)
-    this.writeVInt(1) // Level
-    this.writeVInt(this.client.player.clan.ClanRole) // Role (1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader)
-    this.writeVInt(0) // AgeSeconds
-    this.writeBoolean(false) // IsRemoved
+    if (this.data.Message?.startsWith('/')) {
+      const args = this.data.Message.slice(1).trim().split(/\s+/)
+      const command = args.shift()?.toLowerCase()
+      const player = this.client.player
+
+      switch (command) {
+        // get a list of cmds
+        case 'help': {
+          const list = [
+            'Commands:',
+            '/help',
+            '/switchacc x(userid) x(pass) or /switchacc reset',
+            '/setpassword x',
+            '/adminhelp'
+          ].join('\n')
+
+          await new LoginFailedMessage(this.client, 3, list).send()
+
+          break
+        }
+
+        // get a list of admin cmds
+        case 'adminhelp': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const list = [
+              'Admin Commands:',
+              '/adminhelp',
+              //'/status',
+              '/maintenance x',
+              '/admin x',
+              '/unadmin x',
+              '/ban x',
+              '/unban x',
+              '/max',
+              '/unlock',
+              '/gold x',
+              '/gems x',
+              '/trophies x'
+            ].join('\n')
+
+            await new LoginFailedMessage(this.client, 3, list).send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // max all cards
+        case 'max': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            for (const card of player.cards) {
+              const maxLevel = GetMaxLevel(card.ID)
+              card.level = maxLevel
+              card.xpPoints = 0
+            }
+
+            player.level = 13
+            player.xpPoints = 0
+
+            player.markModified('cards')
+            player.markModified('level')
+            player.markModified('xpPoints')
+            await player.save()
+            
+            await new LoginFailedMessage(this.client, 3, "Maxed out all cards!").send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // unlock all cards
+        case 'unlock': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            let cardsCount = utils.randomInt(1, 94)
+            let cards = cardUtils.getCards(cardsCount)
+            cards.forEach(card => {
+              let cardCount = utils.randomInt(0, 94)
+              this.writeVInt(cardsCount - cards.indexOf(card)) // CardIndex
+              this.writeVInt(cardUtils.SCIDtoInstanceID(card.id))
+
+              this.writeVInt(this.client.player.highID)
+              this.writeVInt(this.client.player.lowID)
+              this.writeVInt(cardCount) //CardCount
+              this.writeVInt(0)
+              this.writeVInt(0)
+              this.writeByte(127)
+
+              cardUtils.addCardPointsBySCID(this.client, card.id, cardCount)
+            })
+            
+            await new LoginFailedMessage(this.client, 3, "Unlocked all cards!").send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // sets gold 
+        case 'gold': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const amount = parseInt(args[0], 10)
+
+            //console.log(amount)
+
+            if (isNaN(amount)) {
+              break
+            }
+
+            player.gold = amount
+            player.markModified('gold')
+            await player.save()
+            
+            await new LoginFailedMessage(this.client, 3, `Selected gold amount ${amount}!`).send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // sets gems 
+        case 'gems': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const amount = parseInt(args[0], 10)
+
+            //console.log(amount)
+
+            if (isNaN(amount)) {
+              break
+            }
+
+            player.gems = amount
+            player.markModified('gems')
+            await player.save()
+            
+            await new LoginFailedMessage(this.client, 3, `Selected gems amount ${amount}!`).send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // sets trophies 
+        case 'trophies': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const amount = parseInt(args[0], 10)
+
+            //console.log(amount)
+
+            if (isNaN(amount)) {
+              break
+            }
+
+            player.trophies = amount
+            player.markModified('trophies')
+            await player.save()
+            
+            await new LoginFailedMessage(this.client, 3, `Selected trophy amount ${amount}!`).send()
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // promotes a player to an admin 
+        case 'admin': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const targetID = parseInt(args[0], 10)
+
+            config.Server.Admins.push(targetID)
+            fs.writeFileSync(
+                "./config.json",
+                JSON.stringify(config, null, 4)
+            );
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // demotes an admin to a player 
+        case 'unadmin': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const targetID = parseInt(args[0], 10)
+
+            config.Server.Admins = config.Server.Admins.filter(id => id !== targetID);
+            fs.writeFileSync(
+                "./config.json",
+                JSON.stringify(config, null, 4)
+            );
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // bans an acc
+        case 'ban': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const targetID = parseInt(args[0], 10)
+
+            config.Server.Banned.push(targetID)
+            fs.writeFileSync(
+                "./config.json",
+                JSON.stringify(config, null, 4)
+            )
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // unbans an acc
+        case 'unban': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const targetID = parseInt(args[0], 10)
+
+            config.Server.Banned = config.Server.Banned.filter(id => id !== targetID);
+            fs.writeFileSync(
+                "./config.json",
+                JSON.stringify(config, null, 4)
+            );
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+
+        // starts a maintenance
+        case 'maintenance': {
+          if (config.Server.Admins.includes(this.client.player.lowID)) {
+            const maintenanceSeconds = parseInt(args[0], 10) // set any number to enable or set 0 to disable
+
+            if (maintenanceSeconds == 0) {
+              config.Server.MaintenanceEnabled = false
+              config.Server.MaintenanceSeconds = 0
+            } else {
+              config.Server.MaintenanceEnabled = true
+              config.Server.MaintenanceSeconds = maintenanceSeconds
+            } 
+            fs.writeFileSync(
+                "./config.json",
+                JSON.stringify(config, null, 4)
+            );
+          }
+          else {
+            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+          }
+
+          break
+        }
+      }
+    }
+    else {
+      this.writeString(this.data.Message)
+      
+      this.writeVInt(2) // StreamEntryType
+      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
+      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
+      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
+      this.writeString(this.client.player.name)
+      this.writeVInt(1) // Level
+      this.writeVInt(this.client.player.clan.ClanRole) // Role (1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader)
+      this.writeVInt(0) // AgeSeconds
+      this.writeBoolean(false) // IsRemoved
+    }
   }
 }
 

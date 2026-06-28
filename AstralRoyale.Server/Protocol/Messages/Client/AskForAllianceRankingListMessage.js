@@ -1,5 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const AllianceRankingListMessage = require('../Server/AllianceRankingListMessage')
+const AllianceLocalRankingListMessage = require('../Server/AllianceLocalRankingListMessage')
 
 class AskForAllianceRankingListMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -9,10 +10,20 @@ class AskForAllianceRankingListMessage extends PiranhaMessage {
     this.version = 1
   }
 
-  async decode () {}
+  async decode () {
+    this.data = {}
+
+    this.data.IsLocal = this.readVInt()
+
+    //console.log(this.data)
+  }
 
   async process () {
-    await new AllianceRankingListMessage(this.client).send()
+    if (this.data.IsLocal == 1) {
+      await new AllianceLocalRankingListMessage(this.client).send()
+    } else {
+      await new AllianceRankingListMessage(this.client).send()
+    }
   }
 }
 

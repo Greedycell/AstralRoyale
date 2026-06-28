@@ -16,6 +16,7 @@ class SelectDeckCommand {
   async process (self) {
     try {
       self.client.player.selectedDeck = this.data.DeckIndex
+      self.client.player.markModified('selectedDeck')
       await self.client.player.save()
     }
     catch (e) {}

@@ -7,6 +7,7 @@ const StartTournamentMatchmakingCommand = require('../../Commands/Client/StartTo
 const BuyShopChestCommand = require('../../Commands/Client/BuyShopChestCommand')
 const BuyChestCommand = require('../../Commands/Client/BuyChestCommand')
 const BuyShopItemCommand = require('../../Commands/Client/BuyShopItemCommand')
+const CopyDeckCommand = require('../../Commands/Client/CopyDeckCommand')
 const UpgradeCardCommand = require('../../Commands/Client/UpgradeCardCommand')
 const StartMatchmakingCommand = require('../../Commands/Client/StartMatchmakingCommand')
 const OpenCrownChestCommand = require('../../Commands/Client/OpenCrownChestCommand')
@@ -40,12 +41,11 @@ class EndClientTurnMessage extends PiranhaMessage {
       539: BuyShopChestCommand,
       543: BuyChestCommand,
       544: BuyShopItemCommand,
+      580: CopyDeckCommand,
       592: UpgradeCardCommand,
       594: StartMatchmakingCommand,
       595: OpenCrownChestCommand
     }
-
-    this.data.CommandID = 594
 
     if (!String(this.data.CommandID).startsWith('-')) {
       if (this.data.CommandID > 499 && this.data.CommandID < 600) {

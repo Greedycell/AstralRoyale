@@ -369,7 +369,9 @@ class ByteStream {
     if (this.id < 20000) return;
     this.encode()
 
-    this.buffer = this.client.crypto.encrypt(this.buffer)
+    if (config.Server.Crypto.Activated) {
+      this.buffer = this.client.crypto.encrypt(this.id, this.buffer)
+    }
 
     const header = Buffer.alloc(7)
     header.writeUInt16BE(this.id, 0)
@@ -389,7 +391,9 @@ class ByteStream {
     if (this.id < 20000) return;
     this.encode()
 
-    this.buffer = opponentClient.crypto.encrypt(this.buffer)
+    if (config.Server.Crypto.Activated) {
+      this.buffer = opponentClient.crypto.encrypt(this.id, this.buffer)
+    }
 
     const header = Buffer.alloc(7)
     header.writeUInt16BE(this.id, 0)

@@ -4,13 +4,16 @@ const cardsJson = require('./json/cards.json');
 
 module.exports = {
     addCardPointsByInstanceID(device, id, xpPoints) {
-        /*let cardObject = utils.findObjectByKey(device.player.cards, 'ID', id);
+        try {
+            let cardObject = utils.findObjectByKey(device.player.cards, 'ID', id);
 
-        let updatedCard = device.player.cards[device.player.cards.indexOf(cardObject)];
-        updatedCard.xpPoints += xpPoints;
-        device.player.cards[device.player.cards.indexOf(cardObject)] = updatedCard;
-        device.player.markModified('cards');
-        device.player.save();*/
+            let updatedCard = device.player.cards[device.player.cards.indexOf(cardObject)];
+            updatedCard.xpPoints += xpPoints;
+            device.player.cards[device.player.cards.indexOf(cardObject)] = updatedCard;
+            device.player.markModified('cards');
+            device.player.save();
+        }
+        catch (e) {}
     },
     async addCardPointsBySCID(device, id, xpPoints) {
         try {

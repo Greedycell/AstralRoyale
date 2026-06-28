@@ -10,6 +10,8 @@
 ##### Need help? Join our [Discord](https://discord.gg/mUredE6CTU)
 #### Want to help us? Fork this project and try adding something!
 
+#### See the changelogs, [here](https://raw.githubusercontent.com/Greedycell/AstralRoyale/refs/heads/master/repo_changelogs)!
+
 #### See the wiki for a tutorials, [here](https://github.com/Greedycell/AstralRoyale/wiki/)!
 
 ## How to start

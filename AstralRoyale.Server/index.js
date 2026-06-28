@@ -9,7 +9,7 @@ const Messages = new LogicScrollMessageFactory()
 const config = require('./config.json')
 const PORT = config.Server.Port
 
-const Crypto = require("./Crypto")
+const StreamEncrypter = require("./Crypto")
 
 let mongooseInstance = require('./DataBase/mongoose');
 mongooseInstance = new mongooseInstance();
@@ -32,7 +32,7 @@ server.on('connection', async (client) => {
   }
 
   client.log('A wild connection appeared!')
-  client.crypto = new Crypto()
+  client.crypto = config.Server.Crypto.Activated ? new StreamEncrypter(config.Server.Crypto.Type) : null
   client.mongoose = mongooseInstance
   
   const packets = Messages.getPackets();
@@ -46,7 +46,9 @@ server.on('connection', async (client) => {
       client,
     }
     
-    message.payload = await client.crypto.decrypt(message.payload)
+    if (config.Server.Crypto.Activated) {
+      message.payload = await client.crypto.decrypt(message.id, message.payload)
+    }
 
     if (packets.indexOf(String(message.id)) !== -1) {
       try {

@@ -2,13 +2,14 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const config = require('../../../config.json')
 
 class LoginFailedMessage extends PiranhaMessage {
-  constructor (client, errorCode, reason) {
+  constructor (client, errorCode, reason, maintenanceSeconds) {
     super()
     this.id = 20103
     this.client = client
     this.version = 4
     this.errorCode = errorCode
     this.reason = reason
+    this.maintenanceSeconds = maintenanceSeconds
   }
 
   async encode () {
@@ -28,9 +29,9 @@ class LoginFailedMessage extends PiranhaMessage {
     this.writeString(config.Server.RedirectionURL) // Redirect
     this.writeString(config.Server.UpdateURL) // UpdateURL
     this.writeString(this.reason) // Reason
-    this.writeByte(127)
-    this.writeVInt(0)
-    this.writeString(config.Server.UpdateURL) // UpdateURL
+    //this.writeByte(127)
+    this.writeVInt(this.maintenanceSeconds) // MaintenanceSeconds
+    this.writeString(null) // UpdateURL
     this.writeVInt(2) // URLCount
     this.writeString(config.Server.UpdateURL) // GameAssetsURL
     this.writeString(config.Server.ContentURL) // ContentURL

@@ -10,41 +10,43 @@ class StartMatchmakingCommand {
   async decode(self) {
     this.data = {}
 
-    this.data.StartTick = self.readVInt()
-    this.data.EndTick = self.readVInt()
-    this.data.AccountHighID = self.readVInt()
-    this.data.AccountLowID = self.readVInt()
+    self.readVInt()
+    self.readVInt()
+    self.readVInt()
+    self.readVInt()
     this.data.Is2v2 = self.readVInt()
-    this.data.Unknown = self.readVInt()
-    this.data.BattleEventID = self.readVInt()
 
     //console.log(this.data)
   }
 
   async process(self) {
-    await new MatchmakeInfoMessage(self.client, 300).send()
+    if (!this.data.Is2v2) { // normal 1v1
+      await new MatchmakeInfoMessage(self.client, 300).send()
 
-    const opponent = MatchmakingLobby.addPlayer(self.client)
+      const opponent = MatchmakingLobby.addPlayer(self.client)
 
-    if (!opponent) {
-      self.client.log(`${self.client.player.lowID} is queueing!`)
-      return
+      if (!opponent) {
+        self.client.log(`${self.client.player.lowID} is queueing!`)
+        return
+      }
+      self.client.log(`${self.client.player.lowID} vs ${opponent.player.lowID}`)
+
+      const battle = new LogicBattle()
+      battle.start(500, self.client, opponent)
+
+      await new UdpServerInfos(self.client).send()
+      await new SectorStateMessage(self.client, 1, opponent.player).send()
+
+      if (opponent) {
+        await new UdpServerInfos(opponent).sendOpponent(opponent)
+        await new SectorStateMessage(opponent, 1, self.client.player).sendOpponent(opponent)
+      }
+
+      MatchmakingLobby.removePlayer(self.client)
+      MatchmakingLobby.removePlayer(opponent)
+    } else {
+      await new SectorStateMessage(self.client, 2).send()
     }
-    self.client.log(`${self.client.player.lowID} vs ${opponent.player.lowID}`)
-
-    const battle = new LogicBattle()
-    battle.start(500, self.client, opponent)
-
-    await new UdpServerInfos(self.client).send()
-    await new SectorStateMessage(self.client, 1, opponent.player).send()
-
-    if (opponent) {
-      await new UdpServerInfos(opponent).sendOpponent(opponent)
-      await new SectorStateMessage(opponent, 1, self.client.player).sendOpponent(opponent)
-    }
-
-    MatchmakingLobby.removePlayer(self.client)
-    MatchmakingLobby.removePlayer(opponent)
   }
 }
 

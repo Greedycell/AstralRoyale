@@ -71,7 +71,7 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeHex('FF01')
         //this.writeHex('190B8F010B090B2102200B140A10051F0A')
         let trainerDeck = this.client.player.decks[this.client.player.selectedDeck]
-        trainerDeckno.forEach(cardSCID => {
+        trainerDeck.forEach(cardSCID => {
             let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
             this.writeVInt(card.ID)
             this.writeVInt(card.level)
@@ -92,6 +92,7 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeHex('05060202040201030000000000000000000204000C00000093E5BFB00D00')
         
         break
+
       case 1: // 1v1
         this.writeVInt(0) // IsCompressed
 
@@ -141,6 +142,73 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeHex('00050602020402010300000000000000000101000C000000BCEF87EA0100') 
         
         break
+
+      case 2: // 2v2
+        this.writeVInt(0) // IsCompressed
+        this.writeHex('012A02020100017F7F7F7F0000000000000100000000000000000000000000000800000000000000000100000000000000000000000102')
+        
+        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
+        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
+        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
+        this.writeString(this.client.player.name)
+
+        this.writeHex('199F368606A31D000000000029000000000008130501BB97040502AB10050302050400050C8C14050D00050E00050F98110516B21105199487979707051A04051C00051D8A88D5440521000522000523000524000526000525000000000505068F3C05078D0F050B2905140B051B0B011A320C00000B0202B8DB01000000')
+        
+        // Alliance
+        {
+          this.InClan = 0
+          
+          if (this.InClan === 1) {
+            this.writeByte(8) // InClan
+            this.writeHex('6920506167757269') // AllianceName
+          }
+          else {
+            this.writeByte(0) // InClan
+          }
+        }
+
+        this.writeHex('9201BE5193080094249023019F0318000000002B00217F0B0007037BF994EABEEA090229017F7F00')
+        
+        this.writeVInt(this.client.player.highID)
+        this.writeVInt(this.client.player.lowID)
+        
+        this.writeHex('0000000000000000000601000009000000010000008E02F27D0000067A06230123012301230123002300010001000001050005010502050305040505')
+        
+        // RightPrincessTower
+        this.writeVInt(12) // Level
+        this.writeVInt(13)
+        
+        this.writeHex('A4E2019C8E0300007F00C07C000002000000000000090DAC36A46500007F008004000001000000000000')
+        
+        // LeftPrincessTower
+        this.writeVInt(13) // Level
+        this.writeVInt(13)
+        this.writeHex('AC369C8E0300007F00C07C000001000000000000090DA4E201A46500007F008004000002000000000000090DA88C01B82E00007F00800400000000000000001A04047C067F0407030201007F7F7F007F00000500000000007F7F7F7F7F7F7F7F00000000')
+        
+        // PlayerKingTower
+        this.writeVInt(12) // Level
+        this.writeVInt(13)
+        this.writeHex('A88C0188C50300007F00C07C00000000000000001A04067C027D0407000305007F7F7F007F0000')
+        
+        this.writeVInt(999) // StartingElixir
+
+        this.writeHex('00000000007F7F7F7F7F7F7F7F00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000AC2F00A22B00AC2F00A22B00A84400984B0000000000A40100000000A40100000000A40100000000A40100000000A40100000000A401')
+        
+        // Trainer Deck
+        this.writeHex('FF01')
+        this.writeHex('190B8F010B090B2102200B140A10051F0A')
+
+        this.writeVInt(0)
+
+        // Own Deck
+        this.writeHex('FF01')
+        this.writeHex('190B8F010B090B2102200B140A10051F0A')
+
+        this.writeVInt(0)
+        this.writeHex('05060202040201030000000000000000000204000C00000093E5BFB00D00')
+
+        break
+
       default: 
         console.warn('Gotcha unknown BattleType:', this.battleType)
     }

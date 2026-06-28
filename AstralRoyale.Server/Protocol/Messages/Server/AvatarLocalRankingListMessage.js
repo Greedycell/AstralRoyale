@@ -62,7 +62,7 @@ class AvatarLocalRankingListMessage extends PiranhaMessage {
             this.writeLong(this.client.player.clan.HighID, this.client.player.clan.ClanLowID)
             this.writeString(this.client.player.clan.ClanName)
             this.writeByte(16)
-            this.writeVInt(this.client.player.clan.ClanBadge - 1)
+            this.writeVInt(this.client.player.clan.ClanBadge)
         }
         this.writeVInt(0) // Has League
     }

@@ -6,43 +6,46 @@ class AllianceListMessage extends PiranhaMessage {
     this.id = 24310
     this.client = client
     this.version = 1
-    this.clanString = clanString
+    this.clanString = clanString || ''
   }
 
   async encode () {
+    const db = this.client.mongoose
+    const clans = await db.searchClans(this.clanString, 20)
+
     this.writeString(this.clanString) // SearchString
-    this.writeVInt(1) // AllianceCount
+    this.writeVInt(clans.length) // AllianceCount
 
-    // AllianceHeaderEntry
-    {
-      this.writeLong(this.client.player.clan.ClanHighID, this.client.player.clan.ClanLowID)
-      this.writeString(this.client.player.clan.ClanName)
-
-      this.writeVInt(16) // BadgeType
-      this.writeVInt(this.client.player.clan.Badge) // BadgeInstance
-
-      this.writeVInt(1) // Type
-      this.writeVInt(1) // MemberCount
-
-      this.writeVInt(0) // Score
-      this.writeVInt(0) // RequiredScore
-      
-      this.writeVInt(0)
-      this.writeVInt(0)
-      this.writeVInt(0)
-      this.writeVInt(50)
-      this.writeVInt(0) // Donations
-      this.writeVInt(2)
-
-      this.writeVInt(0) // Locale
-      this.writeVInt(0) // Region
-
-      this.writeBoolean(false)
-
-      if (false)
+    for (const clan of clans) {
+      // AllianceHeaderEntry
       {
-          // TODO: Encode the clan event
+        this.writeLong(clan.highID, clan.lowID)
+        this.writeString(clan.name)
+
+        this.writeVInt(16) // BadgeType
+        this.writeVInt(clan.badge || 1) // BadgeInstance
+
+        this.writeVInt(clan.type || 0) // Type
+        this.writeVInt(clan.members.length) // MemberCount
+
+        this.writeVInt(clan.trophies || 0) // Score
+        this.writeVInt(clan.requiredTrophies || 0) // RequiredScore
       }
+
+      this.writeVInt(0)
+      this.writeVInt(0)
+      this.writeVInt(0)
+
+      this.writeVInt(0)
+      this.writeVInt(0)
+      this.writeVInt(0)
+
+      this.writeVInt(1)
+      this.writeVInt(3) 
+      this.writeVInt(57)
+
+      this.writeVInt(6)
+      this.writeVInt(0)
     }
   }
 }

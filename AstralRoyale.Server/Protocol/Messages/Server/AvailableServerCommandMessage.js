@@ -1,7 +1,9 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const LogicLeaveAllianceCommand = require('../../Commands/Server/LogicLeaveAllianceCommand')
-const LogicChangeAvatarNameCommand = require('../../Commands/Server/LogicChangeAvatarNameCommand')
+const LogicJoinAllianceCommand = require('../../Commands/Server/LogicJoinAllianceCommand')
+const LogicChangeAllianceRoleCommand = require('../../Commands/Server/LogicChangeAllianceRoleCommand')
 const LogicChestDataCommand = require('../../Commands/Server/LogicChestDataCommand')
+const LogicChangeAvatarNameCommand = require('../../Commands/Server/LogicChangeAvatarNameCommand')
 
 class AvailableServerCommandMessage extends PiranhaMessage {
   constructor (client, commandID, data) {
@@ -16,6 +18,8 @@ class AvailableServerCommandMessage extends PiranhaMessage {
   async encode () {
     var commands = {
       205: LogicLeaveAllianceCommand,
+      206: LogicJoinAllianceCommand,
+      207: LogicChangeAllianceRoleCommand,
       278: LogicChangeAvatarNameCommand,
       393: LogicChestDataCommand
     }

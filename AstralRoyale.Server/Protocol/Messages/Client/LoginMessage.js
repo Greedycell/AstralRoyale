@@ -28,6 +28,18 @@ class LoginMessage extends PiranhaMessage {
   }
 
   async process () {
+    if (config.Server.MaintenanceEnabled == true) {
+      if (!config.Server.Admins.includes(this.data.LowID)) { // only give maintenance to non admins
+        await new LoginFailedMessage(this.client, 10, '', config.Server.MaintenanceSeconds).send()
+        return
+      }
+    }
+
+    if (config.Server.Banned.includes(this.data.LowID)) {
+      await new LoginFailedMessage(this.client, 11).send()
+      return
+    }
+
     if (this.data.FingerprintSHA !== config.Server.Fingerprint) {
       if (config.Server.ContentPatchEnabled === true) {
         await new LoginFailedMessage(this.client, 7, config.Server.Fingerprint).send()

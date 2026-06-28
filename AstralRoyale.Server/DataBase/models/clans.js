@@ -17,7 +17,7 @@ const clansSchema = new Schema({
     },
     description: {
         type: String,
-        required: true
+        default: ''
     },
     trophies:{
         type: Number,
@@ -27,17 +27,26 @@ const clansSchema = new Schema({
         type: Number,
         default: 0
     },
+    badge:{
+        type: Number,
+        default: 1
+    },
     avatarID:{
         type: Number,
         default: 0
     },
     type:{
         type: Number,
-        default: 0
+        default: 0  // 0 = Open, 1 = Invite Only, 2 = Closed
+    },
+    location:{
+        type: Number,
+        default: 57 // Global
     },
     members: {
         type: Array,
         default: []
+        // Each member: { highID, lowID, name, role, trophies, level, arena, donated, donationsReceived }
     }
 })
 
