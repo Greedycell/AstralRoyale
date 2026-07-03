@@ -121,14 +121,6 @@ const playersSchema = new Schema({
             type: Number,
             default: 1
         },
-        ClanName: {
-            type: String,
-            default: 'Clashers'
-        },
-        ClanBadge: {
-            type: Number,
-            default: 1
-        },
         ClanRole: {
             type: Number,
             default: 0

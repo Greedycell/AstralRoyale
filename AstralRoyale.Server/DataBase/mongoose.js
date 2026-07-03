@@ -64,11 +64,38 @@ module.exports = class DataBase {
         return this.mongooseClans.findOne({ highID, lowID });
     }
 
+    async getPlayerClan(player) {
+        if (!player || !player.clan || !player.inClan) return null;
+        return this.getClanByID(player.clan.ClanHighID, player.clan.ClanLowID);
+    }
+
+    async getPlayerByID(highID, lowID) {
+        if (highID === undefined || lowID === undefined) return null;
+        return this.mongoosePlayers.findOne({ highID, lowID }).lean();
+    }
+
+    /*async searchClans(nameQuery = '', limit = 20, filters = {}) {
+        const trimmedQuery = String(nameQuery || '').trim()
+        const query = {};
+        if (trimmedQuery) query.name = { $regex: trimmedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+        if (filters.locationInstanceID !== undefined && filters.locationInstanceID !== null) query.location = filters.locationInstanceID;
+        if (filters.minimumRequiredTrophies !== undefined && filters.minimumRequiredTrophies !== null) query.requiredTrophies = { $gte: filters.minimumRequiredTrophies };
+        if (filters.canJoin) query.type = { $ne: 2 }; // exclude closed clans
+        let clans = await this.mongooseClans.find(query).sort({ trophies: -1 }).lean();
+        if (filters.minimumMembers !== undefined && filters.minimumMembers !== null) clans = clans.filter(c => c.members.length >= filters.minimumMembers);
+        if (filters.maximumMembers !== undefined && filters.maximumMembers !== null) clans = clans.filter(c => c.members.length <= filters.maximumMembers);
+        return clans.slice(0, limit);
+    }*/
     async searchClans(nameQuery = '', limit = 20) {
-        const filter = nameQuery
-            ? { name: { $regex: nameQuery, $options: 'i' } }
+        const trimmedQuery = String(nameQuery || '').trim()
+        const filter = trimmedQuery
+            ? { name: { $regex: trimmedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' } }
             : {};
         return this.mongooseClans.find(filter).limit(limit).sort({ trophies: -1 });
+    }
+
+    async getJoinableClans(limit = 20) {
+        return this.mongooseClans.find({ type: 0 }).limit(limit).sort({ trophies: -1 }).lean();
     }
 
     async getTopClans(limit = 200) {
@@ -98,8 +125,6 @@ module.exports = class DataBase {
         player.inClan = 1;
         player.clan.ClanHighID = clan.highID;
         player.clan.ClanLowID  = clan.lowID;
-        player.clan.ClanName   = clan.name;
-        player.clan.ClanBadge  = clan.badge;
         player.clan.ClanRole   = 2; // Leader
 
         player.markModified('clan');
@@ -128,10 +153,8 @@ module.exports = class DataBase {
 
         player.inClan = 1;
         player.clan.ClanHighID = clan.highID;
-        player.clan.ClanLowID  = clan.lowID;
-        player.clan.ClanName   = clan.name;
-        player.clan.ClanBadge  = clan.badge;
-        player.clan.ClanRole   = 1; // Member
+        player.clan.ClanLowID = clan.lowID;
+        player.clan.ClanRole = 1; // Member
 
         player.markModified('clan');
         await player.save();
@@ -170,8 +193,6 @@ module.exports = class DataBase {
         player.inClan = 0;
         player.clan.ClanHighID = 0;
         player.clan.ClanLowID  = 1;
-        player.clan.ClanName   = 'Clashers';
-        player.clan.ClanBadge  = 1;
         player.clan.ClanRole   = 0;
 
         player.markModified('clan');
@@ -179,19 +200,28 @@ module.exports = class DataBase {
     }
 
     async updateClanSettings(clan, { description, badge, type, requiredTrophies, location }) {
-        if (description    !== undefined) clan.description    = description;
-        if (badge          !== undefined) clan.badge          = badge;
-        if (type           !== undefined) clan.type           = type;
+        if (description !== undefined) clan.description = description;
+        if (badge !== undefined) clan.badge = badge;
+        if (type !== undefined) clan.type = type;
         if (requiredTrophies !== undefined) clan.requiredTrophies = requiredTrophies;
-        if (location       !== undefined) clan.location       = location;
+        if (location !== undefined) clan.location = location;
         await clan.save();
         return clan;
     }
 
     async getAllPlayers(excludeLowID) {
-        const players = await this.mongoosePlayers.find({ lowID: { $ne: excludeLowID } });
+        const filter = excludeLowID ? { lowID: { $ne: excludeLowID } } : {};
+        const players = await this.mongoosePlayers.find(filter).sort({ trophies: -1 }).lean();
         if (!players.length) throw new Error('No players are found.');
         return players;
+    }
+
+    async getTopPlayers(limit = 200) {
+        return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 });
+    }
+
+    async getLocalPlayers(limit = 200) {
+        return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 });
     }
 }
 

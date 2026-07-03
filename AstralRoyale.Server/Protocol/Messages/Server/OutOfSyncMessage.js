@@ -3,7 +3,7 @@ const PiranhaMessage = require('../../PiranhaMessage')
 class OutOfSyncMessage extends PiranhaMessage {
   constructor (client, serverChecksum, clientChecksum) {
     super()
-    this.id = 24104
+    this.id = 25424
     this.client = client
     this.version = 1
     this.serverChecksum = serverChecksum

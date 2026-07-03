@@ -12,10 +12,12 @@ class SectorHeartbeatMessage extends PiranhaMessage {
   }
 
   async encode () {
-    this.writeVInt(this.turn)
-    this.writeVInt(this.checksum)
+    this.writeHex('13a7ab9bda03019601b5027f319fd7e8537f01b3fe028b75018cba920000000041c00c0000')
+    
+    //this.writeVInt(this.turn)
+    //this.writeVInt(this.checksum)
 
-    this.writeVInt(this.commands/*.Length*/)
+    //this.writeVInt(this.commands/*.Length*/)
 
     /*if (this.Commands.Length > 0)
     {

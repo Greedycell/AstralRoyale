@@ -18,7 +18,8 @@ class AskForAllianceDataMessage extends PiranhaMessage {
   }
 
   async process () {
-    await new AllianceDataMessage(this.client).send()
+    const aid = this.data.AllianceID || [0, 0]
+    await new AllianceDataMessage(this.client, aid[0], aid[1]).send()
   }
 }
 

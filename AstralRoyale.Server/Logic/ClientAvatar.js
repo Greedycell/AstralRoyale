@@ -135,10 +135,20 @@ class ClientAvatar {
     // < 7 =  Set name popup
     if (self.client.player.inClan)
     {
+        let clan = null
+        if (self.client && self.client.mongoose && typeof self.client.mongoose.getClanByID === 'function') {
+            try {
+                clan = await self.client.mongoose.getClanByID(self.client.player.clan.ClanHighID, self.client.player.clan.ClanLowID)
+            } catch (e) {
+                console.error(e)
+                clan = null
+            }
+        }
+
         self.writeByte(9)
         self.writeLogicLong(self.client.player.clan.ClanHighID, self.client.player.clan.ClanLowID)
-        self.writeString(self.client.player.clan.ClanName)
-        self.writeVInt(self.client.player.clan.ClanBadge + 1)
+        self.writeString(clan ? String(clan.name || '') : '')
+        self.writeVInt(clan ? (clan.badge + 1 != null ? clan.badge + 1 : 0) : 0)
         self.writeVInt(self.client.player.clan.ClanRole) // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
     }
     else

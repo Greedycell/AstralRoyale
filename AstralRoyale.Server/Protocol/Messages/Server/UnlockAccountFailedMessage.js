@@ -3,7 +3,7 @@ const PiranhaMessage = require('../../PiranhaMessage')
 class UnlockAccountFailedMessage extends PiranhaMessage {
   constructor (client, errorCode) {
     super()
-    this.id = 20133
+    this.id = 25725
     this.client = client
     this.version = 1
     this.errorCode = errorCode

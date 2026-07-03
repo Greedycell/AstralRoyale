@@ -1,5 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
-const JoinableAlliancesListMessage = require('../Server/JoinableAlliancesListMessage')
+const JoinableAllianceListMessage = require('../Server/JoinableAllianceListMessage')
 
 class AskForJoinableAlliancesListMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -12,7 +12,7 @@ class AskForJoinableAlliancesListMessage extends PiranhaMessage {
   async decode () {}
 
   async process () {
-    await new JoinableAlliancesListMessage(this.client).send()
+    await new JoinableAllianceListMessage(this.client).send()
   }
 }
 

@@ -3,6 +3,8 @@ const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const LoginOkMessage = require('../Server/LoginOkMessage')
 const OwnHomeDataMessage = require('../Server/OwnHomeDataMessage')
 const SectorStateMessage = require('../Server/SectorStateMessage')
+const InboxCountMessage = require('../Server/InboxCountMessage')
+
 const config = require('../../../config.json')
 
 class LoginMessage extends PiranhaMessage {
@@ -61,6 +63,7 @@ class LoginMessage extends PiranhaMessage {
       
       await new LoginOkMessage(this.client).send()
       await new OwnHomeDataMessage(this.client).send()
+      await new InboxCountMessage(this.client).send()
       
       //await new SectorStateMessage(this.client, 1, this.client).send()
     })

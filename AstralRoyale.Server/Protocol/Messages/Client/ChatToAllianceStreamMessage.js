@@ -4,7 +4,7 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const cardUtils = require('../../../Utils/cardUtils')
 const utils = require('../../../Utils')
 const Cards = require('../../../Utils/json/cards.json')
-const LoginFailedMessage = require('../Server/LoginFailedMessage')
+const ServerErrorMessage = require('../Server/ServerErrorMessage')
 
 const config = require('../../../config.json')
 
@@ -65,7 +65,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             '/adminhelp'
           ].join('\n')
 
-          await new LoginFailedMessage(this.client, 3, list).send()
+          await new ServerErrorMessage(this.client, list).send()
 
           break
         }
@@ -89,10 +89,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
               '/trophies x'
             ].join('\n')
 
-            await new LoginFailedMessage(this.client, 3, list).send()
+            await new ServerErrorMessage(this.client, list).send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -115,10 +115,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             player.markModified('xpPoints')
             await player.save()
             
-            await new LoginFailedMessage(this.client, 3, "Maxed out all cards!").send()
+            await new ServerErrorMessage(this.client, "Maxed out all cards!").send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -144,10 +144,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
               cardUtils.addCardPointsBySCID(this.client, card.id, cardCount)
             })
             
-            await new LoginFailedMessage(this.client, 3, "Unlocked all cards!").send()
+            await new ServerErrorMessage(this.client, "Unlocked all cards!").send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -168,10 +168,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             player.markModified('gold')
             await player.save()
             
-            await new LoginFailedMessage(this.client, 3, `Selected gold amount ${amount}!`).send()
+            await new ServerErrorMessage(this.client, `Selected gold amount ${amount}!`).send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -192,10 +192,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             player.markModified('gems')
             await player.save()
             
-            await new LoginFailedMessage(this.client, 3, `Selected gems amount ${amount}!`).send()
+            await new ServerErrorMessage(this.client, `Selected gems amount ${amount}!`).send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -216,10 +216,10 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             player.markModified('trophies')
             await player.save()
             
-            await new LoginFailedMessage(this.client, 3, `Selected trophy amount ${amount}!`).send()
+            await new ServerErrorMessage(this.client, `Selected trophy amount ${amount}!`).send()
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -237,7 +237,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             );
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -255,7 +255,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             );
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -273,7 +273,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             )
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -291,7 +291,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             );
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -315,7 +315,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             );
           }
           else {
-            await new LoginFailedMessage(this.client, 3, `Only admins can use the /${command} command.`).send()
+            await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
           }
 
           break
@@ -323,17 +323,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
       }
     }
     else {
-      this.writeString(this.data.Message)
-      
-      this.writeVInt(2) // StreamEntryType
-      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-      this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-      this.writeString(this.client.player.name)
-      this.writeVInt(1) // Level
-      this.writeVInt(this.client.player.clan.ClanRole) // Role (1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader)
-      this.writeVInt(0) // AgeSeconds
-      this.writeBoolean(false) // IsRemoved
+      // TODO: Clan messages
     }
   }
 }

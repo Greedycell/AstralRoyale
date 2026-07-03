@@ -10,8 +10,7 @@ class AskForAvatarStreamMessage extends PiranhaMessage {
 
   async decode () {}
 
-  async process () {
-  }
+  async process () {}
 }
 
 module.exports = AskForAvatarStreamMessage

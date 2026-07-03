@@ -1,7 +1,7 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const RoyalTVContentMessage = require('../Server/RoyalTVContentMessage')
 
-class AskForTvContentMessage extends PiranhaMessage {
+class AskForTVContentMessage extends PiranhaMessage {
   constructor (bytes, client) {
     super(bytes)
     this.client = client
@@ -9,11 +9,18 @@ class AskForTvContentMessage extends PiranhaMessage {
     this.version = 1
   }
 
-  async decode () {}
+  async decode () {
+    this.data = {}
+
+    this.data.ClassId = this.readVInt()
+    this.data.InstanceId = this.readVInt()
+
+    //console.log(this.data)
+  }
 
   async process () {
-    await new RoyalTVContentMessage(this.client).send()
+    await new RoyalTVContentMessage(this.client, this.data.ClassId, this.data.InstanceId).send()
   }
 }
 
-module.exports = AskForTvContentMessage
+module.exports = AskForTVContentMessage

@@ -305,7 +305,7 @@ class ClientHome {
 
     self.writeVInt((Date.now() / 1000 | 0) + 100) // CurrentTimestemp
     self.writeVInt(127)
-    self.writeVInt(3/*self.client.player.nameChangesCount ? 3 : 1*/) // 1 = Name Set, 2 = Upgrade Card, 3 = Name already set 
+    self.writeVInt(self.client.player.nameChangesCount ? 3 : 1) // 1 = Name Set, 2 = Upgrade Card, 3 = Name already set 
     self.writeVInt(0)
     self.writeVInt(2)
 

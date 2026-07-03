@@ -1,5 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
-const KeepAliveOkMessage = require('../Server/KeepAliveOkMessage')
+const KeepAliveServerMessage = require('../Server/KeepAliveServerMessage')
 
 class KeepAliveMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -12,7 +12,7 @@ class KeepAliveMessage extends PiranhaMessage {
   async decode () {}
 
   async process () {
-    await new KeepAliveOkMessage(this.client).send()
+    await new KeepAliveServerMessage(this.client).send()
   }
 }
 

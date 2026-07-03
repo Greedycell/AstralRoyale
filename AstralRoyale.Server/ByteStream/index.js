@@ -315,6 +315,8 @@ class ByteStream {
     return value
   }
 
+  readBytesLength = this.readInt
+
   /**
     * Reading ByteArray from Bytes 
     * @returns { Buffer }
@@ -365,9 +367,9 @@ class ByteStream {
   /**
    * Send a packet to the server.
    */
-  send () {
+  async send () {
     if (this.id < 20000) return;
-    this.encode()
+    await this.encode()
 
     if (config.Server.Crypto.Activated) {
       this.buffer = this.client.crypto.encrypt(this.id, this.buffer)
@@ -387,9 +389,9 @@ class ByteStream {
   /**
    * Send a packet to the server for the opponent.
    */
-  sendOpponent (opponentClient) {
+  async sendOpponent (opponentClient) {
     if (this.id < 20000) return;
-    this.encode()
+    await this.encode()
 
     if (config.Server.Crypto.Activated) {
       this.buffer = opponentClient.crypto.encrypt(this.id, this.buffer)

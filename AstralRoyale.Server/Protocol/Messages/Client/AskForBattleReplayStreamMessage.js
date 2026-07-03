@@ -10,8 +10,7 @@ class AskForBattleReplayStreamMessage extends PiranhaMessage {
 
   async decode () {}
 
-  async process () {
-  }
+  async process () {}
 }
 
 module.exports = AskForBattleReplayStreamMessage

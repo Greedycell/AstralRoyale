@@ -1,6 +1,9 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const AllianceDataMessage = require('../Server/AllianceDataMessage')
+const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
+const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
+const ServerErrorMessage = require('../Server/ServerErrorMessage')
 
 class ChangeAllianceSettingsMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -29,19 +32,28 @@ class ChangeAllianceSettingsMessage extends PiranhaMessage {
     const db = this.client.mongoose
 
     if (!player.inClan) {
-      return new LoginFailedMessage(this.client, 3, 'You are not in a clan.').send()
+      await new OutOfSyncMessage(this.client).send()
+      return
     }
 
     // Only Leader (2) and Co-Leader (4) can change settings
     const role = player.clan.ClanRole
     if (role !== 2 && role !== 4) {
-      return new LoginFailedMessage(this.client, 3, 'You do not have permission to change clan settings.').send()
+      await new OutOfSyncMessage(this.client).send()
+      return
+    }
+
+    // TODO: Invite Only
+    if (this.data.Type === 2) {
+      await new ServerErrorMessage(this.client, "Invite Only is unavailable due to clan messages not being implemented yet.").send()
+      return
     }
 
     try {
       const clan = await db.getClanByID(player.clan.ClanHighID, player.clan.ClanLowID)
       if (!clan) {
-        return new LoginFailedMessage(this.client, 3, 'Clan not found.').send()
+        await new OutOfSyncMessage(this.client).send()
+        return
       }
 
       await db.updateClanSettings(clan, {
@@ -51,12 +63,6 @@ class ChangeAllianceSettingsMessage extends PiranhaMessage {
         requiredTrophies: this.data.RequiredTrophies,
         location: this.data.Location
       })
-
-      //if (player.clan.ClanBadge !== this.data.Badge) {
-        player.clan.ClanBadge = this.data.Badge
-        player.markModified('clan')
-        await player.save()
-      //}
     } catch (error) {
       console.error(error)
       await new LoginFailedMessage(this.client, 3, 'Failed to update clan settings.').send()

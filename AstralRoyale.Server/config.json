@@ -3,8 +3,7 @@
         "Port": 9339,
         "Crypto": {
             "Activated": true,
-            "Type": 0,
-            "Comment": "0 = RC4, 1 = Pepper",
+            "Type": 0,"TypeComment": "0 = RC4, 1 = Pepper",
             "RC4": {
                 "Key": "fhsd6f86f67rt8fw78fw789we78r9789wer6re",
                 "Nonce": "nonce"
@@ -23,7 +22,9 @@
         "UpdateURL": "https://github.com/Greedycell/AstralRoyale",
         "MaintenanceEnabled": false,
         "MaintenanceSeconds": 0,
-        "Admins": [],
+        "Admins": [
+            2
+        ],
         "Banned": []
     },
     "Database": {

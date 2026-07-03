@@ -13,12 +13,18 @@ class SearchAlliancesMessage extends PiranhaMessage {
     this.data = {}
 
     this.data.ClanString = this.readString()
+    this.data.LocationClassID = this.readVInt()
+    this.data.LocationInstanceID = this.readVInt()
+    this.data.MinimumMembers = this.readInt()
+    this.data.MaximumMembers = this.readInt()
+    this.data.MinimumRequiredTrophies = this.readInt()
+    this.data.CanJoin = this.readBoolean()
 
     //console.log(this.data)
   }
 
   async process() {
-    await new AllianceListMessage(this.client, this.ClanString).send()
+    await new AllianceListMessage(this.client, this.data).send()
   }
 }
 

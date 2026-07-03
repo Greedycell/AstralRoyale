@@ -1,6 +1,8 @@
 const PiranhaMessage = require('../../PiranhaMessage')
-const LoginFailedMessage = require('../Server/LoginFailedMessage')
+const AllianceCreateFailedMessage = require('../Server/AllianceCreateFailedMessage')
 const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
+const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
+const ServerErrorMessage = require('../Server/ServerErrorMessage')
 
 class CreateAllianceMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -29,14 +31,20 @@ class CreateAllianceMessage extends PiranhaMessage {
     const player = this.client.player
     const db = this.client.mongoose
 
-    // Already in a clan
     if (player.inClan) {
-      return new LoginFailedMessage(this.client, 3, 'You must leave your current clan first.').send()
+      await new OutOfSyncMessage(this.client).send() // Already in a clan
+      return
     }
 
-    // Name is required
     if (!this.data.Name || this.data.Name.trim().length === 0) {
-      return new LoginFailedMessage(this.client, 3, 'Clan name cannot be empty.').send()
+      await new OutOfSyncMessage(this.client).send() // Name is required
+      return
+    }
+
+    // TODO: Invite Only
+    if (this.data.Type === 2) {
+      await new ServerErrorMessage(this.client, "Invite Only is unavailable due to clan messages not being implemented yet.").send()
+      return
     }
 
     try {
@@ -49,12 +57,12 @@ class CreateAllianceMessage extends PiranhaMessage {
         location: this.data.Location
       })
 
-      await new AvailableServerCommandMessage(this.client, 206, this.data).send()
-      await new AvailableServerCommandMessage(this.client, 207, this.data).send()
-      await new LoginFailedMessage(this.client, 3, 'Created clan!').send()
-    } catch (error) {
-      console.error(error)
-      await new LoginFailedMessage(this.client, 3, 'Failed to create clan.').send()
+      await new AvailableServerCommandMessage(this.client, 263, this.data).send() // join
+      await new AvailableServerCommandMessage(this.client, 206, this.data).send() // change role
+      //await new AllianceCreateFailedMessage(this.client).send()
+    } catch (e) {
+      console.error(e)
+      await new AllianceCreateFailedMessage(this.client).send()
     }
   }
 }

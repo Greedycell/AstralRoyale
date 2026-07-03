@@ -3,7 +3,7 @@ const PiranhaMessage = require('../../PiranhaMessage')
 class MatchmakeInfoMessage extends PiranhaMessage {
   constructor (client, matchmakingSeconds) {
     super()
-    this.id = 24107
+    this.id = 24696
     this.client = client
     this.version = 1
     this.matchmakingSeconds = matchmakingSeconds

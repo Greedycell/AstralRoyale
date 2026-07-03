@@ -2,6 +2,8 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
 const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const LogicLeaveAllianceCommand = require('../../Commands/Server/LogicLeaveAllianceCommand')
+const AllianceLeaveOkMessage = require('../Server/AllianceLeaveOkMessage')
+const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
 
 class LeaveAllianceMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -18,14 +20,16 @@ class LeaveAllianceMessage extends PiranhaMessage {
     const db = this.client.mongoose
 
     if (!player.inClan) {
-      return new LoginFailedMessage(this.client, 3, 'You are not in a clan.').send()
+      await new OutOfSyncMessage(this.client).send()
+      return
     }
 
     try {
       await db.leaveClan(player)
 
-      await new AvailableServerCommandMessage(this.client, 205).send()
-      await new LoginFailedMessage(this.client, 3, 'Left clan!').send()
+      await new AvailableServerCommandMessage(this.client, 290).send()
+      await new AllianceLeaveOkMessage(this.client).send()
+      //await new LoginFailedMessage(this.client, 3, 'Left clan!').send()
     } catch (err) {
       console.error('Error:', err)
       await new LoginFailedMessage(this.client, 3, 'Failed to leave clan. Please try again.').send()

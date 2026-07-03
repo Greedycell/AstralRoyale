@@ -1,4 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
+const utils = require('../../../Utils')
 
 class AvatarRankingListMessage extends PiranhaMessage {
   constructor (client) {
@@ -9,66 +10,81 @@ class AvatarRankingListMessage extends PiranhaMessage {
   }
 
   async encode () {
-    this.count = 1
+    const db = this.client.mongoose
+    const players = await db.getTopPlayers(200)
+    const clanCache = {}
 
-    this.writeVInt(this.count) // Player Count
-
-    for (var i = 0; i < this.count; i++)
+    this.writeVInt(players.length) // PlayerCount
+    for (var i = 0; i < players.length; i++)
     {
-        this.writeLogicLong(this.client.player.highID, this.client.player.lowID)
-        this.writeString(this.client.player.name)
-        this.writeVInt(i + 1)
-        this.writeVInt(this.client.player.trophies)
-        this.writeVInt(200)
-        this.writeVInt(0)
-        this.writeVInt(0)
-        this.writeVInt(0)
+      const player = players[i]
+      this.writeLogicLong(player.highID, player.lowID)
+      this.writeString(player.name)
+      this.writeVInt(i + 1)
+      this.writeVInt(player.trophies)
+      this.writeVInt(18)
+      this.writeVInt(0)
+      this.writeVInt(0)
+      this.writeVInt(0)
 
-        // RankingEntry
-        this.writeVInt(this.client.player.level)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeString("DE")
-        this.writeLong(this.client.player.highID, this.client.player.lowID)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        this.writeByte(0)
-        if (this.client.player.inClan)
-        {
-            this.writeBoolean(true)
-            this.writeLong(this.client.player.clan.HighID, this.client.player.clan.ClanLowID)
-            this.writeString(this.client.player.clan.ClanName)
-            this.writeByte(16)
-            this.writeVInt(this.client.player.clan.ClanBadge)
+      // RankingEntry
+      this.writeVInt(player.level)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeString('DE')
+      this.writeLong(player.highID, player.lowID)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+      this.writeByte(0)
+
+      if (player.inClan) {
+        const clanKey = `${player.clan.ClanHighID}:${player.clan.ClanLowID}`
+        let clan = clanCache[clanKey]
+        if (clan === undefined) {
+            clan = await db.getClanByID(player.clan.ClanHighID, player.clan.ClanLowID)
+            clanCache[clanKey] = clan || null
         }
-        this.writeVInt(0) // Has League
+        if (clan) {
+            this.writeBoolean(true)
+            this.writeLong(clan.highID, clan.lowID)
+            this.writeString(clan.name)
+            this.writeByte(16)
+            this.writeVInt(clan.badge)
+        } else {
+            this.writeBoolean(false)
+        }
+      } else {
+          this.writeBoolean(false)
+      }
+      
+      this.writeVInt(0) // HasLeague
     }
 
     this.writeInt(0)
-    this.writeInt(518400) // Seconds until next month
+    this.writeInt(utils.getSecondsUntilNextMonth()) // SecondsUntilNextMonth
   }
 }
 

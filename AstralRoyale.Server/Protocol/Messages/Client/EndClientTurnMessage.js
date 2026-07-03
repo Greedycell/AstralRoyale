@@ -1,16 +1,19 @@
 const PiranhaMessage = require('../../PiranhaMessage')
-const ChangeDeckCardCommand = require('../../Commands/Client/ChangeDeckCardCommand')
-const OpenFreeChestCommand = require('../../Commands/Client/OpenFreeChestCommand')
-const SelectDeckCommand = require('../../Commands/Client/SelectDeckCommand')
-const AskForChestDataCommand = require('../../Commands/Client/AskForChestDataCommand')
-const StartTournamentMatchmakingCommand = require('../../Commands/Client/StartTournamentMatchmakingCommand')
-const BuyShopChestCommand = require('../../Commands/Client/BuyShopChestCommand')
-const BuyChestCommand = require('../../Commands/Client/BuyChestCommand')
-const BuyShopItemCommand = require('../../Commands/Client/BuyShopItemCommand')
-const CopyDeckCommand = require('../../Commands/Client/CopyDeckCommand')
-const UpgradeCardCommand = require('../../Commands/Client/UpgradeCardCommand')
-const StartMatchmakingCommand = require('../../Commands/Client/StartMatchmakingCommand')
-const OpenCrownChestCommand = require('../../Commands/Client/OpenCrownChestCommand')
+const LogicAllianceSettingsChangedCommand = require('../../Commands/Server/LogicAllianceSettingsChangedCommand')
+const LogicSwapSpellsCommand = require('../../Commands/Client/LogicSwapSpellsCommand')
+const LogicClaimQuestRewardCommand = require('../../Commands/Client/LogicClaimQuestRewardCommand')
+const LogicSelectDeckCommand = require('../../Commands/Client/LogicSelectDeckCommand')
+const LogicRefreshAchievementsCommand = require('../../Commands/Client/LogicRefreshAchievementsCommand')
+const LogicStartSurvivalMatchmakeCommand = require('../../Commands/Client/LogicStartSurvivalMatchmakeCommand')
+const LogicCreateGameRoomCommand = require('../../Commands/Client/LogicCreateGameRoomCommand')
+const LogicBuyChestCommand = require('../../Commands/Client/LogicBuyChestCommand')
+const LogicStartSurvivalCommand = require('../../Commands/Client/LogicStartSurvivalCommand')
+const LogicSpeedUpExploringCommand = require('../../Commands/Client/LogicSpeedUpExploringCommand')
+const LogicBuyShopCycleItemCommand = require('../../Commands/Client/LogicBuyShopCycleItemCommand')
+const LogicCopyDeckCommand = require('../../Commands/Client/LogicCopyDeckCommand')
+const LogicUpgradeSpellCommand = require('../../Commands/Client/LogicUpgradeSpellCommand')
+const LogicStartMatchmakeCommand = require('../../Commands/Client/LogicStartMatchmakeCommand')
+const LogicCollectMultiWinChestCommand = require('../../Commands/Client/LogicCollectMultiWinChestCommand')
 
 class EndClientTurnMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -33,22 +36,25 @@ class EndClientTurnMessage extends PiranhaMessage {
 
   async process () {
     var Commands = {
-      505: ChangeDeckCardCommand,
-      510: OpenFreeChestCommand,
-      512: SelectDeckCommand,
-      518: AskForChestDataCommand,
-      504: StartTournamentMatchmakingCommand,
-      539: BuyShopChestCommand,
-      543: BuyChestCommand,
-      544: BuyShopItemCommand,
-      580: CopyDeckCommand,
-      592: UpgradeCardCommand,
-      594: StartMatchmakingCommand,
-      595: OpenCrownChestCommand
+      341: LogicAllianceSettingsChangedCommand,
+      505: LogicSwapSpellsCommand,
+      509: LogicStartSurvivalMatchmakeCommand,
+      510: LogicClaimQuestRewardCommand,
+      512: LogicSelectDeckCommand,
+      518: LogicRefreshAchievementsCommand,
+      504: LogicStartSurvivalMatchmakeCommand,
+      533: LogicCreateGameRoomCommand,
+      539: LogicBuyChestCommand,
+      543: LogicSpeedUpExploringCommand,
+      544: LogicBuyShopCycleItemCommand,
+      580: LogicCopyDeckCommand,
+      592: LogicUpgradeSpellCommand,
+      594: LogicStartMatchmakeCommand,
+      595: LogicCollectMultiWinChestCommand
     }
 
     if (!String(this.data.CommandID).startsWith('-')) {
-      if (this.data.CommandID > 499 && this.data.CommandID < 600) {
+      if (this.data.CommandID > 422 && this.data.CommandID < 600) {
         if (this.data.CommandID in Commands) {
           var command = new Commands[this.data.CommandID]
           this.client.log(`Command ${this.data.CommandID} (${command.constructor.name}) handled!`)
