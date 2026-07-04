@@ -9,9 +9,7 @@ class ClientHelloMessage extends PiranhaMessage {
     this.version = 0
   }
 
-  async decode () {
-    // this.readInt()
-  }
+  async decode () {}
 
   async process () {
     await new ServerHelloMessage(this.client).send()

@@ -25,11 +25,11 @@ class LeaveAllianceMessage extends PiranhaMessage {
     }
 
     try {
-      await db.leaveClan(player)
-
       await new AvailableServerCommandMessage(this.client, 290).send()
       await new AllianceLeaveOkMessage(this.client).send()
       //await new LoginFailedMessage(this.client, 3, 'Left clan!').send()
+
+      await db.leaveClan(player)
     } catch (err) {
       console.error('Error:', err)
       await new LoginFailedMessage(this.client, 3, 'Failed to leave clan. Please try again.').send()

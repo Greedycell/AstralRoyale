@@ -1,5 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const BattleEventMessage = require('../Server/BattleEventMessage')
+const LogicBattle = require('../../../Core/LogicBattle')
 
 class SendBattleEventMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -13,11 +14,11 @@ class SendBattleEventMessage extends PiranhaMessage {
     this.data = {}
     
     this.data.Type = this.readVInt()
-    this.data.HighId = this.readVInt()
-    this.data.LowId = this.readVInt()
-    this.readVInt()
+    this.data.HighID = this.readVInt()
+    this.data.LowID = this.readVInt()
+    this.data.Unknown1 = this.readVInt()
     this.data.Tick = this.readVInt()
-    this.data.Unknown3 = this.readVInt()
+    this.data.Unknown2 = this.readVInt()
     this.data.Value1 = this.readVInt()
     this.data.Value2 = this.readVInt()
 
@@ -34,15 +35,11 @@ class SendBattleEventMessage extends PiranhaMessage {
       }
       case 3:
       {
-        /*const opponent = MatchmakingLobby.addPlayer(self.client)
-        await new BattleEventMessage(this.client, this.data).send()
-        if (!opponent) {
-          self.client.log(`${self.client.player.lowID} emoted!`)
-          return
-        }
-        if (opponent) {
-          await new BattleEventMessage(opponent, this.data).sendOpponent(opponent)
-        }*/
+        const activeBattle = this.client && this.client.player && this.client.player.battleID ? LogicBattle.getBattleById(this.client.player.battleID) : null
+
+        if (activeBattle) {
+          activeBattle.sendEvent(this.data, this.client)
+        } else await new BattleEventMessage(this.client, this.data).send()
         break
       }
       case 6:

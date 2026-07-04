@@ -1,5 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
-const MatchmakingLobby = require('../../../../AstralRoyale.Battle/Logic/MatchmakingLobby')
+const MatchmakingLobby = require('../../../Core/MatchmakingLobby')
 const MatchmakeInfoMessage = require('../Server/MatchmakeInfoMessage')
 const CancelMatchmakeDoneMessage = require('../Server/CancelMatchmakeDoneMessage')
 
@@ -18,7 +18,8 @@ class CancelMatchmakeMessage extends PiranhaMessage {
     await new Promise(resolve => setTimeout(resolve, 500))
     await new CancelMatchmakeDoneMessage(this.client).send()
 
-    MatchmakingLobby.removePlayer(this.client)
+    const queueType = this.client.matchmakeQueueType || (this.client.matchmakeMode === 'tournament' ? 'tournament' : 'normal')
+    MatchmakingLobby.removePlayer(this.client, queueType)
   }
 }
 

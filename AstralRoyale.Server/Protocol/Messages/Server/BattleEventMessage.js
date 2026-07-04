@@ -11,6 +11,15 @@ class BattleEventMessage extends PiranhaMessage {
 
   async encode () {
     this.writeVInt(this.data.Type)
+    this.writeVInt(this.data.HighID)
+    this.writeVInt(this.data.LowID)
+    this.writeVInt(this.data.Unknown1)
+    this.writeVInt(this.data.Tick)
+    this.writeVInt(this.data.Unknown2)
+    this.writeVInt(this.data.Value1)
+    this.writeVInt(this.data.Value2)
+
+    /*this.writeVInt(this.data.Type)
     this.writeVInt(this.data.HighId)
     this.writeVInt(this.data.LowId)
     this.writeVInt(1)
@@ -27,7 +36,7 @@ class BattleEventMessage extends PiranhaMessage {
         this.writeVInt(this.data.Unknown)
         this.writeVInt(this.data.HandIndex)
         this.writeVInt(this.data.Unknown2)
-    }
+    }*/
   }
 }
 

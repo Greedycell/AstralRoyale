@@ -1,5 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const OwnHomeDataMessage = require('../Server/OwnHomeDataMessage')
+const LogicBattle = require('../../../Core/LogicBattle')
 
 class GoHomeMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -19,6 +20,10 @@ class GoHomeMessage extends PiranhaMessage {
   }
 
   async process () {
+    const activeBattle = this.client && this.client.player && this.client.player.battleID ? LogicBattle.getBattleById(this.client.player.battleID) : null
+
+    if (activeBattle) activeBattle.stopBattle(this.client)
+
     await new OwnHomeDataMessage(this.client).send()
   }
 }

@@ -1,0 +1,860 @@
+{
+  "1": {
+    "id": 1,
+    "scid": 26000000,
+    "name": "Knight",
+    "hilo": {
+      "high": 26,
+      "low": 0
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "2": {
+    "id": 2,
+    "scid": 26000001,
+    "name": "Archers",
+    "hilo": {
+      "high": 26,
+      "low": 1
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "3": {
+    "id": 3,
+    "scid": 26000002,
+    "name": "Goblins",
+    "hilo": {
+      "high": 26,
+      "low": 2
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "4": {
+    "id": 4,
+    "scid": 26000003,
+    "name": "Giant",
+    "hilo": {
+      "high": 26,
+      "low": 3
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "5": {
+    "id": 5,
+    "scid": 26000004,
+    "name": "P.E.K.K.A",
+    "hilo": {
+      "high": 26,
+      "low": 4
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "6": {
+    "id": 6,
+    "scid": 26000005,
+    "name": "Minions",
+    "hilo": {
+      "high": 26,
+      "low": 5
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "7": {
+    "id": 7,
+    "scid": 26000006,
+    "name": "Balloon",
+    "hilo": {
+      "high": 26,
+      "low": 6
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "8": {
+    "id": 8,
+    "scid": 26000007,
+    "name": "Witch",
+    "hilo": {
+      "high": 26,
+      "low": 7
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "9": {
+    "id": 9,
+    "scid": 26000008,
+    "name": "Barbarians",
+    "hilo": {
+      "high": 26,
+      "low": 8
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "10": {
+    "id": 10,
+    "scid": 26000009,
+    "name": "Golem",
+    "hilo": {
+      "high": 26,
+      "low": 9
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "11": {
+    "id": 11,
+    "scid": 26000010,
+    "name": "Skeletons",
+    "hilo": {
+      "high": 26,
+      "low": 10
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "12": {
+    "id": 12,
+    "scid": 26000011,
+    "name": "Valkyrie",
+    "hilo": {
+      "high": 26,
+      "low": 11
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "13": {
+    "id": 13,
+    "scid": 26000012,
+    "name": "Skeleton Army",
+    "hilo": {
+      "high": 26,
+      "low": 12
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "14": {
+    "id": 14,
+    "scid": 26000013,
+    "name": "Bomber",
+    "hilo": {
+      "high": 26,
+      "low": 13
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "15": {
+    "id": 15,
+    "scid": 26000014,
+    "name": "Musketeer",
+    "hilo": {
+      "high": 26,
+      "low": 14
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "16": {
+    "id": 16,
+    "scid": 26000015,
+    "name": "Baby Dragon",
+    "hilo": {
+      "high": 26,
+      "low": 15
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "17": {
+    "id": 17,
+    "scid": 26000016,
+    "name": "Prince",
+    "hilo": {
+      "high": 26,
+      "low": 16
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "18": {
+    "id": 18,
+    "scid": 26000017,
+    "name": "Wizard",
+    "hilo": {
+      "high": 26,
+      "low": 17
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "19": {
+    "id": 19,
+    "scid": 26000018,
+    "name": "Mini P.E.K.K.A",
+    "hilo": {
+      "high": 26,
+      "low": 18
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "20": {
+    "id": 20,
+    "scid": 26000019,
+    "name": "Spear Goblins",
+    "hilo": {
+      "high": 26,
+      "low": 19
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "21": {
+    "id": 21,
+    "scid": 26000020,
+    "name": "Giant Skeleton",
+    "hilo": {
+      "high": 26,
+      "low": 20
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "22": {
+    "id": 22,
+    "scid": 26000021,
+    "name": "Hog Rider",
+    "hilo": {
+      "high": 26,
+      "low": 21
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "23": {
+    "id": 23,
+    "scid": 26000022,
+    "name": "Minion Horde",
+    "hilo": {
+      "high": 26,
+      "low": 22
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "24": {
+    "id": 24,
+    "scid": 26000023,
+    "name": "Ice Wizard",
+    "hilo": {
+      "high": 26,
+      "low": 23
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "25": {
+    "id": 25,
+    "scid": 26000024,
+    "name": "Royal Giant",
+    "hilo": {
+      "high": 26,
+      "low": 24
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "26": {
+    "id": 26,
+    "scid": 26000025,
+    "name": "Guards",
+    "hilo": {
+      "high": 26,
+      "low": 25
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "27": {
+    "id": 27,
+    "scid": 26000026,
+    "name": "Princess",
+    "hilo": {
+      "high": 26,
+      "low": 26
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "28": {
+    "id": 28,
+    "scid": 26000027,
+    "name": "Dark Prince",
+    "hilo": {
+      "high": 26,
+      "low": 27
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "29": {
+    "id": 29,
+    "scid": 26000028,
+    "name": "Three Musketeers",
+    "hilo": {
+      "high": 26,
+      "low": 28
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "30": {
+    "id": 30,
+    "scid": 26000029,
+    "name": "Lava Hound",
+    "hilo": {
+      "high": 26,
+      "low": 29
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "31": {
+    "id": 31,
+    "scid": 26000030,
+    "name": "Ice Spirit",
+    "hilo": {
+      "high": 26,
+      "low": 30
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "32": {
+    "id": 32,
+    "scid": 26000031,
+    "name": "Fire Spirits",
+    "hilo": {
+      "high": 26,
+      "low": 31
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "33": {
+    "id": 33,
+    "scid": 26000032,
+    "name": "Miner",
+    "hilo": {
+      "high": 26,
+      "low": 32
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "34": {
+    "id": 34,
+    "scid": 26000033,
+    "name": "Sparky",
+    "hilo": {
+      "high": 26,
+      "low": 33
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "35": {
+    "id": 35,
+    "scid": 26000034,
+    "name": "Bowler",
+    "hilo": {
+      "high": 26,
+      "low": 34
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "36": {
+    "id": 36,
+    "scid": 26000035,
+    "name": "Lumberjack",
+    "hilo": {
+      "high": 26,
+      "low": 35
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "37": {
+    "id": 37,
+    "scid": 26000036,
+    "name": "Battle Ram",
+    "hilo": {
+      "high": 26,
+      "low": 36
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "38": {
+    "id": 38,
+    "scid": 26000037,
+    "name": "Inferno Dragon",
+    "hilo": {
+      "high": 26,
+      "low": 37
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "39": {
+    "id": 39,
+    "scid": 26000038,
+    "name": "Ice Golem",
+    "hilo": {
+      "high": 26,
+      "low": 38
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "40": {
+    "id": 40,
+    "scid": 26000039,
+    "name": "Megaminion",
+    "hilo": {
+      "high": 26,
+      "low": 39
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "41": {
+    "id": 41,
+    "scid": 26000040,
+    "name": "Dart Goblin",
+    "hilo": {
+      "high": 26,
+      "low": 40
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "42": {
+    "id": 42,
+    "scid": 26000041,
+    "name": "Goblin Gang",
+    "hilo": {
+      "high": 26,
+      "low": 41
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "43": {
+    "id": 43,
+    "scid": 26000042,
+    "name": "Electric Wizard",
+    "hilo": {
+      "high": 26,
+      "low": 42
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "44": {
+    "id": 44,
+    "scid": 26000043,
+    "name": "Elite Barbarians",
+    "hilo": {
+      "high": 26,
+      "low": 43
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "46": {
+    "id": 46,
+    "scid": 26000045,
+    "name": "Executioner",
+    "hilo": {
+      "high": 26,
+      "low": 45
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "47": {
+    "id": 47,
+    "scid": 26000046,
+    "name": "Bandit",
+    "hilo": {
+      "high": 26,
+      "low": 46
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "49": {
+    "id": 49,
+    "scid": 26000048,
+    "name": "Night Witch",
+    "hilo": {
+      "high": 26,
+      "low": 48
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "50": {
+    "id": 50,
+    "scid": 26000049,
+    "name": "Bats",
+    "hilo": {
+      "high": 26,
+      "low": 49
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "55": {
+    "id": 55,
+    "scid": 26000054,
+    "name": "Cannon Cart",
+    "hilo": {
+      "high": 26,
+      "low": 54
+    },
+    "type": 0,
+    "rarity": 2
+  },
+  "56": {
+    "id": 56,
+    "scid": 26000055,
+    "name": "Mega Knight",
+    "hilo": {
+      "high": 26,
+      "low": 55
+    },
+    "type": 0,
+    "rarity": 3
+  },
+  "57": {
+    "id": 57,
+    "scid": 26000056,
+    "name": "Skeleton Barrel",
+    "hilo": {
+      "high": 26,
+      "low": 56
+    },
+    "type": 0,
+    "rarity": 0
+  },
+  "58": {
+    "id": 58,
+    "scid": 26000057,
+    "name": "Flying Machine",
+    "hilo": {
+      "high": 26,
+      "low": 57
+    },
+    "type": 0,
+    "rarity": 1
+  },
+  "64": {
+    "id": 64,
+    "scid": 27000000,
+    "name": "Cannon",
+    "hilo": {
+      "high": 27,
+      "low": 0
+    },
+    "type": 1,
+    "rarity": 0
+  },
+  "65": {
+    "id": 65,
+    "scid": 27000001,
+    "name": "Goblin Hut",
+    "hilo": {
+      "high": 27,
+      "low": 1
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "66": {
+    "id": 66,
+    "scid": 27000002,
+    "name": "Mortar",
+    "hilo": {
+      "high": 27,
+      "low": 2
+    },
+    "type": 1,
+    "rarity": 0
+  },
+  "67": {
+    "id": 67,
+    "scid": 27000003,
+    "name": "Inferno Tower",
+    "hilo": {
+      "high": 27,
+      "low": 3
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "68": {
+    "id": 68,
+    "scid": 27000004,
+    "name": "Bomb Tower",
+    "hilo": {
+      "high": 27,
+      "low": 4
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "69": {
+    "id": 69,
+    "scid": 27000005,
+    "name": "Barbarian Hut",
+    "hilo": {
+      "high": 27,
+      "low": 5
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "70": {
+    "id": 70,
+    "scid": 27000006,
+    "name": "Tesla",
+    "hilo": {
+      "high": 27,
+      "low": 6
+    },
+    "type": 1,
+    "rarity": 0
+  },
+  "71": {
+    "id": 71,
+    "scid": 27000007,
+    "name": "Elixir Collector",
+    "hilo": {
+      "high": 27,
+      "low": 7
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "72": {
+    "id": 72,
+    "scid": 27000008,
+    "name": "X-Bow",
+    "hilo": {
+      "high": 27,
+      "low": 8
+    },
+    "type": 1,
+    "rarity": 2
+  },
+  "73": {
+    "id": 73,
+    "scid": 27000009,
+    "name": "Tombstone",
+    "hilo": {
+      "high": 27,
+      "low": 9
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "74": {
+    "id": 74,
+    "scid": 27000010,
+    "name": "Furnance",
+    "hilo": {
+      "high": 27,
+      "low": 10
+    },
+    "type": 1,
+    "rarity": 1
+  },
+  "78": {
+    "id": 78,
+    "scid": 28000000,
+    "name": "Fireball",
+    "hilo": {
+      "high": 28,
+      "low": 0
+    },
+    "type": 2,
+    "rarity": 1
+  },
+  "79": {
+    "id": 79,
+    "scid": 28000001,
+    "name": "Arrows",
+    "hilo": {
+      "high": 28,
+      "low": 1
+    },
+    "type": 2,
+    "rarity": 0
+  },
+  "80": {
+    "id": 80,
+    "scid": 28000002,
+    "name": "Rage",
+    "hilo": {
+      "high": 28,
+      "low": 2
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "81": {
+    "id": 81,
+    "scid": 28000003,
+    "name": "Rocket",
+    "hilo": {
+      "high": 28,
+      "low": 3
+    },
+    "type": 2,
+    "rarity": 1
+  },
+  "82": {
+    "id": 82,
+    "scid": 28000004,
+    "name": "Goblin Barrel",
+    "hilo": {
+      "high": 28,
+      "low": 4
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "83": {
+    "id": 83,
+    "scid": 28000005,
+    "name": "Freeze",
+    "hilo": {
+      "high": 28,
+      "low": 5
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "84": {
+    "id": 84,
+    "scid": 28000006,
+    "name": "Mirror",
+    "hilo": {
+      "high": 28,
+      "low": 6
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "85": {
+    "id": 85,
+    "scid": 28000007,
+    "name": "Lightning",
+    "hilo": {
+      "high": 28,
+      "low": 7
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "86": {
+    "id": 86,
+    "scid": 28000008,
+    "name": "Zap",
+    "hilo": {
+      "high": 28,
+      "low": 8
+    },
+    "type": 2,
+    "rarity": 0
+  },
+  "87": {
+    "id": 87,
+    "scid": 28000009,
+    "name": "Poison",
+    "hilo": {
+      "high": 28,
+      "low": 9
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "88": {
+    "id": 88,
+    "scid": 28000010,
+    "name": "Graveyard",
+    "hilo": {
+      "high": 28,
+      "low": 10
+    },
+    "type": 2,
+    "rarity": 3
+  },
+  "89": {
+    "id": 89,
+    "scid": 28000011,
+    "name": "The Log",
+    "hilo": {
+      "high": 28,
+      "low": 11
+    },
+    "type": 2,
+    "rarity": 3
+  },
+  "90": {
+    "id": 90,
+    "scid": 28000012,
+    "name": "Tornado",
+    "hilo": {
+      "high": 28,
+      "low": 12
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "91": {
+    "id": 91,
+    "scid": 28000013,
+    "name": "Clone",
+    "hilo": {
+      "high": 28,
+      "low": 13
+    },
+    "type": 2,
+    "rarity": 2
+  },
+  "94": {
+    "id": 94,
+    "scid": 28000016,
+    "name": "Heal",
+    "hilo": {
+      "high": 28,
+      "low": 16
+    },
+    "type": 2,
+    "rarity": 1
+  }
+}

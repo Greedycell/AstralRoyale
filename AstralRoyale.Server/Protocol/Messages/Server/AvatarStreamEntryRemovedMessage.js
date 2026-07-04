@@ -8,7 +8,9 @@ class AvatarStreamEntryRemovedMessage extends PiranhaMessage {
     this.version = 1
   }
 
-  async encode () {}
+  async encode () {
+    this.writeLong(0, 1) // StreamEntryHighID, StreamEntryLowID
+  }
 }
 
 module.exports = AvatarStreamEntryRemovedMessage

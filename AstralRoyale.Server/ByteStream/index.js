@@ -332,7 +332,7 @@ class ByteStream {
   /**
    * Writing value to Bytes as ByteArray without ByteArray length
    * @param {Buffer} buffer Your buffer to write.
-   */s
+   */
   writeBytesWithoutLength (buffer) {
     if (buffer != null) {
       this.buffer = Buffer.concat([this.buffer, buffer])
@@ -348,6 +348,15 @@ class ByteStream {
       this.offset += buffer.length
       return
     }
+  }
+
+  writeCompressedString (value) {
+    const zlib = require('zlib')
+    const string = JSON.stringify(value)
+    const decompressed = Buffer.from(string, 'utf8')
+    const compressed = zlib.deflateSync(decompressed)
+    this.writeVInt(compressed.length)
+    this.writeBytes(compressed)
   }
 
   /**

@@ -33,7 +33,7 @@ class AllianceListMessage extends PiranhaMessage {
       this.writeLong(clan.highID, clan.lowID) // HighID, LowID
       this.writeString(clan.name) // Name
       this.writeVInt(16) // BadgeType
-      this.writeVInt((clan.badge || 1)) // BadgeInstance
+      this.writeVInt(clan.badge) // BadgeInstance
       this.writeVInt(clan.type || 0) // Type
       this.writeVInt(clan.members.length) // MemberCount
       this.writeVInt(clan.trophies || 0) // Score

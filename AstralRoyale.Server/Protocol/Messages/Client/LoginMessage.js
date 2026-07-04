@@ -2,10 +2,15 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const LoginOkMessage = require('../Server/LoginOkMessage')
 const OwnHomeDataMessage = require('../Server/OwnHomeDataMessage')
+const StopHomeLogicMessage = require('../../Messages/Server/StopHomeLogicMessage')
+const UdpConnectionInfoMessage = require('../../Messages/Server/UdpConnectionInfoMessage')
 const SectorStateMessage = require('../Server/SectorStateMessage')
 const InboxCountMessage = require('../Server/InboxCountMessage')
+const AllianceStreamMessage = require('../Server/AllianceStreamMessage')
+const AllianceOnlineStatusUpdatedMessage = require('../Server/AllianceOnlineStatusUpdatedMessage')
 
 const config = require('../../../config.json')
+const LogicBattle = require('../../../Core/LogicBattle')
 
 class LoginMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -54,19 +59,120 @@ class LoginMessage extends PiranhaMessage {
       lowID: this.data.LowID,
       token: this.data.Token
     })
-    this.client.mongoose.getPlayer(this.client, async (err, player) => {
-      this.client.player = player
-      if (this.client.player.accountLocked === 1) {
-        await new LoginFailedMessage(this.client, 13).send()
+
+    const playerModel = this.client.mongoose?.mongoosePlayers
+    let player = null
+
+    if (playerModel) {
+      player = await playerModel.findOne({
+        highID: this.data.HighID,
+        lowID: this.data.LowID,
+        token: this.data.Token
+      })
+
+      if (!player) {
+        player = await playerModel.findOne({
+          highID: this.data.HighID,
+          lowID: this.data.LowID
+        })
+      }
+
+      if (!player && this.data.LowID) player = await playerModel.findOne({ lowID: this.data.LowID })
+      if (!player && this.data.Token) player = await playerModel.findOne({ token: this.data.Token })
+    }
+
+    if (player?.switchAccountTarget) {
+      const targetPlayer = playerModel ? await playerModel.findOne({ lowID: player.switchAccountTarget }) : null
+      if (targetPlayer) {
+        this.data.HighID = targetPlayer.highID
+        this.data.LowID = targetPlayer.lowID
+        this.data.Token = targetPlayer.token
+
+        this.client.userObject = Object.assign({}, {
+          highID: this.data.HighID,
+          lowID: this.data.LowID,
+          token: this.data.Token
+        })
+
+        player.switchAccountTarget = 0
+        player.switchAccountToken = ''
+        player.markModified('switchAccountTarget')
+        player.markModified('switchAccountToken')
+        await player.save()
+
+        player = targetPlayer
+      }
+    }
+
+    if (!player) {
+      this.client.mongoose.getPlayer(this.client, async (err, createdPlayer) => {
+        if (err) {
+          console.log(err)
+          return
+        }
+        player = createdPlayer
+        await this.login(player)
+      })
+      return
+    }
+
+    await this.login(player)
+  }
+
+  async login(player) {
+    this.client.player = player
+    this.client.userObject = Object.assign({}, {
+      highID: player.highID,
+      lowID: player.lowID,
+      token: player.token
+    })
+
+    if (player.switchAccountTarget) {
+      const targetPlayer = this.client.mongoose?.mongoosePlayers ? await this.client.mongoose.mongoosePlayers.findOne({ lowID: player.switchAccountTarget }) : null
+      if (targetPlayer) {
+        this.client.player = targetPlayer
+        this.client.userObject = Object.assign({}, {
+          highID: targetPlayer.highID,
+          lowID: targetPlayer.lowID,
+          token: targetPlayer.token
+        })
+
+        this.data.HighID = targetPlayer.highID
+        this.data.LowID = targetPlayer.lowID
+        this.data.Token = targetPlayer.token
+
+        player.switchAccountTarget = 0
+        player.switchAccountToken = ''
+        player.markModified('switchAccountTarget')
+        player.markModified('switchAccountToken')
+        await player.save()
+
+        this.client.player = targetPlayer
+        player = targetPlayer
+      }
+    }
+
+    if (this.client.player.accountLocked === 1) {
+      await new LoginFailedMessage(this.client, 13).send()
+      return
+    }
+
+    await new LoginOkMessage(this.client).send()
+    await new OwnHomeDataMessage(this.client).send()
+    await new InboxCountMessage(this.client).send()
+
+    if (this.client.player.battleID != 0) {
+      const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
+      if (activeBattle) {
+        await activeBattle.rejoinClient(this.client)
         return
       }
-      
-      await new LoginOkMessage(this.client).send()
-      await new OwnHomeDataMessage(this.client).send()
-      await new InboxCountMessage(this.client).send()
-      
-      //await new SectorStateMessage(this.client, 1, this.client).send()
-    })
+    }
+
+    if (this.client.player.inClan) {
+      await new AllianceStreamMessage(this.client).send()
+      await new AllianceOnlineStatusUpdatedMessage(this.client).send()
+    }
   }
 }
 

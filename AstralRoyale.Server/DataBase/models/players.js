@@ -68,11 +68,23 @@ const playersSchema = new Schema({
         type: String,
         default: ''
     },
+    accountPassword: {
+        type: String,
+        default: ''
+    },
+    switchAccountTarget: {
+        type: Number,
+        default: 0
+    },
+    switchAccountToken: {
+        type: String,
+        default: ''
+    },
     crownChestCount: {
         type: Number,
         default: 0
     },
-    inClan: {
+    battleID: {
         type: Number,
         default: 0
     },
@@ -111,6 +123,10 @@ const playersSchema = new Schema({
                 isUnlocked: false
             }*/
         ]
+    },
+    inClan: {
+        type: Number,
+        default: 0
     },
     clan: {
         ClanHighID: {

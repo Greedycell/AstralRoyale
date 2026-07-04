@@ -11,14 +11,8 @@ class AllianceDataMessage extends PiranhaMessage {
   }
 
   async encode () {
-    if (this.client.player.inClan === 0) { 
-      this.writeVInt(0)
-      return
-    }
-
     const db = this.client.mongoose
     const clan = await db.getClanByID(this.highID, this.lowID)
-
     const clanHighID = clan ? clan.highID : this.highID
     const clanLowID = clan ? clan.lowID : this.lowID
     const clanName = clan ? clan.name : 'Clashers'
@@ -31,23 +25,25 @@ class AllianceDataMessage extends PiranhaMessage {
     const memberCount = members.length || 0
     const location = clan ? clan.location : 0
 
-    // AllianceHeaderEntry
-    {
-      this.writeLong(clanHighID, clanLowID)
-      this.writeString(clanName)
-
-      this.writeVInt(16)
-      this.writeVInt(clanBadge)
-
-      this.writeVInt(clanType)
-      this.writeVInt(memberCount)
-
-      this.writeVInt(clanScore)
-      this.writeVInt(clanReqScore)
-    }
+    //if (!clan) return // if the clan doesnt exist then just return
 
     // AllianceFullEntry
     {
+      // AllianceHeaderEntry
+      {
+        this.writeLong(clanHighID, clanLowID)
+        this.writeString(clanName)
+
+        this.writeVInt(16)
+        this.writeVInt(clanBadge)
+
+        this.writeVInt(clanType)
+        this.writeVInt(memberCount)
+
+        this.writeVInt(clanScore)
+        this.writeVInt(clanReqScore)
+      }
+      
       this.writeVInt(0)
       this.writeVInt(0)
       this.writeVInt(0)

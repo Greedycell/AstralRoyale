@@ -47,6 +47,11 @@ const clansSchema = new Schema({
         type: Array,
         default: []
         // Each member: { highID, lowID, name, role, trophies, level, arena, donated, donationsReceived }
+    },
+    messages: {
+        type: Array,
+        default: []
+        // Each message: { id, senderHighID, senderLowID, senderName, senderRole, message, timestamp }
     }
 })
 

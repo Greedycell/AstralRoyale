@@ -6,6 +6,7 @@ const LogicSelectDeckCommand = require('../../Commands/Client/LogicSelectDeckCom
 const LogicRefreshAchievementsCommand = require('../../Commands/Client/LogicRefreshAchievementsCommand')
 const LogicStartSurvivalMatchmakeCommand = require('../../Commands/Client/LogicStartSurvivalMatchmakeCommand')
 const LogicCreateGameRoomCommand = require('../../Commands/Client/LogicCreateGameRoomCommand')
+const LogicKickAllianceMemberCommand = require('../../Commands/Client/LogicKickAllianceMemberCommand')
 const LogicBuyChestCommand = require('../../Commands/Client/LogicBuyChestCommand')
 const LogicStartSurvivalCommand = require('../../Commands/Client/LogicStartSurvivalCommand')
 const LogicSpeedUpExploringCommand = require('../../Commands/Client/LogicSpeedUpExploringCommand')
@@ -44,6 +45,7 @@ class EndClientTurnMessage extends PiranhaMessage {
       518: LogicRefreshAchievementsCommand,
       504: LogicStartSurvivalMatchmakeCommand,
       533: LogicCreateGameRoomCommand,
+      537: LogicKickAllianceMemberCommand,
       539: LogicBuyChestCommand,
       543: LogicSpeedUpExploringCommand,
       544: LogicBuyShopCycleItemCommand,

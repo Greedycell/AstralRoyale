@@ -148,7 +148,7 @@ class ClientAvatar {
         self.writeByte(9)
         self.writeLogicLong(self.client.player.clan.ClanHighID, self.client.player.clan.ClanLowID)
         self.writeString(clan ? String(clan.name || '') : '')
-        self.writeVInt(clan ? (clan.badge + 1 != null ? clan.badge + 1 : 0) : 0)
+        self.writeVInt(clan.badge + 1)
         self.writeVInt(self.client.player.clan.ClanRole) // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
     }
     else

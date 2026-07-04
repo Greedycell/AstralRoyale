@@ -43,7 +43,7 @@ class CreateAllianceMessage extends PiranhaMessage {
 
     // TODO: Invite Only
     if (this.data.Type === 2) {
-      await new ServerErrorMessage(this.client, "Invite Only is unavailable due to clan messages not being implemented yet.").send()
+      await new ServerErrorMessage(this.client, "Invite Only is not implemented yet.").send()
       return
     }
 

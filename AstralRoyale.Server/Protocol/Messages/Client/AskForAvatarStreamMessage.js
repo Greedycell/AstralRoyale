@@ -1,4 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
+const AvatarStreamMessage = require('../Server/AvatarStreamMessage')
 
 class AskForAvatarStreamMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -10,7 +11,9 @@ class AskForAvatarStreamMessage extends PiranhaMessage {
 
   async decode () {}
 
-  async process () {}
+  async process () {
+    await new AvatarStreamMessage(this.client).send()
+  }
 }
 
 module.exports = AskForAvatarStreamMessage

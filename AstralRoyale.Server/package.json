@@ -1,6 +1,6 @@
 {
   "name": "astralroyale",
-  "version": "2.1.8",
+  "version": "2.1.8_1",
   "description": "A Node.js 2017 Clash Royale Server (v2.1.8)",
   "main": "index.js",
   "scripts": {

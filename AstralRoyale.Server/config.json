@@ -3,7 +3,8 @@
         "Port": 9339,
         "Crypto": {
             "Activated": true,
-            "Type": 0,"TypeComment": "0 = RC4, 1 = Pepper",
+            "Type": 0,
+            "TypeComment": "0 = RC4, 1 = Pepper",
             "RC4": {
                 "Key": "fhsd6f86f67rt8fw78fw789we78r9789wer6re",
                 "Nonce": "nonce"
@@ -15,16 +16,14 @@
         },
         "Debug": true,
         "StreamerMode": true,
-        "Fingerprint": "e2a6dc0f10219de73326f2795335615bc37d04e3",
-        "RedirectionURL": "192.168.116.1:9340/",
+        "Fingerprint": "05c01a11e6c58c5f7a9d1e98e21d936d1ec0e153",
+        "RedirectionURL": "mc.mastersurvival.eu",
         "ContentPatchEnabled": false,
         "ContentURL": "http://192.168.116.1:9340/",
         "UpdateURL": "https://github.com/Greedycell/AstralRoyale",
         "MaintenanceEnabled": false,
         "MaintenanceSeconds": 0,
-        "Admins": [
-            2
-        ],
+        "Admins": [],
         "Banned": []
     },
     "Database": {

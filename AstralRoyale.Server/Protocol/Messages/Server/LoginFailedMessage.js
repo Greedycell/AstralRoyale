@@ -29,9 +29,9 @@ class LoginFailedMessage extends PiranhaMessage {
     this.writeString(config.Server.RedirectionURL) // Redirect
     this.writeString(config.Server.UpdateURL) // UpdateURL
     this.writeString(this.reason) // Reason
-    //this.writeByte(127)
+    this.writeString(null) // UpdatingToNewVersionMessage
     this.writeVInt(this.maintenanceSeconds) // MaintenanceSeconds
-    this.writeString(null) // UpdateURL
+    this.writeBoolean(false) // UpdateURL
     this.writeVInt(2) // URLCount
     this.writeString(config.Server.UpdateURL) // GameAssetsURL
     this.writeString(config.Server.ContentURL) // ContentURL

@@ -1,8 +1,9 @@
-const MatchmakingLobby = require('../../../../AstralRoyale.Battle/Logic/MatchmakingLobby')
+const MatchmakingLobby = require('../../../Core/MatchmakingLobby')
 const UdpConnectionInfoMessage = require('../../Messages/Server/UdpConnectionInfoMessage')
 const MatchmakeInfoMessage = require('../../Messages/Server/MatchmakeInfoMessage')
 const SectorStateMessage = require('../../Messages/Server/SectorStateMessage')
-const LogicBattle = require('../../../../AstralRoyale.Battle/Logic/LogicBattle')
+const LogicBattle = require('../../../Core/LogicBattle')
+const StopHomeLogicMessage = require('../../Messages/Server/StopHomeLogicMessage')
 
 class LogicStartGameRoomMatchmakeCommand {
   constructor () {}
@@ -24,7 +25,10 @@ class LogicStartGameRoomMatchmakeCommand {
   async process(self) {
     await new MatchmakeInfoMessage(self.client, 300).send()
 
-    const opponent = MatchmakingLobby.addPlayer(self.client)
+    const queueType = self.client.matchmakeMode === 'customTournament' || this.data.BattleEventID ? 'customTournament' : 'normal'
+    self.client.matchmakeQueueType = queueType
+    const matchResult = MatchmakingLobby.addPlayer(self.client, queueType)
+    const opponent = matchResult.opponent
 
     if (!opponent) {
       self.client.log(`${self.client.player.lowID} is queueing!`)
@@ -32,19 +36,23 @@ class LogicStartGameRoomMatchmakeCommand {
     }
     self.client.log(`${self.client.player.lowID} vs ${opponent.player.lowID}`)
 
-    const battle = new LogicBattle()
+    const battle = await new LogicBattle()
+    battle.battleType = queueType === 'customTournament' ? 'tournament' : '1v1'
+    battle.clients.push(self.client, opponent)
     battle.start(500, self.client, opponent)
 
+    await new StopHomeLogicMessage(self.client).send()
     await new UdpConnectionInfoMessage(self.client).send()
     await new SectorStateMessage(self.client, 1, opponent.player).send()
 
     if (opponent) {
+      await new StopHomeLogicMessage(opponent).sendOpponent(opponent)
       await new UdpConnectionInfoMessage(opponent).sendOpponent(opponent)
       await new SectorStateMessage(opponent, 1, self.client.player).sendOpponent(opponent)
     }
 
-    MatchmakingLobby.removePlayer(self.client)
-    MatchmakingLobby.removePlayer(opponent)
+    MatchmakingLobby.removePlayer(self.client, queueType)
+    MatchmakingLobby.removePlayer(opponent, queueType)
   }
 }
 

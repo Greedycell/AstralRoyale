@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('../config.json');
 
-module.exports = class DataBase {
+module.exports = class Database {
     constructor() { }
 
     connect(isSuccess) {
@@ -60,9 +60,7 @@ module.exports = class DataBase {
             });
     }
 
-    async getClanByID(highID, lowID) {
-        return this.mongooseClans.findOne({ highID, lowID });
-    }
+    async getClanByID(highID, lowID) { return this.mongooseClans.findOne({ highID, lowID }); }
 
     async getPlayerClan(player) {
         if (!player || !player.clan || !player.inClan) return null;
@@ -94,13 +92,8 @@ module.exports = class DataBase {
         return this.mongooseClans.find(filter).limit(limit).sort({ trophies: -1 });
     }
 
-    async getJoinableClans(limit = 20) {
-        return this.mongooseClans.find({ type: 0 }).limit(limit).sort({ trophies: -1 }).lean();
-    }
-
-    async getTopClans(limit = 200) {
-        return this.mongooseClans.find({}).limit(limit).sort({ trophies: -1 });
-    }
+    async getJoinableClans(limit = 20) { return this.mongooseClans.find({ type: 0 }).limit(limit).sort({ trophies: -1 }).lean(); }
+    async getTopClans(limit = 200) { return this.mongooseClans.find({}).limit(limit).sort({ trophies: -1 }); }
 
     async createClan(player, { name, description, badge, type, requiredTrophies, location }) {
         // Get the next lowID
@@ -124,8 +117,8 @@ module.exports = class DataBase {
 
         player.inClan = 1;
         player.clan.ClanHighID = clan.highID;
-        player.clan.ClanLowID  = clan.lowID;
-        player.clan.ClanRole   = 2; // Leader
+        player.clan.ClanLowID = clan.lowID;
+        player.clan.ClanRole = 2; // Leader
 
         player.markModified('clan');
         await player.save();
@@ -134,15 +127,9 @@ module.exports = class DataBase {
     }
 
     async joinClan(player, clan) {
-        if (clan.members.length >= 50) {
-            throw new Error('Clan is full.');
-        }
-        if (clan.type === 2 /* Closed */) {
-            throw new Error('Clan is closed.');
-        }
-        if (player.trophies < clan.requiredTrophies) {
-            throw new Error(`Need ${clan.requiredTrophies} trophies to join.`);
-        }
+        if (clan.members.length >= 50) throw new Error('Clan is full.');
+        if (clan.type === 2 /* Closed */) throw new Error('Clan is closed.');
+        if (player.trophies < clan.requiredTrophies) throw new Error(`Need ${clan.requiredTrophies} trophies to join.`);
 
         const memberEntry = buildMemberEntry(player, 1 /* Member */);
         clan.members.push(memberEntry);
@@ -171,9 +158,7 @@ module.exports = class DataBase {
 
         const wasLeader = player.clan.ClanRole === 2;
 
-        clan.members = clan.members.filter(
-            m => !(m.highID === player.highID && m.lowID === player.lowID)
-        );
+        clan.members = clan.members.filter(m => !(m.highID === player.highID && m.lowID === player.lowID));
 
         if (clan.members.length === 0) {
             await this.mongooseClans.deleteOne({ highID: clan.highID, lowID: clan.lowID });
@@ -192,8 +177,8 @@ module.exports = class DataBase {
 
         player.inClan = 0;
         player.clan.ClanHighID = 0;
-        player.clan.ClanLowID  = 1;
-        player.clan.ClanRole   = 0;
+        player.clan.ClanLowID = 1;
+        player.clan.ClanRole = 0;
 
         player.markModified('clan');
         await player.save();
@@ -215,26 +200,20 @@ module.exports = class DataBase {
         if (!players.length) throw new Error('No players are found.');
         return players;
     }
-
-    async getTopPlayers(limit = 200) {
-        return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 });
-    }
-
-    async getLocalPlayers(limit = 200) {
-        return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 });
-    }
+    async getTopPlayers(limit = 200) { return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 }); }
+    async getLocalPlayers(limit = 200) { return this.mongoosePlayers.find({}).limit(limit).sort({ trophies: -1 }); }
 }
 
 function buildMemberEntry(player, role) {
     return {
-        highID:            player.highID,
-        lowID:             player.lowID,
-        name:              player.name || '',
-        role,               // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
-        trophies:          player.trophies || 0,
-        level:             player.level   || 1,
-        arena:             player.arena   || 0,
-        donated:           0,
+        highID: player.highID,
+        lowID: player.lowID,
+        name: player.name || '',
+        role, // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
+        trophies: player.trophies || 0,
+        level: player.level || 1,
+        arena: player.arena || 0,
+        donated: 0,
         donationsReceived: 0
     };
 }
