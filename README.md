@@ -19,12 +19,29 @@
 #### Requirements:
   - [Node.js](https://nodejs.org)
 
-###### Building the server:
+###### Cloning the project:
 ```
+git clone https://github.com/Greedycell/AstralRoyale.git && cd AstralRoyale
+```
+
+###### Building the main server:
+```
+cd AstralRoyale.Server
 npm install
 ```
 
-###### Main Server:
+###### Running the main Server:
+```
+node .
+```
+
+###### Building the content server: (OPTIONAL)
+```
+cd AstralRoyale.Content
+npm install
+```
+
+###### Running the content server: (OPTIONAL)
 ```
 node .
 ```
