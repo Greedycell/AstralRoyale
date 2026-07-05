@@ -30,7 +30,7 @@ class LogicStartSurvivalMatchmakeCommand {
 
     this.data.Arena = self.readVInt()
 
-    console.log(this.data)
+    //console.log(this.data)
   }
 
   async process(self) {

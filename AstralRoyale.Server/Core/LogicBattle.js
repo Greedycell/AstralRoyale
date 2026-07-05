@@ -155,14 +155,14 @@ class LogicBattle {
   calculateChecksum(turn, commands) {
     let hash = 0x811c9dc5
     const mix = (value) => {
-      const normalized = Number.isFinite(value) ? value : 0
-      hash ^= (normalized & 0xff)
+      const number = Number.isFinite(value) ? value : 0
+      hash ^= (number & 0xff)
       hash = Math.imul(hash, 0x01000193)
-      hash ^= ((normalized >> 8) & 0xff)
+      hash ^= ((number >> 8) & 0xff)
       hash = Math.imul(hash, 0x01000193)
-      hash ^= ((normalized >> 16) & 0xff)
+      hash ^= ((number >> 16) & 0xff)
       hash = Math.imul(hash, 0x01000193)
-      hash ^= ((normalized >> 24) & 0xff)
+      hash ^= ((number >> 24) & 0xff)
       hash = Math.imul(hash, 0x01000193)
     }
     mix(turn)

@@ -2,6 +2,7 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const cards = require('../../../Utils/json/battlecards')
 const AvailableServerCommandMessage = require('../../Messages/Server/AvailableServerCommandMessage')
 const OutOfSyncMessage = require('../../Messages/Server/OutOfSyncMessage')
+const LogicBattle = require('../../../Core/LogicBattle')
 
 class SectorCommandMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -18,6 +19,7 @@ class SectorCommandMessage extends PiranhaMessage {
     this.data.tick = this.readVInt() // Tick
     if (this.data.tick <= 0) {
       this.client.end()
+      return
     }
     this.data.commandCount = this.readByte()
     this.data.commands = []
@@ -26,7 +28,7 @@ class SectorCommandMessage extends PiranhaMessage {
         let command = {}
         command.type = this.readByte()
         if (command.type === undefined) { // if the fucking client just fucks up vals for no reason
-          await new OutOfSyncMessage(self.client).send()
+          await new OutOfSyncMessage(this.client).send()
           return
         }
         command.tick = this.readVInt()
@@ -46,7 +48,16 @@ class SectorCommandMessage extends PiranhaMessage {
         command.coords.x = this.readVInt()
         command.coords.y = this.readVInt()
         command.deb = cardEntry.name
-        this.data.commands.push(command)
+        if (this.data.commandCount === 1) {
+          this.data.commands.push(command)
+          if (this.client.player.battleID != 0) {
+            const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
+            if (activeBattle) {
+              activeBattle.commands.push(command)
+              return
+            }
+          }
+        }
       } catch (e) {
         console.log(e)
       }

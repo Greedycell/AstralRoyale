@@ -11,11 +11,11 @@ class MatchLobby {
   }
 
   addPlayer(client, lobbyType = 'normal') {
-    const normalizedType = this.getLobbyType(lobbyType)
-    const lobby = this.lobbies[normalizedType]
+    const getLobbyType = this.getLobbyType(lobbyType)
+    const lobby = this.lobbies[getLobbyType]
 
     if (lobby.find(p => p.player.lowID === client.player.lowID)) {
-      return { opponent: null, lobbyType: normalizedType }
+      return { opponent: null, lobbyType: getLobbyType }
     }
 
     const opponentIndex = lobby.findIndex(
@@ -24,16 +24,16 @@ class MatchLobby {
 
     if (opponentIndex !== -1) {
       const opponent = lobby.splice(opponentIndex, 1)[0]
-      return { opponent, lobbyType: normalizedType }
+      return { opponent, lobbyType: getLobbyType }
     }
 
     lobby.push(client)
-    return { opponent: null, lobbyType: normalizedType }
+    return { opponent: null, lobbyType: getLobbyType }
   }
 
   removePlayer(client, lobbyType = 'normal') {
-    const normalizedType = this.getLobbyType(lobbyType)
-    this.lobbies[normalizedType] = this.lobbies[normalizedType].filter(
+    const getLobbyType = this.getLobbyType(lobbyType)
+    this.lobbies[getLobbyType] = this.lobbies[getLobbyType].filter(
       p => p.player.lowID !== client.player.lowID
     )
   }

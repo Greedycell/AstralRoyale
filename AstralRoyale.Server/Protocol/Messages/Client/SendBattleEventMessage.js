@@ -14,11 +14,11 @@ class SendBattleEventMessage extends PiranhaMessage {
     this.data = {}
     
     this.data.Type = this.readVInt()
-    this.data.HighID = this.readVInt()
-    this.data.LowID = this.readVInt()
-    this.data.Unknown1 = this.readVInt()
+    this.data.SenderHighID = this.readVInt()
+    this.data.SenderLowID = this.readVInt()
+    this.readVInt()
     this.data.Tick = this.readVInt()
-    this.data.Unknown2 = this.readVInt()
+    this.data.Unknown3 = this.readVInt()
     this.data.Value1 = this.readVInt()
     this.data.Value2 = this.readVInt()
 
@@ -44,6 +44,13 @@ class SendBattleEventMessage extends PiranhaMessage {
       }
       case 6:
       {
+        this.data.Unknown = this.readVInt()
+        this.data.HandIndex = this.readVInt()
+        this.data.Unknown2 = this.readVInt()
+
+        // TODO: Get teamate
+
+        // TODO: Teammate device
         await new BattleEventMessage(this.client, this.data).send()
         break
       }

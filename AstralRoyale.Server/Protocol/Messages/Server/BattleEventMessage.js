@@ -11,32 +11,29 @@ class BattleEventMessage extends PiranhaMessage {
 
   async encode () {
     this.writeVInt(this.data.Type)
-    this.writeVInt(this.data.HighID)
-    this.writeVInt(this.data.LowID)
-    this.writeVInt(this.data.Unknown1)
-    this.writeVInt(this.data.Tick)
-    this.writeVInt(this.data.Unknown2)
-    this.writeVInt(this.data.Value1)
-    this.writeVInt(this.data.Value2)
-
-    /*this.writeVInt(this.data.Type)
-    this.writeVInt(this.data.HighId)
-    this.writeVInt(this.data.LowId)
+    this.writeVInt(this.data.SenderHighID)
+    this.writeVInt(this.data.SenderLowID)
     this.writeVInt(1)
     this.writeVInt(this.data.Tick)
     this.writeVInt(this.data.Unknown3)
     this.writeVInt(this.data.Value1)
     this.writeVInt(this.data.Value2)
 
-    switch (this.data.Type)
-    {
+    switch (this.data.Type) {
       case 1:
         this.client.log('Attempting to place down a card...')
+        break
       case 3:
+        /*this.writeVInt(this.data.Unknown)
+        this.writeVInt(this.data.HandIndex)
+        this.writeVInt(this.data.Unknown2)*/
+        break
+      case 6:
         this.writeVInt(this.data.Unknown)
         this.writeVInt(this.data.HandIndex)
         this.writeVInt(this.data.Unknown2)
-    }*/
+        break
+    }
   }
 }
 

@@ -10,6 +10,7 @@ const AllianceStreamMessage = require('../Server/AllianceStreamMessage')
 const AllianceOnlineStatusUpdatedMessage = require('../Server/AllianceOnlineStatusUpdatedMessage')
 
 const config = require('../../../config.json')
+
 const LogicBattle = require('../../../Core/LogicBattle')
 
 class LoginMessage extends PiranhaMessage {
