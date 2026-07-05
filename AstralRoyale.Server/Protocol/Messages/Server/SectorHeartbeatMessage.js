@@ -20,7 +20,7 @@ class SectorHeartbeatMessage extends PiranhaMessage {
       if (!command) continue
       this.writeVInt(command.type || 0)
       switch (command.type) {
-        case 1:
+        case 51:
           this.writeVInt(command.tick || 0)
           this.writeVInt(command.tick || 0)
 

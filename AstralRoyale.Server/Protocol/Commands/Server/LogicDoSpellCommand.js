@@ -31,41 +31,41 @@ class LogicDoSpellCommand {
   async encode (self) {
     // Header
     {
-        self.writeVInt(this.data.Type)
+        self.writeVInt(self.client.battle.commands.type)
 
-        self.writeVInt(this.data.ClientTick)
-        self.writeVInt(this.data.Checksum)
+        self.writeVInt(self.client.battle.commands.tick)
+        self.writeVInt(self.client.battle.commands.checksum)
 
-        self.writeVInt(this.data.SenderHighId)
-        self.writeVInt(this.data.SenderLowId)
+        self.writeVInt(self.client.battle.commands.userId.high)
+        self.writeVInt(self.client.battle.commands.userId.low)
     }
 
-    self.writeVInt(this.data.SpellDeckIndex)
+    self.writeVInt(self.client.battle.commands.deckIndex)
 
-    self.writeVInt(this.data.ClassId)
-    self.writeVInt(this.data.InstanceId)
+    self.writeVInt(self.data.card.high)
+    self.writeVInt(self.client.battle.commands.card.id)
 
-    self.writeVInt(this.data.SpellIndex)
+    self.writeVInt(self.client.battle.commands.spellIndex)
   }
 
   async process (self) {
     // Header
     {
-        self.writeVInt(this.data.Type)
+        self.writeVInt(self.client.battle.commands.type)
 
-        self.writeVInt(this.data.ClientTick)
-        self.writeVInt(this.data.Checksum)
+        self.writeVInt(self.client.battle.commands.tick)
+        self.writeVInt(self.client.battle.commands.checksum)
 
-        self.writeVInt(this.data.SenderHighId)
-        self.writeVInt(this.data.SenderLowId)
+        self.writeVInt(self.client.battle.commands.userId.high)
+        self.writeVInt(self.client.battle.commands.userId.low)
     }
 
-    self.writeVInt(this.data.SpellDeckIndex)
+    self.writeVInt(self.client.battle.commands.deckIndex)
 
-    self.writeVInt(this.data.ClassId)
-    self.writeVInt(this.data.InstanceId)
+    self.writeVInt(self.data.card.high)
+    self.writeVInt(self.client.battle.commands.card.id)
 
-    self.writeVInt(this.data.SpellIndex)
+    self.writeVInt(self.client.battle.commands.spellIndex)
   }
 }
 
