@@ -17,10 +17,7 @@ class ClientCapabilitiesMessage extends PiranhaMessage {
     //console.log(this.data)
   }
 
-  async process () {
-    this.writeVInt(this.data.Ping)
-    this.writeString(this.data.Interface)
-  }
+  async process () {}
 }
 
 module.exports = ClientCapabilitiesMessage
