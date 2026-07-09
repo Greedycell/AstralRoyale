@@ -6,6 +6,7 @@ const utils = require('../../../Utils')
 const Cards = require('../../../Utils/json/cards.json')
 const ServerErrorMessage = require('../Server/ServerErrorMessage')
 const AllianceStreamEntryMessage = require('../Server/AllianceStreamEntryMessage')
+const SectorStateMessage = require('../Server/SectorStateMessage')
 
 const config = require('../../../config.json')
 const connectedClients = require('../../../Core/ConnectedClients')

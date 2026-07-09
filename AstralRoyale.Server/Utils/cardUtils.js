@@ -62,6 +62,7 @@ module.exports = {
         for(let index = 0; index < count;)
         {
             let randomCard = cards.id[this.randomInt(0, cards.id.length)];
+            //console.log(randomCard)
             if(!randomCards.includes(randomCard))
             {
                 randomCards.push(randomCard);
