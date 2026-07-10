@@ -50,11 +50,11 @@ const playersSchema = new Schema({
     },
     gold: {
         type: Number,
-        default: config.Player.StartDefault ? 750 : config.Player.StartingResources.Gold
+        default: config.Player.StartDefault ? 100 : config.Player.StartingResources.Gold
     },
     diamonds: {
         type: Number,
-        default: config.Player.StartDefault ? 500 : config.Player.StartingResources.Gold
+        default: config.Player.StartDefault ? 100 : config.Player.StartingResources.Gold
     },
     tutorialStage: {
         type: Number,
