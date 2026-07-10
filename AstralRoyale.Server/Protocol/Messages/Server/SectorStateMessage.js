@@ -81,13 +81,13 @@ class SectorStateMessage extends PiranhaMessage {
         
         // Trainer Deck
         this.writeHex('FF01')
-        //this.writeHex('190B8F010B090B2102200B140A10051F0A')
-        let trainerDeck = this.client.player.decks[this.client.player.selectedDeck]
+        this.writeHex('190B8F010B090B2102200B140A10051F0A')
+        /*let trainerDeck = this.client.player.decks[this.client.player.selectedDeck]
         trainerDeck.forEach(cardSCID => {
             let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
             this.writeVInt(card.ID)
             this.writeVInt(card.level)
-        })
+        })*/
 
         this.writeVInt(0)
 

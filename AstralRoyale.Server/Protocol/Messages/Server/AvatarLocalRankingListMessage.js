@@ -79,7 +79,7 @@ class AvatarLocalRankingListMessage extends PiranhaMessage {
           this.writeBoolean(false)
       }
       
-      this.writeVInt(0) // HasLeague
+      if (player.inClan) this.writeVInt(0)
     }
   }
 }

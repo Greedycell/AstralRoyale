@@ -23,11 +23,10 @@ class ClientHome {
     let currentDeck = self.client.player.decks[self.client.player.selectedDeck]
     currentDeck.forEach(cardSCID => {
         let card = utils.findObjectByKey(self.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-
-        self.writeVInt(card.ID ?? 0)
-        self.writeVInt(card.level ?? 1)
+        self.writeVInt(card.ID)
+        self.writeVInt(card.level)
         self.writeVInt(0)
-        self.writeVInt(card.xpPoints ?? 0)
+        self.writeVInt(card.xpPoints)
         self.writeVInt(0)
         self.writeVInt(0)
         self.writeVInt(0)
