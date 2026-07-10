@@ -19,7 +19,7 @@ class LogicClaimRewardCommand {
 
           self.writeVInt(self.client.player.highID)
           self.writeVInt(self.client.player.lowID)
-          self.writeVInt(cardCount) //CardCount
+          self.writeVInt(cardCount) // CardCount
           self.writeVInt(0)
           self.writeVInt(0)
           self.writeByte(127)
@@ -52,7 +52,7 @@ class LogicClaimRewardCommand {
 
           self.writeVInt(self.client.player.highID)
           self.writeVInt(self.client.player.lowID)
-          self.writeVInt(cardCount) //CardCount
+          self.writeVInt(cardCount) // CardCount
           self.writeVInt(0)
           self.writeVInt(0)
           self.writeByte(127)

@@ -1,0 +1,169 @@
+[
+    {
+      "Id": 1109,
+      "Name": "2v2 Button",
+      "Type": 8,
+      "StartTime": 1503298800,
+      "EndTime": 1534834800,
+      "DisplayTime": 1502694000,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "2v2 Button",
+      "Data": {
+        "HideTimer": true,
+        "HidePopupTimer": true,
+        "ExtraGameModeChance": 0,
+        "GameMode": "TeamVsTeamLadder",
+        "ExtraGameMode": "None"
+      }
+    },
+    {
+      "Id": 1305,
+      "Name": "1v1 Draft Friendly ",
+      "Type": 5,
+      "StartTime": 1503298800,
+      "EndTime": 1534834800,
+      "DisplayTime": 1502694000,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "1v1 Draft Friendly ",
+      "Data": {
+        "Title": "Draft Friendly Battle",
+        "Subtitle": "",
+        "GameMode": "DraftMode",
+        "Background": {
+          "Path": "/62ce7186-d295-4100-9b4e-58d86d3a854c_friendly_draft.png",
+          "Checksum": "71c0065635a551b109400a766cbdabfc",
+          "File": "friendly_draft.png"
+        },
+        "DraftDeck": "Draft_v1"
+      }
+    },
+    {
+      "Id": 1343,
+      "Name": "Clash Royale League Challenge Header",
+      "Type": 13,
+      "StartTime": 1521014400,
+      "EndTime": 1521446400,
+      "DisplayTime": 1521014400,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "Clash Royale League Challenge Header",
+      "Data": {
+        "Image": {
+          "Path": "/5231460d-4307-4a3e-b989-8bbf2e6f8db7_cr_league_challenge_header.png",
+          "Checksum": "45440c7c948e9175f69030bde7d2c630",
+          "File": "cr_league_challenge_header.png"
+        },
+        "TitleGlow": true,
+        "Icon": "icon_tournament_special_grand",
+        "Title": "Clash Royale League"
+      }
+    },
+    {
+      "Id": 1344,
+      "Name": "Clash Royale League Challenge",
+      "Type": 2,
+      "StartTime": 1521014400,
+      "EndTime": 1521446400,
+      "DisplayTime": 1520841600,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "Clash Royale League Challenge",
+      "Data": {
+        "GameMode": "Challenge",
+        "Title": "Clash Royale League Challenge",
+        "FreePass": 3,
+        "JoinCost": 10,
+        "JoinCostResource": "Gems",
+        "MaxLosses": 3,
+        "IconExportName": "icon_tournament_special_grand",
+        "WinIconExportName": "tournament_open_wins_badge_gold",
+        "Subtitle": "Ecco come funziona",
+        "UnlockedForXP": "Experienced",
+        "EndNotification": "La sfida Clash Royale League termina tra 2 ore!",
+        "Rewards": [
+          { "Gold": 20, "Cards": 2 },
+          { "Gold": 30, "Cards": 3 },
+          {
+            "Gold": 50,
+            "Cards": 5,
+            "Milestone": {
+              "Type": "Gold",
+              "Amount": 500
+            }
+          }
+        ],
+        "Background": {
+          "Path": "/da8810e1-e57c-4d9e-a854-9dd41b38fd81_cr_league_challenge.png",
+          "Checksum": "a1d8b04a8e911ed1e21b0aba5cb25b85",
+          "File": "cr_league_challenge.png"
+        }
+      }
+    },
+    {
+      "Id": 1345,
+      "Name": "Boosts",
+      "Type": 10,
+      "StartTime": 1503298800,
+      "EndTime": 1534834800,
+      "DisplayTime": 1503298800,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "Boosts",
+      "Data": {
+        "Title": "Gold Boost",
+        "Boosts": [
+          {
+            "Type": "VictoryGold",
+            "durationInHours": 168,
+            "Cost": 300
+          },
+          {
+            "Type": "CrownChestCards",
+            "durationInHours": 168,
+            "Cost": 300
+          },
+          {
+            "Type": "ChestSpeedUp",
+            "durationInHours": 168,
+            "Cost": 300
+          }
+        ]
+      }
+    },
+    {
+      "Id": 1346,
+      "Name": "Barbarian Barrel Draft Challenge ",
+      "Type": 2,
+      "StartTime": 1521792000,
+      "EndTime": 1522051200,
+      "DisplayTime": 1521705600,
+      "Unknown1": 0,
+      "Unknown2": 0,
+      "Title": "Barbarian Barrel Draft Challenge ",
+      "Data": {
+        "Casual": false,
+        "GameMode": "CardReleaseDraft",
+        "Title": "Barbarian Barrel Draft Challenge",
+        "FreePass": 1,
+        "JoinCost": 100,
+        "JoinCostResource": "Gems",
+        "MaxLosses": 3,
+        "CardTheme": "BarbLog",
+        "IconExportName": "icon_tournament_card_release_grand",
+        "WinIconExportName": "tournament_open_wins_badge_gold",
+        "Arena": "All",
+        "UnlockedForXP": "Experienced",
+        "DraftDeck": "Draft_v1",
+        "DraftDeckCardThemeSetOverride": "Draft_AllRandom",
+        "Subtitle": "Ecco come funziona",
+        "Subtitle_Short": "Sblocca una nuova carta!",
+        "Background": {
+          "Path": "/78096e87-fc08-434f-8387-93a51be1b27e_barbarian_barrel_challenge.png",
+          "Checksum": "62bc57e2a6827d434c0ce8a604c3f586",
+          "File": "barbarian_barrel_challenge.png"
+        }
+      }
+    }
+]
