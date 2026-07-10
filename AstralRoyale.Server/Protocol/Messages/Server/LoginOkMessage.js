@@ -25,8 +25,7 @@ class LoginOkMessage extends PiranhaMessage {
     this.writeString('1475268786112433') // FacebookAppId
     this.writeString(Date.now().toString()) // ServerTime
     this.writeString(Date.now().toString()) // AccountCreatedDate
-    this.writeVInt(0) // StartupCooldownSeconds
-    this.writeByte(0)
+    this.writeByte(0) // StartupCooldownSeconds
     this.writeString('')
     this.writeString('')
     this.writeString('')
