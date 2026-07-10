@@ -341,8 +341,8 @@ class ByteStream {
   }
 
   writeHex (hex) {
-    let buffer = Buffer.from(hex, 'hex');
-
+    hex = hex.replace(/[-\s]/g, '')
+    const buffer = Buffer.from(hex, 'hex')
     if (buffer != null) {
       this.buffer = Buffer.concat([this.buffer, buffer])
       this.offset += buffer.length

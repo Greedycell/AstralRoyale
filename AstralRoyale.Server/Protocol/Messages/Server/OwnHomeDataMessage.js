@@ -11,10 +11,8 @@ class OwnHomeDataMessage extends PiranhaMessage {
   }
 
   async encode () {
-    const home = new ClientHome()
-    home.encode(this)
-    const avatar = new ClientAvatar()
-    await avatar.encode(this)
+    new ClientHome().encode(this)
+    await new ClientAvatar().encode(this)
   }
 }
 
