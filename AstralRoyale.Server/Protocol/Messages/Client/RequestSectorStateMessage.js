@@ -1,4 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
+const LogicBattle = require('../../../Core/LogicBattle')
 
 class RequestSectorStateMessage extends PiranhaMessage {
   constructor (bytes, client) {

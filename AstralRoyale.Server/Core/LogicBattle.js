@@ -39,12 +39,7 @@ class LogicBattle {
   async rejoinClient(client) {
     if (!client || !client.player) return false
     this.addClient(client)
-    const opponent = this.getOpponent(client)
-    await new StopHomeLogicMessage(client).send()
-    await new UdpConnectionInfoMessage(client).send()
-    await new SectorStateMessage(client, 1, opponent ? opponent.player : client.player).send()
-    await new SectorHeartbeatMessage(client, this.turn, this.checksum, (this.commands || []).slice()).send()
-    return true
+    return this.resyncClient(client)
   }
 
   addClient(client) {
@@ -129,6 +124,25 @@ class LogicBattle {
     }
 
     LogicBattle.activeBattles.delete(this.id)
+  }
+
+  async resyncClient(client) {
+    if (!client || !client.player) return false
+    const opponent = this.getOpponent(client)
+    await new StopHomeLogicMessage(client).send()
+    await new UdpConnectionInfoMessage(client).send()
+    await new SectorStateMessage(client, this.getBattleType(), opponent ? opponent.player : client.player).send()
+    await new SectorHeartbeatMessage(client, this.turn, this.checksum, (this.commands || []).slice()).send()
+    return true
+  }
+
+  getBattleType() {
+    switch (this.battleType) {
+      case '2v2': return 2
+      case 'friendlyClan1v1': return 1
+      case '1v1': return 1
+      default: return 1
+    }
   }
 
   getOpponent(client) { return this.clients.find(candidate => candidate.player.lowID !== client.player.lowID) || null }
