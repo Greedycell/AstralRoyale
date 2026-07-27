@@ -74,7 +74,7 @@ class ByteArray {
     bytes[2] = x >> 16
     bytes[3] = x >> 24
     return bytes
-  };
+  }
 
   static getInt (bytes) {
     if (bytes.length === 1) {

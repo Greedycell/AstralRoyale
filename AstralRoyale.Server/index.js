@@ -13,8 +13,8 @@ const connectedClients = require('./Core/ConnectedClients')
 
 const StreamEncrypter = require("./Crypto")
 
-let mongooseInstance = require('./Database/mongoose');
-mongooseInstance = new mongooseInstance();
+let mongooseInstance = require('./Database/mongoose')
+mongooseInstance = new mongooseInstance()
 
 server.on('connection', async (client) => {
   connectedClients.add(client)
@@ -38,7 +38,7 @@ server.on('connection', async (client) => {
   client.crypto = config.Server.Crypto.Activated ? new StreamEncrypter(config.Server.Crypto.Type) : null
   client.mongoose = mongooseInstance
   
-  const packets = Messages.getPackets();
+  const packets = Messages.getPackets()
 
   client.on('data', async (packet) => {
     const message = {
@@ -97,9 +97,9 @@ mongooseInstance.connect(isSuccess => {
   }
 })
 
-process.on("uncaughtException", e => console.log(e));
+process.on("uncaughtException", e => console.log(e))
 
-process.on("unhandledRejection", e => console.log(e));
+process.on("unhandledRejection", e => console.log(e))
 
 async function resetBattleState () {
   for (const battle of LogicBattle.activeBattles.values()) {

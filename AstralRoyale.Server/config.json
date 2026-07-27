@@ -10,8 +10,8 @@
                 "Nonce": "nonce"
             },
             "Pepper": {
-                "ClientSecretKey": "BB14D6FD2B7C9823EAEDB4338CB7237F61E422D23C4977F74ADA052702C0C62D",
-                "ServerPublicKey": "72f1a4a4c48e44da0c42310f800e96624e6dc6a641a9d41c3b5039d8dfadc27e"
+                "ClientSecretKey": "1891D401FADB51D25D3A9174D472A9F691A45B974285D47729C45C6538070D85",
+                "ServerPublicKey": "72F1A4A4C48E44DA0C42310F800E96624E6DC6A641A9D41C3B5039D8DFADC27E"
             }
         },
         "Debug": true,

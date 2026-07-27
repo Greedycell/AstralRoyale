@@ -22,7 +22,7 @@ class LogicScrollMessageFactory {
 
   handle (id) {
     return this.packets[id]
-  };
+  }
 
   getPackets () {
     return Object.keys(this.packets)

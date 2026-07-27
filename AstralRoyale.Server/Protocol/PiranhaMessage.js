@@ -36,7 +36,7 @@ class PiranhaMessage extends ByteStream {
    */
   encode () {
 
-  };
+  }
 
   /**
    * Decode function for client packets.
@@ -45,7 +45,7 @@ class PiranhaMessage extends ByteStream {
    */
   decode () {
 
-  };
+  }
 
   /**
    * Process function for client packets.

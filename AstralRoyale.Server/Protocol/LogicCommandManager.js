@@ -17,7 +17,7 @@ class LogicCommandManager {
 
   handle (id) {
     return this.commands[id]
-  };
+  }
 
   getCommands () {
     return Object.keys(this.commands)

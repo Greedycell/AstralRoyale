@@ -1,5 +1,5 @@
 const RC4Encrypter = require("./RC4/RC4Encrypter")
-const PepperEncrypter = require("./PepperCrypto/PepperEncrypter")
+const { PepperEncrypter, PepperState } = require("./PepperCrypto/PepperEncrypter")
 const CRYPTO_ENUM = require("./CryptoTypes")
 
 /**
@@ -11,16 +11,16 @@ const CRYPTO_ENUM = require("./CryptoTypes")
  */
 class StreamEncrypter {
     constructor (type) {
-        this.crypto = null;
+        this.crypto = null
         this.cryptoType = type
 
         switch (type) {
             case CRYPTO_ENUM.RC4:
-                this.crypto = new RC4Encrypter();
-            break;
+                this.crypto = new RC4Encrypter()
+            break
             case CRYPTO_ENUM.PEPPER:
-                this.crypto = new PepperEncrypter();
-            break;
+                this.crypto = new PepperEncrypter()
+            break
             default:
                 Warn("Undefined crypto type: " + type)
         }
@@ -35,9 +35,9 @@ class StreamEncrypter {
     encrypt (type, bytes) {
         switch (this.cryptoType) {
             case CRYPTO_ENUM.RC4:
-                return this.crypto.encrypt(bytes);
+                return this.crypto.encrypt(bytes)
             case CRYPTO_ENUM.PEPPER:
-                return this.crypto.encrypt(type, bytes);
+                return this.crypto.encrypt(type, bytes)
             default:
                 Warn("Undefined crypto type: " + this.cryptoType)
                 return bytes
@@ -53,9 +53,9 @@ class StreamEncrypter {
     decrypt (type, bytes) {
         switch (this.cryptoType) {
             case CRYPTO_ENUM.RC4:
-                return this.crypto.decrypt(bytes);
+                return this.crypto.decrypt(bytes)
             case CRYPTO_ENUM.PEPPER:
-                return this.crypto.decrypt(type, bytes);
+                return this.crypto.decrypt(type, bytes)
             default:
                 Warn("Undefined crypto type: " + this.cryptoType)
                 return bytes

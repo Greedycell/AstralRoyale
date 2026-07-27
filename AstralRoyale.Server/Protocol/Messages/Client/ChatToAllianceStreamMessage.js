@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs")
 
 const PiranhaMessage = require('../../PiranhaMessage')
 const cardUtils = require('../../../Utils/cardUtils')
@@ -363,7 +363,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             fs.writeFileSync(
                 "./config.json",
                 JSON.stringify(config, null, 4)
-            );
+            )
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
@@ -377,11 +377,11 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
           if (config.Server.Admins.includes(this.client.player.lowID)) {
             const targetID = parseInt(args[0], 10)
 
-            config.Server.Admins = config.Server.Admins.filter(id => id !== targetID);
+            config.Server.Admins = config.Server.Admins.filter(id => id !== targetID)
             fs.writeFileSync(
                 "./config.json",
                 JSON.stringify(config, null, 4)
-            );
+            )
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
@@ -413,11 +413,11 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
           if (config.Server.Admins.includes(this.client.player.lowID)) {
             const targetID = parseInt(args[0], 10)
 
-            config.Server.Banned = config.Server.Banned.filter(id => id !== targetID);
+            config.Server.Banned = config.Server.Banned.filter(id => id !== targetID)
             fs.writeFileSync(
                 "./config.json",
                 JSON.stringify(config, null, 4)
-            );
+            )
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
@@ -441,7 +441,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             fs.writeFileSync(
                 "./config.json",
                 JSON.stringify(config, null, 4)
-            );
+            )
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()

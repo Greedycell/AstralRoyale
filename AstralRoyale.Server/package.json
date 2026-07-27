@@ -10,11 +10,13 @@
   "author": "greedycell",
   "license": "ISC",
   "dependencies": {
+    "blakejs": "^1.2.1",
     "figlet": "^1.9.4",
     "fs": "^0.0.1-security",
     "mongoose": "^9.1.5",
     "net": "^1.0.2",
-    "simple-rc4": "^0.0.1-b"
+    "simple-rc4": "^0.0.1-b",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "^8.0.1",
