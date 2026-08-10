@@ -3,15 +3,14 @@
         "Port": 9339,
         "Crypto": {
             "Activated": true,
-            "Type": 0,
+            "Type": 1,
             "TypeComment": "0 = RC4, 1 = Pepper",
             "RC4": {
                 "Key": "fhsd6f86f67rt8fw78fw789we78r9789wer6re",
                 "Nonce": "nonce"
             },
             "Pepper": {
-                "ClientSecretKey": "1891D401FADB51D25D3A9174D472A9F691A45B974285D47729C45C6538070D85",
-                "ServerPublicKey": "72F1A4A4C48E44DA0C42310F800E96624E6DC6A641A9D41C3B5039D8DFADC27E"
+                "ServerSecretKey": "1891d401fadb51d25d3a9174d472a9f691a45b974285d47729c45c6538070d85"
             }
         },
         "Debug": true,

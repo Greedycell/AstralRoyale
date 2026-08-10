@@ -64,9 +64,9 @@ class PepperEncrypter {
 
     constructor() {
         this.state = PepperState.PEPPER_INVALID
-        this.server_public_key = new Uint8Array(Buffer.from(config.Server.Crypto.Pepper.ServerPublicKey, 'hex'))
-        this.client_private_key = new Uint8Array(Buffer.from(config.Server.Crypto.Pepper.ClientSecretKey, 'hex'))
-        this.client_public_key = tweetnacl.scalarMult.base(this.client_private_key)
+        this.server_private_key = new Uint8Array(Buffer.from(config.Server.Crypto.Pepper.ServerSecretKey, 'hex'))
+        this.server_public_key = tweetnacl.scalarMult.base(this.server_private_key)
+        this.client_public_key = null
         this.session_key = null
         this.decryptNonce = null
         this.encryptNonce = new Nonce(urandom(24))
@@ -92,9 +92,7 @@ class PepperEncrypter {
                 throw new CryptographyError('[PepperEncrypter::] Received LoginMessage while not in PEPPER_AUTH state')
             }
 
-            if (!this._equals(payload.subarray(0, 32), this.client_public_key)) {
-                throw new CryptographyError(`Client public key does not match!`)
-            }
+            this.client_public_key = payload.subarray(0, 32)
 
             payload = payload.subarray(32)
 
@@ -102,7 +100,7 @@ class PepperEncrypter {
             
             let byteNonce = this.nonce.toBytes()
 
-            this.s = tweetnacl.box.before(this.server_public_key, this.client_private_key)
+            this.s = tweetnacl.box.before(this.client_public_key, this.server_private_key)
             let decrypted = tweetnacl.secretbox.open(payload, byteNonce, this.s)
 
             if (!decrypted) {
