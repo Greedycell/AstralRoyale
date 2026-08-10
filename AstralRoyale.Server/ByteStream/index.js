@@ -83,14 +83,12 @@ class ByteStream {
    */
   readString () {
     const length = this.readInt()
-
-    if (length > 0 && length < 90000) {
-      const stringBytes = this.buffer.slice(this.offset, this.offset + length)
-      const string = stringBytes.toString('utf8')
-      this.offset += length
-      return string
+    if (length <= 0 || length >= 90000) {
+      return ''
     }
-    return ''
+    const stringBytes = Buffer.from(this.buffer.slice(this.offset, this.offset + length))
+    this.offset += length
+    return stringBytes.toString('utf8')
   }
 
   /**
