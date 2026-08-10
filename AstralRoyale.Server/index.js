@@ -37,37 +37,82 @@ server.on('connection', async (client) => {
   client.log('A wild connection appeared!')
   client.crypto = config.Server.Crypto.Activated ? new StreamEncrypter(config.Server.Crypto.Type) : null
   client.mongoose = mongooseInstance
-  
-  const packets = Messages.getPackets()
 
-  client.on('data', async (packet) => {
+  const packets = Messages.getPackets()
+  let receiveBuffer = Buffer.alloc(0)
+  let packetQueue = Promise.resolve()
+
+  const handlePacket = async (packet) => {
+    const payloadLength = packet.readUIntBE(2, 3)
+
     const message = {
       id: packet.readUInt16BE(0),
-      len: packet.readUIntBE(2, 3),
+      len: payloadLength,
       version: packet.readUInt16BE(5),
-      payload: packet.slice(7, this.len),
+      payload: packet.subarray(7, 7 + payloadLength),
       client,
     }
-    
-    if (config.Server.Crypto.Activated) {
-      message.payload = await client.crypto.decrypt(message.id, message.payload)
+
+    try {
+      if (config.Server.Crypto.Activated) {
+        message.payload = client.crypto.decrypt(message.id, message.payload)
+
+        if (message.payload == null) {
+          throw new Error(`Pepper decryption failed for packet ${message.id}`)
+        }
+      }
+    } catch (e) {
+      console.log(e)
+      client.destroy()
+      return
     }
 
     if (packets.indexOf(String(message.id)) !== -1) {
       try {
-        const packet = new (Messages.handle(message.id))(message.payload, client)
+        const messageHandler = new (Messages.handle(message.id))(message.payload, client)
 
         if (config.Server.Debug) {
-          client.log(`Gotcha ${message.id} (${packet.constructor.name}) packet! `)
+          client.log(`Gotcha ${message.id} (${messageHandler.constructor.name}) packet! `)
         }
 
-        await packet.decode()
-        await packet.process()
+        await messageHandler.decode()
+        await messageHandler.process()
       } catch (e) {
         console.log(e)
       }
     } else {
       client.log(`Gotcha undefined ${message.id} packet!`)
+    }
+  }
+
+  client.on('data', (chunk) => {
+    if (client.destroyed || chunk.length === 0) return
+
+    receiveBuffer = receiveBuffer.length === 0
+      ? Buffer.from(chunk)
+      : Buffer.concat([receiveBuffer, chunk])
+
+    while (receiveBuffer.length >= 7) {
+      const payloadLength = receiveBuffer.readUIntBE(2, 3)
+      const frameLength = 7 + payloadLength
+
+      if (receiveBuffer.length < frameLength) break
+
+      const frame = Buffer.from(
+        receiveBuffer.subarray(0, frameLength)
+      )
+
+      receiveBuffer = receiveBuffer.subarray(frameLength)
+
+      packetQueue = packetQueue
+        .then(() => handlePacket(frame))
+        .catch((error) => {
+          console.log(error)
+
+          if (!client.destroyed) {
+            client.destroy()
+          }
+        })
     }
   })
 
@@ -78,6 +123,7 @@ server.on('connection', async (client) => {
 
   client.on('error', async error => {
     connectedClients.delete(client)
+
     try {
       client.log('A wild error!')
       console.log(error)
@@ -86,10 +132,14 @@ server.on('connection', async (client) => {
   })
 })
 
-console.log(figlet.textSync('AstralRoyale', {font: 'Slant'}))
+console.log(figlet.textSync('AstralRoyale', { font: 'Slant' }))
+
 mongooseInstance.connect(isSuccess => {
   if (isSuccess) {
-    server.once('listening', () => console.log(`[SERVER] >> Server started on ${PORT} port!`))
+    server.once('listening', () => {
+      console.log(`[SERVER] >> Server started on ${PORT} port!`)
+    })
+
     server.listen(PORT)
   }
   else {
@@ -149,6 +199,7 @@ async function shutdown (signal) {
       console.log(error)
     }
   }
+
   connectedClients.clear()
 
   if (typeof server.closeAllConnections === 'function') {
