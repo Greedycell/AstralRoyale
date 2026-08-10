@@ -1,6 +1,7 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
 const AllianceJoinOkMessage = require('../Server/AllianceJoinOkMessage')
+const AllianceStreamMessage = require('../Server/AllianceStreamMessage')
 const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
 
 class JoinAllianceMessage extends PiranhaMessage {
@@ -42,6 +43,7 @@ class JoinAllianceMessage extends PiranhaMessage {
 
       await new AvailableServerCommandMessage(this.client, 263, this.data).send() // join
       await new AllianceJoinOkMessage(this.client).send()
+      await new AllianceStreamMessage(this.client).send()
     } catch (e) {
       console.error(e)
       await new OutOfSyncMessage(this.client).send()
