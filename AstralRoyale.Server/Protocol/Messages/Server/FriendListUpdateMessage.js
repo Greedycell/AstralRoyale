@@ -9,21 +9,25 @@ class FriendListUpdateMessage extends PiranhaMessage {
   }
 
   async encode () {
-    this.writeLong(0, 1) // HighID, LowID
+    this.writeLong(2, 2) // HighID, LowID
     this.writeBoolean(true)
-    this.writeLong(0, 1) // HighID, LowID
+    this.writeLong(2, 2) // HighID, LowID
     this.writeString('Unnamed') // Name
-    this.writeString('') // FacebookID
-    this.writeString('') // GamecenterID
-    this.writeVInt(1) // Level
-    this.writeVInt(0) // Score
-    this.writeBoolean(false) // InClan
-    this.writeVInt(1) // Arena
-    this.writeString('')
-    this.writeString('')
     this.writeVInt(0)
-    this.writeInt(0) // ChallengeState
-    this.writeInt(0) // ChallengeWins
+    this.writeVInt(3000) // Score
+    this.writeBoolean(true) // HasAlliance
+    {
+      this.writeLong(0, 1)
+      this.writeString('Clashers')
+      this.writeVInt(57)
+      this.writeVInt(1)
+    }
+    this.writeBoolean(true) // HasLeague
+    this.writeVInt(54)
+    this.writeVInt(1) // Arena
+    this.writeString(null)
+    this.writeString(null)
+    this.writeVInt(0) // FriendType
   }
 }
 
