@@ -121,9 +121,28 @@ class LogicBattle {
       client.player.battleID = 0
       client.player.markModified('battleID')
       await client.player.save()
+      if (client.battle === this) {
+        client.battle = null
+      }
     }
 
+    this.clients.length = 0
     LogicBattle.activeBattles.delete(this.id)
+  }
+
+  getActiveClients() {
+    return this.clients.filter(client => client && client.player && !client.destroyed)
+  }
+
+  removeClient(client) {
+    if (!client || !client.player) return false
+    const index = this.clients.indexOf(client)
+    if (index === -1) return false
+    this.clients.splice(index, 1)
+    if (client.battle === this) {
+      client.battle = null
+    }
+    return true
   }
 
   async resyncClient(client) {
@@ -157,7 +176,13 @@ class LogicBattle {
       this.goHomePlayers.add(client.player.lowID)
       this.goHomeCount++
     }
-    if (this.goHomeCount >= this.clients.filter(candidate => candidate && candidate.player).length) this.endBattle()
+
+    const activeCount = this.getActiveClients().length
+    if (this.goHomeCount >= activeCount) {
+      this.endBattle()
+      return true
+    }
+
     return true
   }
 
