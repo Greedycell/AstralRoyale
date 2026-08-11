@@ -159,20 +159,19 @@ class LoginMessage extends PiranhaMessage {
     }
 
     await new LoginOkMessage(this.client).send()
-    await new OwnHomeDataMessage(this.client).send()
-    await new InboxCountMessage(this.client).send()
-
-    if (this.client.player.battleID != 0) {
+    if (this.client.player.battleID == 0) {
+      await new OwnHomeDataMessage(this.client).send()
+      await new InboxCountMessage(this.client).send()
+      if (this.client.player.inClan) {
+        await new AllianceStreamMessage(this.client).send()
+        await new AllianceOnlineStatusUpdatedMessage(this.client).send()
+      }
+    } else {
       const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
       if (activeBattle) {
         await activeBattle.rejoinClient(this.client)
         return
       }
-    }
-
-    if (this.client.player.inClan) {
-      await new AllianceStreamMessage(this.client).send()
-      await new AllianceOnlineStatusUpdatedMessage(this.client).send()
     }
   }
 }
