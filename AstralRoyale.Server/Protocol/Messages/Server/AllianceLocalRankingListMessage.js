@@ -12,7 +12,7 @@ class AllianceLocalRankingListMessage extends PiranhaMessage {
     const db = this.client.mongoose
     const clans = await db.getTopClans(200)
 
-    this.writeVInt(clans.length) // AlliancesCount
+    this.writeInt(clans.length) // AlliancesCount
 
     for (let i = 0; i < clans.length; i++) {
       const clan = clans[i]

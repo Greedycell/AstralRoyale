@@ -12,7 +12,7 @@ class AskForFriendListMessage extends PiranhaMessage {
   async decode () {}
 
   async process () {
-    await new FriendsListMessage(this.client).send()
+    await new FriendsListMessage(this.client, 0).send()
   }
 }
 
