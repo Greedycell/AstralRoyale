@@ -1,8 +1,9 @@
 class LogicStartExploringCommand {
   constructor() {}
 
-  // id = 542
-  async encode (self) {}
+  async decode (self) {}
+
+  async process (self) {}
 }
 
 module.exports = LogicStartExploringCommand

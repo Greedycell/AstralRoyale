@@ -1,4 +1,5 @@
-const fs = require("fs")
+const fs = require('fs')
+const path = require('path')
 
 const PiranhaMessage = require('../../PiranhaMessage')
 const cardUtils = require('../../../Utils/cardUtils')
@@ -11,6 +12,20 @@ const SectorStateMessage = require('../Server/SectorStateMessage')
 const config = require('../../../config.json')
 const connectedClients = require('../../../Core/ConnectedClients')
 const LogicBattle = require('../../../Core/LogicBattle')
+const StopHomeLogicMessage = require('../Server/StopHomeLogicMessage')
+
+const filter = fs.readFileSync(path.join(__dirname, '../../../filter.json'), 'utf8').split(/\r?\n/).filter(word => word.length > 0)
+function filterMessage (message) {
+  if (config.Server.WordFilter) {
+    return filter.reduce((filtered, word) => {
+      const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const replacement = '*'.repeat(word.length)
+      return filtered.replace(new RegExp(escapedWord, 'gi'), replacement)
+    }, message)
+  } else {
+    return message
+  }
+}
 
 const RarityMaxLevel = {
   common: 12, // 13
@@ -82,7 +97,8 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             '/help',
             '/switchacc x(userid) x(pass) or /switchacc reset',
             '/setpassword x',
-            '/adminhelp'
+            '/adminhelp',
+            '/fakebattle'
           ].join('\n')
 
           await new ServerErrorMessage(this.client, list).send()
@@ -244,7 +260,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             player.markModified('xpPoints')
             await player.save()
             
-            await new ServerErrorMessage(this.client, "Maxed out all cards!").send()
+            await new ServerErrorMessage(this.client, 'Maxed out all cards!').send()
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
@@ -260,20 +276,11 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
             let cards = cardUtils.getCards(cardsCount)
             cards.forEach(card => {
               let cardCount = utils.randomInt(0, 94)
-              this.writeVInt(cardsCount - cards.indexOf(card)) // CardIndex
-              this.writeVInt(cardUtils.SCIDtoInstanceID(card.id))
-
-              this.writeVInt(this.client.player.highID)
-              this.writeVInt(this.client.player.lowID)
-              this.writeVInt(cardCount) //CardCount
-              this.writeVInt(0)
-              this.writeVInt(0)
-              this.writeByte(127)
 
               cardUtils.addCardPointsBySCID(this.client, card.id, cardCount)
             })
             
-            await new ServerErrorMessage(this.client, "Unlocked all cards!").send()
+            await new ServerErrorMessage(this.client, 'Unlocked all cards!').send()
           }
           else {
             await new ServerErrorMessage(this.client, `Only admins can use the /${command} command.`).send()
@@ -361,7 +368,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
 
             config.Server.Admins.push(targetID)
             fs.writeFileSync(
-                "./config.json",
+                './config.json',
                 JSON.stringify(config, null, 4)
             )
           }
@@ -379,7 +386,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
 
             config.Server.Admins = config.Server.Admins.filter(id => id !== targetID)
             fs.writeFileSync(
-                "./config.json",
+                './config.json',
                 JSON.stringify(config, null, 4)
             )
           }
@@ -397,7 +404,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
 
             config.Server.Banned.push(targetID)
             fs.writeFileSync(
-                "./config.json",
+                './config.json',
                 JSON.stringify(config, null, 4)
             )
           }
@@ -415,7 +422,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
 
             config.Server.Banned = config.Server.Banned.filter(id => id !== targetID)
             fs.writeFileSync(
-                "./config.json",
+                './config.json',
                 JSON.stringify(config, null, 4)
             )
           }
@@ -439,7 +446,7 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
               config.Server.MaintenanceSeconds = maintenanceSeconds
             } 
             fs.writeFileSync(
-                "./config.json",
+                './config.json',
                 JSON.stringify(config, null, 4)
             )
           }
@@ -448,6 +455,45 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
           }
 
           break
+        }
+
+        // starts a fake battle
+        case 'fakebattle': {
+          const MatchmakingLobby = require('../../../Core/MatchmakingLobby')
+          const UdpConnectionInfoMessage = require('../../Messages/Server/UdpConnectionInfoMessage')
+          const MatchmakeInfoMessage = require('../../Messages/Server/MatchmakeInfoMessage')
+          const SectorStateMessage = require('../../Messages/Server/SectorStateMessage')
+          const LogicBattle = require('../../../Core/LogicBattle')
+          const StopHomeLogicMessage = require('../../Messages/Server/StopHomeLogicMessage')
+
+          const queueType = 'normal'
+          this.client.matchmakeQueueType = queueType
+          const matchResult = MatchmakingLobby.addPlayer(this.client, queueType)
+          
+          const opponent = {}
+          opponent.player = {}
+          opponent.player.markModified = function (value) {}
+          opponent.player.save = function (value) {}
+          opponent.player.highID = -1
+          opponent.player.lowID = -1
+          opponent.player.name = 'Trainer Astral'
+          opponent.player.level = 13
+          let data = {
+            arena: 28,
+            gamemode: 7,
+            live: false
+          }
+
+          const battle = await new LogicBattle(data)
+          battle.battleType = '1v1'
+          battle.clients.push(this.client, opponent)
+          battle.start(500, this.client, opponent)
+          await new StopHomeLogicMessage(this.client).send()
+          await new UdpConnectionInfoMessage(this.client).send()
+          await new SectorStateMessage(this.client, 1, this.client, opponent, data).send()
+          MatchmakingLobby.removePlayer(this.client, queueType)
+          MatchmakingLobby.removePlayer(opponent, queueType)
+          return
         }
       }
     }
@@ -458,13 +504,14 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
       if (clan) {
         const existingMessages = Array.isArray(clan.messages) ? clan.messages : []
 
+        const filteredMessage = filterMessage(this.data.Message)
         const messageEntry = {
           id: existingMessages.reduce((max, message) => Math.max(max, Number(message.id) || 0), 0) + 1,
           senderHighID: this.client.player.highID,
           senderLowID: this.client.player.lowID,
           senderName: this.client.player.name,
           senderRole: this.client.player.clan?.ClanRole || 1,
-          message: this.data.Message,
+          message: filteredMessage,
           timestamp: Date.now()
         }
 
@@ -473,13 +520,11 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
         clan.markModified('messages')
         await clan.save()
 
-        const entry = { ...this.data, ...messageEntry }
+        const entry = { ...this.data, ...messageEntry, Message: filteredMessage }
         entry.StreamEntryType = 2
 
         const onlineClanMembers = Array.from(connectedClients).filter(client => {
-          return client && client.player && client.player.inClan &&
-            client.player.clan?.ClanHighID === clan.highID &&
-            client.player.clan?.ClanLowID === clan.lowID
+          return client && client.player && client.player.inClan && client.player.clan?.ClanHighID === clan.highID && client.player.clan?.ClanLowID === clan.lowID
         })
 
         for (const client of onlineClanMembers) {

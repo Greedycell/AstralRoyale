@@ -15,9 +15,10 @@ class GetTokenFriendResultMessage extends PiranhaMessage {
       this.client.player.friendToken = newToken
       this.writeString(newToken)
       //console.log(newToken)
+
+      this.client.player.markModified('friendToken')
     })
 
-    this.client.player.markModified('newToken')
     await this.client.player.save()
   }
 }

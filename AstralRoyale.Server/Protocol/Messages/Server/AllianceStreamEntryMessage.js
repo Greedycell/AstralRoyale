@@ -15,12 +15,9 @@ class AllianceStreamEntryMessage extends PiranhaMessage {
     const clan = await db.getClanByID(this.client.player?.clan?.ClanHighID, this.client.player?.clan?.ClanLowID)
 
     this.writeVInt(this.StreamEntryType)
-    this.writeVInt(0)
-    this.writeVInt(this.data?.id ?? 0)
-    this.writeVInt(this.data?.senderHighID ?? this.client.player?.highID ?? 0)
-    this.writeVInt(this.data?.senderLowID ?? this.client.player?.lowID ?? 0)
-    this.writeVInt(this.data?.senderHighID ?? this.client.player?.highID ?? 0)
-    this.writeVInt(this.data?.senderLowID ?? this.client.player?.lowID ?? 0)
+    this.writeLogicLong(0, this.data?.id ?? 0)
+    this.writeLogicLong(this.data?.senderHighID ?? 0, this.data?.senderLowID ?? 0)
+    this.writeLogicLong(this.data?.senderHighID ?? 0, this.data?.senderLowID ?? 0)
 
     this.writeString(this.data?.senderName ?? this.client.player?.name ?? '')
     this.writeVInt(this.client.player?.level ?? 1)
@@ -31,10 +28,9 @@ class AllianceStreamEntryMessage extends PiranhaMessage {
 
     switch (this.StreamEntryType) {
       case 1: // DonateStreamEntry
-        this.writeVInt(1) // StreamEntryType: 1 = donation request??
-        this.writeLong(0, 1) // SenderHighID, SenderLowID: Who sent the request
-        this.writeVInt(26) // CardType: Card type (e.g., 26 = troop, 28 = spell)
-        this.writeVInt(1) // CardInstance: Card ID
+        this.writeVInt(0) // StreamEntryType: 1 = donation request??
+        this.writeLong(this.data.senderHighID, this.data.senderLowID) // SenderHighID, SenderLowID: Who sent the request
+        this.writeDataReference(this.data.CardType, this.data.CardInstance) // CardType: Card type (e.g., 26 = troop, 28 = spell), CardInstance: Card ID
         this.writeVInt(10) // TotalCapacity: Max cards that can be donated
         this.writeVInt(0) // UsedCapacity: Donated so far??
         this.writeVInt(0) // Number of donations??
@@ -49,9 +45,9 @@ class AllianceStreamEntryMessage extends PiranhaMessage {
         this.writeVInt(1) // State (1 = Pending, 2 = Accepted, 3 = Rejected)
         break
       case 4: // AllianceEventStreamEntry
-        this.writeVInt(eventType) // EventType (1 = Kicked, 2 = Accepted, 3 = Joined, 4 = Left, 5 = Promoted, 6 = Demoted)
-        this.writeLogicLong(targetHighID, targetLowID)
-        this.writeString(targetName)
+          this.writeVInt(this.data.eventType ?? 0) // EventType (1 = Kicked, 2 = Accepted, 3 = Joined, 4 = Left, 5 = Promoted, 6 = Demoted)
+          this.writeLogicLong(this.data.targetHighID ?? 0, this.data.targetLowID ?? 1)
+          this.writeString(this.data.targetName || '')
         break
       case 5: // ReplayStreamEntry
         break

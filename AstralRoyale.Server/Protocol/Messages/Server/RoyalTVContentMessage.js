@@ -19,8 +19,8 @@ class RoyalTVContentMessage extends PiranhaMessage {
 
       // Replay Version
       this.writeVInt(3)
-      this.writeVInt(380)
-      this.writeVInt(2)
+      this.writeVInt(830)
+      this.writeVInt(6)
 
       this.writeVInt(0) // Views
 

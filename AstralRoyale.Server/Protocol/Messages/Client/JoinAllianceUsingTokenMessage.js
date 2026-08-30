@@ -6,11 +6,11 @@ const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
 const AllianceStreamEntryMessage = require('../Server/AllianceStreamEntryMessage')
 const ConnectedClients = require('../../../Core/ConnectedClients')
 
-class JoinAllianceMessage extends PiranhaMessage {
+class JoinAllianceUsingTokenMessage extends PiranhaMessage {
   constructor (bytes, client) {
     super(bytes)
     this.client = client
-    this.id = 16190
+    this.id = 17190
     this.version = 1
   }
 
@@ -80,4 +80,4 @@ class JoinAllianceMessage extends PiranhaMessage {
   }
 }
 
-module.exports = JoinAllianceMessage
+module.exports = JoinAllianceUsingTokenMessage

@@ -24,14 +24,11 @@ class AllianceStreamMessage extends PiranhaMessage {
 
       const streamEntryType = entry.StreamEntryType ?? 2
       this.writeVInt(streamEntryType)
-      this.writeVInt(0)
-      this.writeVInt(entry.id ?? 0)
-      this.writeVInt(entry.senderHighID ?? 0)
-      this.writeVInt(entry.senderLowID ?? 0)
-      this.writeVInt(entry.senderHighID ?? 0)
-      this.writeVInt(entry.senderLowID ?? 0)
+      this.writeLogicLong(0, entry.id ?? 0)
+      this.writeLogicLong(entry.senderHighID ?? 0, entry.senderLowID ?? 0)
+      this.writeLogicLong(entry.senderHighID ?? 0, entry.senderLowID ?? 0)
 
-      this.writeString(entry.senderName || this.client.player?.name || '')
+      this.writeString(entry.senderName)
       this.writeVInt(senderMember?.level ?? this.client.player?.level ?? 1)
       this.writeVInt(senderMember?.role ?? entry.senderRole ?? 1)
       this.writeVInt(entry.timestamp ? Math.max(0, Math.floor((Date.now() - entry.timestamp) / 1000)) : 0)
@@ -39,14 +36,13 @@ class AllianceStreamMessage extends PiranhaMessage {
 
       switch (streamEntryType) {
         case 1: // DonateStreamEntry
-          this.writeVInt(1) // StreamEntryType: 1 = donation request??
-          this.writeLong(0, 1) // SenderHighID, SenderLowID: Who sent the request
-          this.writeVInt(26) // CardType: Card type (e.g., 26 = troop, 28 = spell)
-          this.writeVInt(1) // CardInstance: Card ID
+          this.writeVInt(0) // StreamEntryType: 1 = donation request??
+          this.writeLong(entry.senderHighID, entry.senderLowID) // SenderHighID, SenderLowID: Who sent the request
+          this.writeDataReference(entry.CardType, entry.CardInstance) // CardType: Card type (e.g., 26 = troop, 28 = spell), CardInstance: Card ID
           this.writeVInt(10) // TotalCapacity: Max cards that can be donated
           this.writeVInt(0) // UsedCapacity: Donated so far??
           this.writeVInt(0) // Number of donations??
-          this.writeString(entry.message || '')
+          this.writeString(entry.Message) // Request message
           break
         case 2: // ChatChatStreamEntry
           this.writeString(entry.message || '') // Message

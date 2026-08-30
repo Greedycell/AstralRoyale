@@ -1,16 +1,14 @@
 const cardUtils = require('../Utils/cardUtils')
 const utils = require('../Utils')
-
 const events = require('../events.json')
+const LogicTimer = require('./LogicTimer')
 
 class ClientHome {
   async encode (self) {
     self.writeLong(self.client.player.highID, self.client.player.lowID) // HighID, LowID
     self.writeVInt(14)
     self.writeVInt(0)
-    self.writeVInt(1727700)
-    self.writeVInt(1727700)
-    self.writeVInt(Date.now() / 1000 | 0)
+    new LogicTimer().encode(self, 239940, 346065, Date.now() / 1000 | 0)
     self.writeVInt(0)
 
     self.writeVInt(self.client.player.decks.length)
@@ -21,8 +19,10 @@ class ClientHome {
         })
     })
 
-    self.writeByte(0xFF)
     let currentDeck = self.client.player.decks[self.client.player.selectedDeck]
+    for (let slot = 0; slot < 8; slot++) {
+        self.writeBoolean(Boolean(currentDeck[slot]))
+    }
     currentDeck.forEach(cardSCID => {
         let card = utils.findObjectByKey(self.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
         self.writeVInt(card.ID)
@@ -36,7 +36,6 @@ class ClientHome {
     })
 
     self.writeVInt(self.client.player.cards.length - 8)
-
     self.client.player.cards.forEach(card => {
         if (!currentDeck.includes(cardUtils.instanceIDtoSCID(card.ID))) {
             self.writeVInt(card.ID)
@@ -49,7 +48,6 @@ class ClientHome {
             self.writeVInt(0)
         }
     })
-
     self.writeVInt(self.client.player.selectedDeck)
     self.writeVInt(0)
 
@@ -68,8 +66,8 @@ class ClientHome {
         self.writeVInt(event.StartTime)
         self.writeVInt(event.EndTime)
         self.writeVInt(event.DisplayTime)
-        self.writeInt(event.Unknown1)
-        self.writeInt(event.Unknown2)
+        self.writeInt(0)
+        self.writeInt(0)
         self.writeString(event.Title)
         self.writeString(JSON.stringify(event.Data))
         self.writeByte(0)
@@ -122,37 +120,40 @@ class ClientHome {
 
             {
                 /*
-                // 0  - Not opened
-                // 2  - Opened
-                // 4  - ???
-                // 6  - Opened but locked
-                // 8  - New chest with animation
-                // 10 - New chest with animation and already opened
-                // 12 - New chest with animation and closed
-                // 14 - New chest with animation, opened but locked
-                // 16 - Currently unlocking
+                0 = Not opened
+                2 = Opened
+                4 = Not opened but popup will never show
+                6 = Opened but locked
+                8 = New chest with animation
+                10 = New chest with animation and already opened
+                12 = New chest with animation and closed
+                14 = New chest with animation, opened but locked
+                32 = Not opened
+                34 = Opened
+                36 = Not opened but popup will never show
+                38 = Opened but locked
+                40 = New chest with animation
+                42 = New chest with animation and already opened
+                44 = New chest with animation and closed
+                46 = New chest with animation, opened but locked
                 */
-                self.writeVInt(0)             
+                self.writeVInt(0)
             }
 
-            self.writeVInt(self.client.player.chests.indexOf(chest) * 2 + 4) //Chest Index
+            self.writeVInt(self.client.player.chests.indexOf(chest) * 2 + 4) // ChestIndex
             self.writeVInt(6)
 
             self.writeVInt(self.client.player.chests.indexOf(chest))
             self.writeVInt(0)
             self.writeVInt(0)
-            if (self.client.player.chests) {
-                self.writeVInt(self.client.player.chests.indexOf(chest) === (self.client.player.chests.length - 1) ? 0 : 8)
-            }
+            if (self.client.player.chests) self.writeVInt(self.client.player.chests.indexOf(chest) === (self.client.player.chests.length - 1) ? 0 : 8)
         })
     }
     else {
         self.writeVInt(0)
     }
 
-    self.writeVInt(0)
-    self.writeVInt(0)
-    self.writeVInt(Date.now() / 1000 | 0)
+    new LogicTimer().encode(self, 239940, 346065, Date.now() / 1000 | 0)
     self.writeVInt(0)
     self.writeVInt(0)
     self.writeByte(127)
@@ -184,12 +185,8 @@ class ClientHome {
     self.writeVInt(self.client.player.crownChestCount) // CrownChestCount
     self.writeVInt(0)
 
-    self.writeVInt(0)
-    self.writeVInt(0)
-    self.writeVInt(Date.now() / 1000 | 0)
-    self.writeVInt(0)
-    self.writeVInt(0)
-    self.writeVInt(Date.now() / 1000 | 0)
+    new LogicTimer().encode(self, 239940, 346065, Date.now() / 1000 | 0)
+    new LogicTimer().encode(self, 239940, 346065, Date.now() / 1000 | 0)
 
     self.writeVInt(0)
     self.writeVInt(0)
@@ -214,9 +211,7 @@ class ClientHome {
     self.writeVInt(5)
     self.writeVInt(447)
     self.writeVInt(5)
-    self.writeVInt(1736000) // Time left until the card shop refreshes (1736000)
-    self.writeVInt(0)
-    self.writeVInt(Date.now() / 1000 | 0)
+    new LogicTimer().encode(self, 239940, 346065, Date.now() / 1000 | 0) // Time left until the card shop refreshes (1736000)
 
     self.writeVInt(0)
     self.writeVInt(0)
@@ -341,50 +336,56 @@ class ClientHome {
         self.writeVInt(0)
         self.writeVInt(0)
         self.writeVInt(5)
-        self.writeVInt(3)
-        self.writeVInt(3)
+        
+        self.writeVInt(3) // DealCount
+        {
+            self.writeVInt(3)
 
-        self.writeVInt(0)
-        self.writeVInt(0)
-        self.writeVInt(447)
-        self.writeVInt(0) // Cost
-        self.writeVInt(5) // SCID Res Type - Resources
-        self.writeVInt(1) // SCID Res ID - Gold
-        self.writeVInt(19) // SCID Res Type - Chests
-        self.writeVInt(114) // SCID Res ID - Chest ID
-        self.writeVInt(0)
-        self.writeVInt(1)
+            // Legendary Chest
+            self.writeVInt(0)
+            self.writeVInt(0)
+            self.writeVInt(447)
+            self.writeVInt(0) // Cost
+            self.writeVInt(5) // SCID Res Type - Resources
+            self.writeVInt(1) // SCID Res ID - Gold
+            self.writeVInt(19) // SCID Res Type - Chests
+            self.writeVInt(114) // SCID Res ID - Chest ID
+            self.writeVInt(0)
+            self.writeVInt(1)
 
-        self.writeVInt(0)
-        self.writeVInt(1)
-        self.writeVInt(447)
-        self.writeVInt(50)
-        self.writeVInt(5)
-        self.writeVInt(1)
-        self.writeVInt(26)
-        self.writeVInt(0)
-        self.writeVInt(5)
-        self.writeVInt(0)
-        self.writeVInt(0)
-        self.writeVInt(3000)
-        self.writeVInt(0)
-        self.writeVInt(0)
-        self.writeVInt(1)
+            // Knight
+            self.writeVInt(0)
+            self.writeVInt(1)
+            self.writeVInt(447)
+            self.writeVInt(50) // Cost
+            self.writeVInt(5) // SCID Res Type - Resources
+            self.writeVInt(1) // SCID Res ID - Gold
+            self.writeVInt(26) // SCID Res Type - Chests
+            self.writeVInt(0) // SCID Res ID - Chest ID
+            self.writeVInt(5)
+            self.writeVInt(0)
+            self.writeVInt(0)
+            self.writeVInt(3000)
+            self.writeVInt(0)
+            self.writeVInt(0)
+            self.writeVInt(1)
 
-        self.writeVInt(0)
-        self.writeVInt(2)
-        self.writeVInt(447)
-        self.writeVInt(100)
-        self.writeVInt(5)
-        self.writeVInt(1)
-        self.writeVInt(28)
-        self.writeVInt(0)
-        self.writeVInt(1)
-        self.writeVInt(1)
-        self.writeVInt(0)
-        self.writeVInt(3000)
-        self.writeVInt(0)
-        self.writeVInt(0)
+            // Fireball
+            self.writeVInt(0)
+            self.writeVInt(2)
+            self.writeVInt(447)
+            self.writeVInt(100) // Cost
+            self.writeVInt(5) // SCID Res Type - Resources
+            self.writeVInt(1) // SCID Res ID - Gold
+            self.writeVInt(28) // SCID Res Type - Chests
+            self.writeVInt(0) // SCID Res ID - Chest ID
+            self.writeVInt(1)
+            self.writeVInt(1)
+            self.writeVInt(0)
+            self.writeVInt(3000)
+            self.writeVInt(0)
+            self.writeVInt(0)
+        }
     }
 
     // Shop Chests

@@ -10,7 +10,7 @@
   "author": "greedycell",
   "license": "ISC",
   "dependencies": {
-    "figlet": "^1.9.4",
+    "figlet": "^1.11.4",
     "fs": "^0.0.1-security",
     "mongoose": "^9.1.5",
     "net": "^1.0.2",

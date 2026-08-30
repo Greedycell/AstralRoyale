@@ -6,10 +6,12 @@ const UdpConnectionInfoMessage = require('../Protocol/Messages/Server/UdpConnect
 const SectorStateMessage = require('../Protocol/Messages/Server/SectorStateMessage')
 
 class LogicBattle {
-  constructor() {
+  constructor(data = null) {
     this.id = LogicBattle.getNextBattleID()
     this.turn = 1
     this.checksum = 0
+    this.clientTurn = 0
+    this.clientChecksum = 0
     this.commands = []
     this.battleLastCommandTime = Date.now()
     this.crowns = []
@@ -18,6 +20,7 @@ class LogicBattle {
     this.goHomePlayers = new Set()
     this.ended = false
     this.battleType = '1v1'
+    this.data = data
     LogicBattle.activeBattles.set(this.id, this)
     for (let i = 0; i < this.clients.length; i++) {
       let allclients = this.clients[i]
@@ -39,7 +42,17 @@ class LogicBattle {
   async rejoinClient(client) {
     if (!client || !client.player) return false
     this.addClient(client)
-    return this.resyncClient(client)
+    const data = {}
+    data.targetPlayer = client
+    return this.resyncClient(client, this.data)
+  }
+
+  async joinLive(client, targetPlayer, data) {
+    if (!client || !client.player) return false
+    client.isSpectating = true
+    this.addClient(client)
+    data.targetPlayer = targetPlayer
+    return this.resyncClient(client, data)
   }
 
   addClient(client) {
@@ -49,6 +62,8 @@ class LogicBattle {
       client.battle = this
       this.crowns.push(0)
     } else if (!client.battle) client.battle = this
+    
+    client.destroyed = false
 
     return true
   }
@@ -66,6 +81,7 @@ class LogicBattle {
     let tickCount = 0
     await this.setBattleToClients(...activePlayers)
 
+    //await new Promise(resolve => setTimeout(resolve, 3000)) // 5 sec wait
     this.interval = setInterval(async () => {
       if (this.ended) {
         clearInterval(this.interval)
@@ -77,14 +93,32 @@ class LogicBattle {
       tickCount++
       this.time--
 
+      this.checksum = this.calculateChecksum(this.turn, this.commands/*pendingCommands*/)
       const pendingCommands = this.commands.splice(0)
-      this.checksum = this.calculateChecksum(this.turn, pendingCommands)
+      this.clientTurn = this.turn// + 79
+      this.clientChecksum = this.checksum// + 127
       const battleClients = this.clients.filter(client => client && client.player)
+      //console.log(this.clientTurn, this.clientChecksum)
+
+      // TODO: check if the towers are destroyed then send battleresultmessage
+      /*for (const client of battleClients) {
+        if (!client || !client.player) continue
+        const connectedClientz = battleClients.every(client => client && client.player && !client.destroyed)
+        if (connectedClientz) {
+          const timeSinceLastCommand = Date.now() - this.battleLastCommandTime
+          const commandTimeoutMs = 5000 // 5 secs
+          if (timeSinceLastCommand > commandTimeoutMs) {
+            for (const client of battleClients) {
+              this.stopBattle(client)
+            }
+          }
+        }
+      }*/
 
       for (const client of battleClients) {
         if (!client || !client.player) continue
         client.tick = tickCount
-        await new SectorHeartbeatMessage(client, this.turn, this.checksum, pendingCommands).send()
+        await new SectorHeartbeatMessage(client, this.clientTurn, this.clientChecksum, pendingCommands).send()
       }
 
       if (this.time <= 13) {
@@ -92,7 +126,13 @@ class LogicBattle {
           if (!client || !client.player) continue
           const opponent = battleClients.find(candidate => candidate.player.lowID !== client.player.lowID)
           if (opponent) {
-            await new BattleResultMessage(client, 1, opponent).send()
+            const ownCrowns = this.getCrowns(client)
+            const opponentCrowns = this.getCrowns(opponent)
+            await new BattleResultMessage(client, ownCrowns, opponentCrowns).send()
+
+            client.player.trophies += 30
+            client.player.markModified('trophies')
+            await client.player.save()
           }
         }
       }
@@ -118,6 +158,17 @@ class LogicBattle {
     this.goHomeCount = 0
     for (const client of this.clients) {
       if (!client || !client.player) continue
+      const opponent = this.getOpponent(client)
+      const ownCrowns = this.getCrowns(client)
+      const opponentCrowns = this.getCrowns(opponent)
+      await new BattleResultMessage(client, ownCrowns, opponentCrowns).send()
+      if (client.isSpectating) {
+        if (client.battle === this) {
+          client.battle = null
+        }
+        client.isSpectating = false
+        continue
+      }
       client.player.battleID = 0
       client.player.markModified('battleID')
       await client.player.save()
@@ -145,13 +196,15 @@ class LogicBattle {
     return true
   }
 
-  async resyncClient(client) {
+  async resyncClient(client, data) {
     if (!client || !client.player) return false
-    const opponent = this.getOpponent(client)
+    const player = data.targetPlayer || client
+    const opponent = this.getOpponent(player)
+    if (data !== undefined) this.data = data
     await new StopHomeLogicMessage(client).send()
     await new UdpConnectionInfoMessage(client).send()
-    await new SectorStateMessage(client, this.getBattleType(), opponent ? opponent.player : client.player).send()
-    await new SectorHeartbeatMessage(client, this.turn, this.checksum, (this.commands || []).slice()).send()
+    await new SectorStateMessage(client, this.getBattleType(), player, opponent, this.data).send()
+    await new SectorHeartbeatMessage(client, this.clientTurn || Math.max(0, this.turn - 5000), this.clientChecksum || Math.max(0, this.checksum - 5000), (this.commands || []).slice()).send()
     return true
   }
 
@@ -184,6 +237,17 @@ class LogicBattle {
     }
 
     return true
+  }
+
+  getCrowns(client) {
+    if (!client) return 0
+    const index = this.clients.indexOf(client)
+    if (index === -1) return 0
+
+    // TODO: crowns for result
+    if (!this.crowns[index]) this.crowns[index] = Math.floor(Math.random() * 4)
+
+    return this.crowns[index] || 0
   }
 
   sendEvent(event, from) {

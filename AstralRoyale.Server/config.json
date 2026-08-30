@@ -15,15 +15,18 @@
         },
         "Debug": true,
         "StreamerMode": true,
-        "Fingerprint": "05c01a11e6c58c5f7a9d1e98e21d936d1ec0e153",
-        "RedirectionURL": "mc.mastersurvival.eu",
+        "RedirectionURL": "gamec.clashroyaleapp.com",
         "ContentPatchEnabled": false,
-        "ContentURL": "http://192.168.116.1:9340/",
+        "ContentURL": "http://192.168.1.108:9340/",
         "UpdateURL": "https://github.com/Greedycell/AstralRoyale",
         "MaintenanceEnabled": false,
         "MaintenanceSeconds": 0,
         "Admins": [],
-        "Banned": []
+        "Banned": [],
+        "UdpIP": "192.168.1.108",
+        "UdpPort": 9449,
+        "FakeMultiplayer": false,
+        "WordFilter": true
     },
     "Database": {
         "Host": "127.0.0.1",

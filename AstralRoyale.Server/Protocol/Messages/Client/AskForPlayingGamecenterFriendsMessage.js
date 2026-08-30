@@ -1,5 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const FriendsListMessage = require('../Server/FriendsListMessage')
+const AvatarOnlineStatusUpdatedMessage = require('../Server/AvatarOnlineStatusUpdatedMessage')
 
 class AskForPlayingGamecenterFriendsMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -13,6 +14,8 @@ class AskForPlayingGamecenterFriendsMessage extends PiranhaMessage {
 
   async process () {
     await new FriendsListMessage(this.client, 2).send()
+    /*await new AvatarOnlineStatusUpdatedMessage(this.client, 0, 27, 3).send()
+    await new AvatarOnlineStatusUpdatedMessage(this.client, 0, 28, 3).send()*/
   }
 }
 

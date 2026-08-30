@@ -1,5 +1,5 @@
-const Blake2b = require("./blake2b"),
-crypto = require("crypto");
+const Blake2b = require('./blake2b'),
+crypto = require('crypto');
 
 module.exports = class {
     constructor(input) {

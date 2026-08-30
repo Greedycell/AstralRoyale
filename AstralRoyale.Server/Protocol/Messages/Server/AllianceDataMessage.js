@@ -69,7 +69,7 @@ class AllianceDataMessage extends PiranhaMessage {
       const allianceMembers = [...members].sort((a, b) => (b.trophies || 0) - (a.trophies || 0))
       allianceMembers.forEach((member, index) => {
         this.writeLong(member.highID, member.lowID) // ID
-        this.writeString(member.name || '') // Name
+        this.writeString(member.name) // Name
 
         // Arena
         this.writeVInt(member.arena || 0)

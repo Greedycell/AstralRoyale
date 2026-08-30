@@ -12,7 +12,10 @@ class StartMissionMessage extends PiranhaMessage {
   async decode () {}
 
   async process () {
-    await new SectorStateMessage(this.client, 0).send()
+    let data = {
+      arena: 2
+    }
+    await new SectorStateMessage(this.client, 0, this.client, null, data).send()
   }
 }
 

@@ -4,14 +4,15 @@ const utils = require('../../../Utils')
 const config = require('../../../config.json')
 
 class SectorStateMessage extends PiranhaMessage {
-  constructor (client, battleType, enemy) {
+  constructor (client, battleType, player, enemy, data) {
     super()
     this.id = 21873
     this.client = client
-    this.client2 = client
     this.version = 1
     this.battleType = battleType
+    this.player = player
     this.enemy = enemy
+    this.data = data
 
     this.kingTowerHP = [
         2400, 2568, 2736, 2904, 3096, 3312, 3528, 3768, 4008, 4392, 4824, 5304, 5832
@@ -30,181 +31,694 @@ class SectorStateMessage extends PiranhaMessage {
     switch (this.battleType) {
       case 0: // NPC
         this.writeVInt(0) // IsCompressed
-        this.writeHex('012A02020100017F7F7F7F0000000000000100000000000000000000000000000800000000000000000100000000000000000000000102')
-        
-        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
-        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
-        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
-        this.writeString(this.client.player.name)
-
-        this.writeHex('199F368606A31D000000000029000000000008130501BB97040502AB10050302050400050C8C14050D00050E00050F98110516B21105199487979707051A04051C00051D8A88D5440521000522000523000524000526000525000000000505068F3C05078D0F050B2905140B051B0B011A320C00000B0202B8DB01000000')
-        
-        // Alliance
-        {
-          this.InClan = 0
-          
-          if (this.InClan === 1) {
-            this.writeByte(8) // InClan
-            this.writeHex('6920506167757269') // AllianceName
-          }
-          else {
-            this.writeByte(0) // InClan
-          }
-        }
-
-        this.writeHex('9201BE5193080094249023019F0318000000002B00217F0B0007037BF994EABEEA090229017F7F00')
-        
-        this.writeVInt(this.client.player.highID)
-        this.writeVInt(this.client.player.lowID)
-        
-        this.writeHex('0000000000000000000601000009000000010000008E02F27D0000067A06230123012301230123002300010001000001050005010502050305040505')
-        
-        // RightPrincessTower
-        this.writeVInt(0) // Level
-        this.writeVInt(13)
-        
-        this.writeHex('A4E2019C8E0300007F00C07C000002000000000000090DAC36A46500007F008004000001000000000000')
-        
-        // LeftPrincessTower
-        this.writeVInt(0) // Level
-        this.writeVInt(13)
-        this.writeHex('AC369C8E0300007F00C07C000001000000000000090DA4E201A46500007F008004000002000000000000090DA88C01B82E00007F00800400000000000000001A04047C067F0407030201007F7F7F007F00000500000000007F7F7F7F7F7F7F7F00000000')
-        
-        // PlayerKingTower
-        this.writeVInt(0) // Level
-        this.writeVInt(13)
-        this.writeHex('A88C0188C50300007F00C07C00000000000000001A04067C027D0407000305007F7F7F007F0000')
-        
-        this.writeVInt(config.Player.StartingBattleMana) // StartingElixir
-
-        this.writeHex('00000000007F7F7F7F7F7F7F7F00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000AC2F00A22B00AC2F00A22B00A84400984B0000000000A40100000000A40100000000A40100000000A40100000000A40100000000A401')
-        
-        // Trainer Deck
-        this.writeHex('FF01')
-        this.writeHex('190B8F010B090B2102200B140A10051F0A')
-        /*let trainerDeck = this.client.player.decks[this.client.player.selectedDeck]
-        trainerDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })*/
-
-        this.writeVInt(0)
-
-        // Own Deck
-        this.writeHex('FF01')
-        let currentDeck = this.client.player.decks[this.client.player.selectedDeck]
-        currentDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })
-
-        this.writeVInt(0)
-        this.writeHex('05060202040201030000000000000000000204000C00000093E5BFB00D00')
-
-        break
-
-      case 1: // 1v1
-        this.writeVInt(0) // IsCompressed
-
-        this.writeHex('012A02020001020100000000155449445F4C41444445525F51554553545F504C4159000000000A0101000001010001')
-
-        // Home Player Data
-        this.writeVInt(this.client.player.highID)
-        this.writeVInt(this.client.player.lowID)
-        this.writeVInt(this.client.player.highID)
-        this.writeVInt(this.client.player.lowID)
-        this.writeVInt(this.client.player.highID)
-        this.writeVInt(this.client.player.lowID)
-        this.writeString(this.client.player.name)
-        this.writeVInt(5) // Unknown
-        this.writeVInt(this.client.player.trophies) // Own Trophies
-        this.writeHex('001D0000000000290000000000080A0501BB02050206050302050400050D00050E00051C00051D8888D5440526000525000000000405061E050701050B29051B01000000010002000001017F050100000102')
-        this.writeVInt(this.enemy.highID)
-        this.writeVInt(this.enemy.lowID)
-        this.writeVInt(this.enemy.highID)
-        this.writeVInt(this.enemy.lowID)
-        this.writeVInt(this.enemy.highID)
-        this.writeVInt(this.enemy.lowID)
-        this.writeString(this.enemy.name)
-        this.writeVInt(5) // Unknown
-        this.writeVInt(this.enemy.trophies) // Opponent Trophies
-        this.writeHex('00000000000000290000000000080905019503050206050302050D00050E05051D8688D544052500050400051C0000000004050B29051B0105070105061E00000001000200000101010500000001002B0021ABCDD2AB0B0B000DB01BA3BBECAEFD0C030002')
-        this.writeVInt(this.client.player.highID)
-        this.writeVInt(this.client.player.lowID)
-        this.writeVInt(0) // Unknown
-        this.writeVInt(this.enemy.highID)
-        this.writeVInt(this.enemy.lowID)
-        this.writeHex('000000000000000000010100000700000000000000B903C77C0000067A06230123012301230123002300010001000001050005010502050305040505000DA4E2019C8E0300007F00C07C000002000000000000000DAC36A46500007F008004000001000000000000000DAC369C8E0300007F00C07C000001000000000000000DA4E201A46500007F008004000002000000000000000DA88C01B82E00007F00800400000000000000001A0400057F030406020301007F7F7F007F00000500000000007F7F7F7F7F7F7F7F00000000000DA88C0188C50300007F00C07C00000000000000001800000500000000007F7F7F7F7F7F7F7F00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B81500B81500B81500B81500A02500A0250000000000A40100000000A40100000000A40100000000A40100000000A40100000000A4')
-
-        this.writeVInt(0)
-
-        this.writeHex('FF01')
-
-        let playerDeck = this.client.player.decks[this.client.player.selectedDeck]
-        playerDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })
-
-        this.writeVInt(0)
-
-        this.writeHex('00050602020402010300000000000000000101000C000000BCEF87EA0100') 
-        
-        break
-
-      case 2: // 2v2
-        let duoTowers = 10
-
-        this.writeByte(0) // IsCompressed
 
         this.writeBoolean(true)
         this.writeVInt(42)
         this.writeVInt(2)
         this.writeBoolean(false)
         this.writeBoolean(true)
-        this.writeVInt(null)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeBoolean(true)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeString(null)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(8)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(1)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID) // HighID, LowID
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID) // HighID, LowID
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID) // HighID, LowID
+        this.writeString(this.player.player.name)
+
+        this.writeVInt(25)
+        this.writeVInt(3487)
+        this.writeVInt(390)
+        this.writeVInt(1891)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(41)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(8)
+        this.writeVInt(19)
+        this.writeVInt(5)
+        this.writeVInt(1)
+        this.writeVInt(34299)
+        this.writeVInt(5)
+        this.writeVInt(2)
+        this.writeVInt(1067)
+        this.writeVInt(5)
+        this.writeVInt(3)
+        this.writeVInt(2)
+        this.writeVInt(5)
+        this.writeVInt(4)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(12)
+        this.writeVInt(1292)
+        this.writeVInt(5)
+        this.writeVInt(13)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(14)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(15)
+        this.writeVInt(1112)
+        this.writeVInt(5)
+        this.writeVInt(22)
+        this.writeVInt(1138)
+        this.writeVInt(5)
+        this.writeVInt(25)
+        this.writeVInt(963830228)
+        this.writeVInt(5)
+        this.writeVInt(26)
+        this.writeVInt(4)
+        this.writeVInt(5)
+        this.writeVInt(28)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(29)
+        this.writeVInt(72000010)
+        this.writeVInt(5)
+        this.writeVInt(33)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(34)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(35)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(36)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(38)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(37)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(5)
+        this.writeVInt(6)
+        this.writeVInt(3855)
+        this.writeVInt(5)
+        this.writeVInt(7)
+        this.writeVInt(973)
+        this.writeVInt(5)
+        this.writeVInt(11)
+        this.writeVInt(41)
+        this.writeVInt(5)
+        this.writeVInt(20)
+        this.writeVInt(11)
+        this.writeVInt(5)
+        this.writeVInt(27)
+        this.writeVInt(11)
+        this.writeVInt(1)
+        this.writeVInt(26)
+        this.writeVInt(50)
+        this.writeVInt(12)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(11)
+        this.writeBoolean(false)
+
+        // Alliance
+        {
+          if (this.player.player.inClan) {
+            let clan = null
+            if (this.player && this.player.mongoose && typeof this.player.mongoose.getClanByID === 'function') {
+                try {
+                    clan = await this.player.mongoose.getClanByID(this.player.player.clan.ClanHighID, this.player.player.clan.ClanLowID)
+                } catch (e) {
+                    console.error(e)
+                    clan = null
+                }
+            }
+
+            this.writeBoolean(true) // InAlliance
+            this.writeLogicLong(this.player.player.clan.ClanHighID, this.player.player.clan.ClanLowID)
+            this.writeString(clan ? String(clan.name || '') : '')
+            this.writeVInt(clan.badge + 1)
+          }
+          else {
+            this.writeBoolean(false) // InAlliance
+          }
+        }
+
+        this.writeVInt(5246)
+        this.writeVInt(531)
+        this.writeVInt(0)
+        this.writeVInt(2324)
+        this.writeVInt(2256)
+        this.writeVInt(1)
+        this.writeVInt(223)
+        this.writeVInt(24)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(43)
+        this.writeVInt(0)
+        this.writeVInt(33)
+        this.writeVInt(-1)
+        this.writeVInt(11)
+        this.writeVInt(0)
+        this.writeInt(117668857)
+        this.writeVInt(1319623316)
+
+        this.writeVInt(this.data.arena ?? 2) // ArenaData
+
+        this.writeVInt(41)
+        this.writeVInt(1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID)
+
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(6)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(9)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(142)
+        this.writeVInt(-142)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(6)
+        this.writeVInt(-6)
+        this.writeVInt(6)
+        this.writeVInt(35)
+        this.writeVInt(1)
+        this.writeVInt(35)
+        this.writeVInt(1)
+        this.writeVInt(35)
+        this.writeVInt(1)
+        this.writeVInt(35)
+        this.writeVInt(1)
+        this.writeVInt(35)
+        this.writeVInt(0)
+        this.writeVInt(35)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeVInt(5)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(1)
+        this.writeVInt(5)
+        this.writeVInt(2)
+        this.writeVInt(5)
+        this.writeVInt(3)
+        this.writeVInt(5)
+        this.writeVInt(4)
+        this.writeVInt(5)
+        this.writeVInt(5)
+        
+        // RightPrincessTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(14500)
+        this.writeVInt(25500)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(-256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(2)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+
+        // EnemyKingTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(3500)
+        this.writeVInt(6500)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+
+        // LeftPrincessTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(3500)
+        this.writeVInt(25500)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(-256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+
+        // LeftEnemyPrincessTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(14500)
+        this.writeVInt(6500)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(2)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+
+        // EnemyRightPrincessTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(9000)
+        this.writeVInt(3000)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+        this.writeBoolean(true)
+        this.writeVInt(4)
+        this.writeVInt(4)
+        this.writeVInt(-4)
+        this.writeVInt(6)
+        this.writeVInt(-1)
+        this.writeVInt(4)
+        this.writeVInt(7)
+        this.writeVInt(3)
+        this.writeVInt(2)
+        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+
+        // KingTower
+        this.writeVInt(this.player.player.level - 1) // Level
+        this.writeVInt(13)
+        this.writeVInt(9000)
+        this.writeVInt(29000)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(-256)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+        this.writeBoolean(true)
+        this.writeVInt(4)
+        this.writeVInt(6)
+        this.writeVInt(-4)
+        this.writeVInt(2)
+        this.writeVInt(-3)
+        this.writeVInt(4)
+        this.writeVInt(7)
+        this.writeVInt(0)
+        this.writeVInt(3)
+        this.writeVInt(5)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(0)
+        this.writeVInt(0)
+
+        this.writeVInt(config.Player.StartingBattleMana)
+
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeVInt(-1)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+
+        // LogicHitpointComponent
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // EnemyLeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // LeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // EnemyLeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // RightPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.kingTowerHP[this.player.player.level - 1]) // KingTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.kingTowerHP[this.player.player.level - 1]) // EnemyKingTowerHealth
+        this.writeVInt(0)
+
+        // LogicCharacterBuffComponent
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        
+        // Trainer Deck
+        this.writeHex('FF01')
+        //this.writeHex('190B8F010B090B2102200B140A10051F0A')
+        let trainerDeck = this.player.player.decks[this.player.player.selectedDeck]
+        trainerDeck.forEach(cardSCID => {
+            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+            this.writeVInt(card.ID)
+            this.writeVInt(card.level)
+        })
+
+        this.writeVInt(0)
+
+        // Own Deck
+        this.writeHex('FF01')
+        let currentDeck = this.player.player.decks[this.player.player.selectedDeck]
+        currentDeck.forEach(cardSCID => {
+            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+            this.writeVInt(card.ID)
+            this.writeVInt(card.level)
+        })
+
+        this.writeVInt(0)
+        this.writeVInt(5)
+        this.writeVInt(6)
+        this.writeVInt(2)
+        this.writeVInt(2)
+        this.writeVInt(4)
+        this.writeVInt(2)
+        this.writeVInt(1)
+        this.writeVInt(3)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(2)
+        this.writeVInt(4)
+        this.writeVInt(0)
+        this.writeVInt(12)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(1795684691)
+        this.writeVInt(0)
+
+        break
+
+      case 1: // 1v1
+        let towers = 6
+
+        this.writeVInt(0) // IsCompressed
+
+        this.writeBoolean(true)
+        this.writeVInt(42)
+        this.writeVInt(2)
+        this.writeBoolean(false)
+        this.writeBoolean(true)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(2)
         this.writeVInt(1)
         this.writeBoolean(false)
-        this.writeStringReference(null)
-        this.writeStringReference(null)
+        this.writeString(null)
+        this.writeString(null)
         this.writeVInt(10)
         this.writeVInt(1)
         this.writeVInt(1)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(1)
-        this.writeVInt(null)
-        
+        this.writeVInt(0)
+
         this.writeBoolean(true)
-        this.writeVInt(null)
-        this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(2)
-        
-        this.writeStringReference(null)
-        this.writeVInt(5)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID)
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID)
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID)
+        this.writeString(this.player.player.name)
+        this.writeVInt(5) // Unknown
+        this.writeVInt(this.player.player.trophies) // Own Trophies
+
+        this.writeVInt(0)
         this.writeVInt(29)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(41)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(8)
         this.writeVInt(10)
         this.writeVInt(5)
@@ -218,28 +732,28 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(2)
         this.writeVInt(5)
         this.writeVInt(4)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(13)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(14)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(28)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(29)
         this.writeVInt(72000008)
         this.writeVInt(5)
         this.writeVInt(38)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(37)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(4)
         this.writeVInt(5)
         this.writeVInt(6)
@@ -253,47 +767,47 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(5)
         this.writeVInt(27)
         this.writeVInt(1)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(1)
         this.writeVInt(-1)
         this.writeVInt(5)
         this.writeVInt(1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeVInt(1)
         this.writeBoolean(false)
 
         this.writeBoolean(true)
-        this.writeLogicLong(null, null) // HighID, LowID
-        this.writeLogicLong(null, null) // HighID, LowID
-        this.writeLogicLong(null, null) // HighID, LowID
-        this.writeString(this.enemy.name)
-        this.writeVInt(1) // Level
-        this.writeVInt(this.enemy.trophies) // Opponent Trophies
-        
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeLogicLong(this.enemy.player.highID, this.enemy.player.lowID)
+        this.writeLogicLong(this.enemy.player.highID, this.enemy.player.lowID)
+        this.writeLogicLong(this.enemy.player.highID, this.enemy.player.lowID)
+        this.writeString(this.enemy.player.name)
+        this.writeVInt(5) // Unknown
+        this.writeVInt(this.enemy.player.trophies) // Opponent Trophies
+
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(41)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(8)
         this.writeVInt(9)
         this.writeVInt(5)
@@ -307,7 +821,7 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(2)
         this.writeVInt(5)
         this.writeVInt(13)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(14)
         this.writeVInt(5)
@@ -316,16 +830,16 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(72000006)
         this.writeVInt(5)
         this.writeVInt(37)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(4)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(28)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(4)
         this.writeVInt(5)
         this.writeVInt(11)
@@ -339,41 +853,44 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(5)
         this.writeVInt(6)
         this.writeVInt(30)
-        this.writeVInt(null)
+        this.writeVInt(0)
 
-        if (this.enemy.inClan === 1) {
-          /*let clan = null
-          if (this.client && this.client.mongoose && typeof this.client.mongoose.getClanByID === 'function') {
-              try {
-                  clan = await this.client.mongoose.getClanByID(this.enemy.clan.ClanHighID, this.enemy.clan.ClanLowID)
-              } catch (e) {
-                  console.error(e)
-                  clan = null
-              }
+        // Alliance
+        {
+          if (false/*this.player.player.inClan*/) {
+            let clan = null
+            if (this.player && this.player.mongoose && typeof this.player.mongoose.getClanByID === 'function') {
+                try {
+                    clan = await this.player.mongoose.getClanByID(this.player.player.clan.ClanHighID, this.player.player.clan.ClanLowID)
+                } catch (e) {
+                    console.error(e)
+                    clan = null
+                }
+            }
+
+            this.writeBoolean(true) // InAlliance
+            this.writeLogicLong(this.player.player.clan.ClanHighID, this.player.player.clan.ClanLowID)
+            this.writeString(clan ? String(clan.name || '') : '')
+            this.writeVInt(clan.badge + 1)
           }
-          this.writeVInt(2) // Has Clan = 2
-          this.writeLogicLong(this.enemy.clan.ClanHighID, this.enemy.clan.ClanLowID)
-          this.writeString(clan ? String(clan.name || '') : '')
-          this.writeVInt(clan.badge + 1)*/
-
-          this.writeVInt(0)
-        } else {
-          this.writeVInt(0)
+          else {
+            this.writeBoolean(false) // InAlliance
+          }
         }
 
-        this.writeVInt(3) // 0 = 1v1, 3 = 2v2
+        this.writeVInt(0) // 0 = 1v1, 3 = 2v2
         this.writeVInt(1) // Count
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(1)
         this.writeVInt(1)
         this.writeVInt(5)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeVInt(1)
@@ -381,191 +898,179 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeVInt(43)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(33)
         this.writeVInt(15000013) // Location (old = 1522160491)
         this.writeVInt(11)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeInt(229645219)
         this.writeVInt(1742068539)
-        this.writeVInt(3) // ArenaData
         
-        this.writeLogicLong(this.client.player.highID, this.client.player.lowID) // HighID, LowID
-        this.writeLogicLong(this.enemy.highID, this.enemy.lowID) // HighID, LowID
-        this.writeLogicLong(this.enemy.highID, this.enemy.lowID) // HighID, LowID
-        this.writeLogicLong(this.enemy.highID, this.enemy.lowID) // HighID, LowID
-        this.writeVInt(0)
+        this.writeVInt(this.data.arena ?? 2) // ArenaData
+        this.writeHex('0002') // this.writeLogicLong(this.enemy.player.highID, this.enemy.player.lowID)
+        this.writeLogicLong(this.player.player.highID, this.player.player.lowID)
+        this.writeVInt(0) // Unknown
+        this.writeLogicLong(this.enemy.player.highID, this.enemy.player.lowID)
 
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(1)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(15) // Gamemode
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        
+        this.writeVInt(this.data.gamemode ?? 7) // Gamemode
+
+        this.writeVInt(0)
+        this.writeVInt(0)
         
         this.writeBoolean(false) // IsTournament
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeBoolean(false) // IsOvertime
-        this.writeBoolean(false) // IsLiveReplay
+        this.writeBoolean(this.data?.live ?? false) // IsLiveReplay
 
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(249)
         this.writeVInt(-249)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(10)
-        this.writeVInt(-10)
-        this.writeVInt(10)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(6)
+        this.writeVInt(-6)
+        this.writeVInt(6)
 
-        // KingTower
         this.writeDataReference(35, 1)
         this.writeDataReference(35, 1)
         this.writeDataReference(35, 1)
         this.writeDataReference(35, 1)
-        // PrincessTower
         this.writeDataReference(35, 0)
         this.writeDataReference(35, 0)
-        this.writeDataReference(35, 0)
-        this.writeDataReference(35, 0)
-        // KingTowerMiddle
-        this.writeDataReference(35, 16)
-        this.writeDataReference(35, 16)
 
         // LogicGameObject::encodeComponent
         this.writeVInt(1)
-        this.writeVInt(2)
-        this.writeVInt(3)
+        this.writeVInt(0)
+        this.writeVInt(1)
         this.writeVInt(0)
         this.writeVInt(0)
         this.writeVInt(1)
-        this.writeVInt(2)
-        this.writeVInt(3)
-        this.writeVInt(1)
-        this.writeVInt(0)
 
-        for (var i = 0; i < duoTowers; i++)
+        for (var i = 0; i < towers; i++)
         {
             this.writeVInt(5)
             this.writeVInt(i)
         }
 
         // EnemyLeftPrincessTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.enemy.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(14500)
         this.writeVInt(25500)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(-256)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
 
         // RightPrincessTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.player.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(3500)
         this.writeVInt(6500)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(256)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
 
         // EnemyRightPrincessTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.enemy.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(3500)
         this.writeVInt(25500)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(-256)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(1)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
 
         // LeftPrincessTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.player.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(14500)
         this.writeVInt(6500)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(256)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(2)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
 
         // KingTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.player.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(9000)
         this.writeVInt(3000)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(256)
-        for (let i = 0; i < 6; i++) this.writeVInt(null)
+        for (let i = 0; i < 6; i++) this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
         this.writeBoolean(true)
         this.writeBoolean(false)
         this.writeBoolean(true)
         this.writeBoolean(true)
         this.writeVInt(4)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(-1)
         this.writeVInt(3)
@@ -574,120 +1079,116 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(2)
         this.writeVInt(3)
         this.writeVInt(1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(-1)
         this.writeVInt(-1)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(5)
-        for (let i = 0; i < 5; i++) this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(config.Player.StartingBattleMana)
+        for (let i = 0; i < 5; i++) this.writeVInt(0)
         for (let i = 0; i < 8; i++) this.writeVInt(-1)
         this.writeBoolean(false)
         this.writeBoolean(false)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
 
         // EnemyKingTower
-        this.writeVInt(0) // Level
+        this.writeVInt(this.enemy.player.level - 1) // Level
         this.writeVInt(13)
         this.writeVInt(9000)
         this.writeVInt(29000)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(-1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(-256)
-        for (let i = 0; i < 6; i++) this.writeVInt(null)
+        for (let i = 0; i < 6; i++) this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeBoolean(false)
         this.writeBoolean(true)
         this.writeBoolean(true)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(5)
-        for (let i = 0; i < 5; i++) this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(config.Player.StartingBattleMana)
+        for (let i = 0; i < 5; i++) this.writeVInt(0)
         for (let i = 0; i < 8; i++) this.writeVInt(-1)
         this.writeBoolean(false)
         this.writeBoolean(false)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
 
         for (let i = 0; i < 6; i++) {
           this.writeBoolean(false)
           this.writeBoolean(false)
           for (let j = 0; j < 7; j++) {
-            this.writeVInt(null)
+            this.writeVInt(0)
           }
         }
         
         // LogicHitpointComponent
-        this.writeVInt(2352)
+        this.writeVInt(this.princessTowerHP[this.enemy.player.level - 1]) // EnemyLeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // LeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.enemy.player.level - 1]) // EnemyLeftPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.princessTowerHP[this.player.player.level - 1]) // RightPrincessTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.kingTowerHP[this.player.player.level - 1]) // KingTowerHealth
+        this.writeVInt(0)
+        this.writeVInt(this.kingTowerHP[this.enemy.player.level - 1]) // EnemyKingTowerHealth
         this.writeVInt(0)
 
-        this.writeVInt(2352)
+        // LogicCharacterBuffComponent
         this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(100)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(36)
 
-        this.writeVInt(2352)
-        this.writeVInt(0)
-
-        this.writeVInt(2352)
-        this.writeVInt(0)
-
-        this.writeVInt(4522)
-        this.writeVInt(0)
-
-        this.writeVInt(4522)
-        this.writeVInt(0)
-
-        this.writeVInt(4522)
-        this.writeVInt(0)
-
-        this.writeVInt(4522)
-        this.writeVInt(0)
-        
         // Deck
         this.writeHex('FF01')
-        let playerOneDeck = this.client.player.decks[this.client.player.selectedDeck]
-        playerOneDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })
-
-        this.writeHex('FE01')
-        let playerTwoDeck = this.client.player.decks[this.client.player.selectedDeck]
-        playerTwoDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })
-
-        this.writeHex('FE02')
-        let playerThreeDeck = this.client.player.decks[this.client.player.selectedDeck]
-        playerThreeDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
-        })
-
-        this.writeHex('FE03')
-        let playerFourDeck = this.client.player.decks[this.client.player.selectedDeck]
-        playerFourDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.client.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+        let playerDeck = this.player.player.decks[this.player.player.selectedDeck]
+        playerDeck.forEach(cardSCID => {
+            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
             this.writeVInt(card.ID)
             this.writeVInt(card.level)
         })
 
         this.writeVInt(0)
-
         this.writeBoolean(false)
         this.writeVInt(5)
         this.writeVInt(6)
@@ -697,23 +1198,28 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(2)
         this.writeVInt(1)
         this.writeVInt(3)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeBoolean(false)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(1)
         this.writeVInt(1)
-        this.writeVInt(null)
+        this.writeVInt(0)
         this.writeVInt(12)
-        this.writeVInt(null)
-        this.writeVInt(null)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         this.writeVInt(245431292)
-        this.writeVInt(null)
+        this.writeVInt(0)
+        
+        break
+
+      case 2: // 2v2
+        let duoTowers = 10
 
         break
 

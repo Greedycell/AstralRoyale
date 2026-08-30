@@ -137,12 +137,12 @@ class ClientAvatar {
     {
         let clan = null
         if (self.client && self.client.mongoose && typeof self.client.mongoose.getClanByID === 'function') {
-            try {
-                clan = await self.client.mongoose.getClanByID(self.client.player.clan.ClanHighID, self.client.player.clan.ClanLowID)
-            } catch (e) {
-                console.error(e)
-                clan = null
-            }
+          try {
+            clan = await self.client.mongoose.getClanByID(self.client.player.clan.ClanHighID, self.client.player.clan.ClanLowID)
+          } catch (e) {
+            console.error(e)
+            clan = null
+          }
         }
 
         self.writeByte(9)
@@ -181,7 +181,7 @@ class ClientAvatar {
     self.writeVInt(0)
     self.writeVInt(Date.now() / 1000 | 0)
     self.writeVInt(Date.now() / 1000 | 0)
-    self.writeVInt(0)//Tick
+    self.writeVInt(0)
   }
 }
 

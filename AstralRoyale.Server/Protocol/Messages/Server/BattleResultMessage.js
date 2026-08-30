@@ -1,19 +1,21 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 
 class BattleResultMessage extends PiranhaMessage {
-  constructor (client) {
+  constructor (client, ownCrowns = 0, opponentCrowns = 0) {
     super()
     this.id = 28934
     this.client = client
     this.version = 1
+    this.ownCrowns = ownCrowns
+    this.opponentCrowns = opponentCrowns
   }
 
   async encode () {
-    this.writeVInt(1)
-    this.writeVInt(0) // Trophies (Own)
+    this.writeVInt(1) // 1 = Win, 2 = Lost, 3 = Draw
+    this.writeVInt(30) // Trophies (Own)
 
     this.writeVInt(0)
-    this.writeVInt(0) // Trophies (Opponent)
+    this.writeVInt(-30) // Trophies (Opponent)
 
     this.writeVInt(0)
     this.writeVInt(63)
@@ -21,8 +23,8 @@ class BattleResultMessage extends PiranhaMessage {
     this.writeVInt(0)
     this.writeVInt(0)
 
-    this.writeVInt(0) // Crown(s) (Own)
-    this.writeVInt(0) // Crown(s) (Opponent)
+    this.writeVInt(this.ownCrowns) // Crown(s) (Own)
+    this.writeVInt(this.opponentCrowns) // Crown(s) (Opponent)
 
     this.writeVInt(19)
     this.writeVInt(225)

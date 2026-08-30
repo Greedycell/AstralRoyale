@@ -22,7 +22,7 @@ class SectorHeartbeatMessage extends PiranhaMessage {
       switch (command.type) {
         case 51:
           this.writeVInt(command.tick || 0)
-          this.writeVInt(command.tick || 0)
+          this.writeVInt(command.checksum || 0)
 
           this.writeVInt(command.userId && command.userId.high ? command.userId.high : 0)
           this.writeVInt(command.userId && command.userId.low ? command.userId.low : 0)

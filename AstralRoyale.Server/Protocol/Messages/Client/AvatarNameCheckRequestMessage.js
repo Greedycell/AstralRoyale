@@ -1,5 +1,20 @@
+const fs = require('fs')
+const path = require('path')
+
 const PiranhaMessage = require('../../PiranhaMessage')
 const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
+const AvatarNameChangeFailedMessage = require('../Server/AvatarNameChangeFailedMessage')
+const AvatarNameCheckResponseMessage = require('../Server/AvatarNameCheckResponseMessage')
+const config = require('../../../config.json')
+
+const filter = fs.readFileSync(path.join(__dirname, '../../../filter.json'), 'utf8').split(/\r?\n/).filter(word => word.length > 0)
+function containsFilteredWord (name) {
+  if (!config.Server.WordFilter) return false
+  return filter.some(word => {
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(escapedWord, 'i').test(name)
+  })
+}
 
 class AvatarNameCheckRequestMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -25,17 +40,12 @@ class AvatarNameCheckRequestMessage extends PiranhaMessage {
     if (this.data.Name.length < 2 || this.data.Name.length > 15) {
       return
     }
+    if (containsFilteredWord(this.data.Name)) {
+      await new AvatarNameChangeFailedMessage(this.client).send()
+      return
+    }
 
-    this.client.player.name = this.data.Name
-    this.client.player.nameChangesCount += 1
-
-    this.client.player.markModified('name')
-    this.client.player.markModified('nameChangesCount')
-    await this.client.player.save()
-
-    await new AvailableServerCommandMessage(this.client, 278).send()
-
-    //this.client.destroy()
+    await new AvatarNameCheckResponseMessage(this.client, 0).send()
   }
 }
 

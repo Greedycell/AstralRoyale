@@ -5,6 +5,8 @@ const SectorStateMessage = require('../../Messages/Server/SectorStateMessage')
 const LogicBattle = require('../../../Core/LogicBattle')
 const StopHomeLogicMessage = require('../../Messages/Server/StopHomeLogicMessage')
 
+const config = require('../../../config.json')
+
 class LogicStartMatchmakeCommand {
   constructor () {}
 
@@ -21,6 +23,40 @@ class LogicStartMatchmakeCommand {
   }
 
   async process(self) {
+    let arena = self.client.player.arena + 2 || 3
+    let data = {
+      arena: arena,
+      gamemode: 7,
+      live: false
+    }
+
+    if (config.Server.FakeMultiplayer) {
+      const queueType = 'normal'
+      self.client.matchmakeQueueType = queueType
+      const matchResult = MatchmakingLobby.addPlayer(self.client, queueType)
+      const opponent = {}
+      opponent.player = {}
+      opponent.player.markModified = function (value) {}
+      opponent.player.save = function (value) {}
+      opponent.player.highID = -1
+      opponent.player.lowID = -1
+      opponent.player.name = 'Trainer Astral'
+      const battle = await new LogicBattle(34)
+      battle.battleType = '1v1'
+      battle.clients.push(self.client, opponent)
+      battle.start(500, self.client, opponent)
+      await new StopHomeLogicMessage(self.client).send()
+      await new UdpConnectionInfoMessage(self.client).send()
+      let data = {
+        arena: 28,
+        gamemode: 7
+      }
+      await new SectorStateMessage(self.client, 1, self.client, opponent.player, data).send()
+      MatchmakingLobby.removePlayer(self.client, queueType)
+      MatchmakingLobby.removePlayer(opponent, queueType)
+      return
+    }
+
     if (!this.data.Is2v2) { // normal 1v1
       await new MatchmakeInfoMessage(self.client, 300).send()
 
@@ -35,19 +71,19 @@ class LogicStartMatchmakeCommand {
       }
       self.client.log(`${self.client.player.lowID} vs ${opponent.player.lowID}`)
 
-      const battle = await new LogicBattle()
+      const battle = await new LogicBattle(data)
       battle.battleType = '1v1'
       battle.clients.push(self.client, opponent)
       battle.start(500, self.client, opponent)
 
       await new StopHomeLogicMessage(self.client).send()
       await new UdpConnectionInfoMessage(self.client).send()
-      await new SectorStateMessage(self.client, 1, opponent.player).send()
+      await new SectorStateMessage(self.client, 1, self.client, opponent, data).send()
 
       if (opponent) {
         await new StopHomeLogicMessage(opponent).sendOpponent(opponent)
         await new UdpConnectionInfoMessage(opponent).sendOpponent(opponent)
-        await new SectorStateMessage(opponent, 1, self.client.player).sendOpponent(opponent)
+        await new SectorStateMessage(opponent, 1, opponent, self.client, data).sendOpponent(opponent)
       }
 
       MatchmakingLobby.removePlayer(self.client, queueType)
@@ -65,7 +101,7 @@ class LogicStartMatchmakeCommand {
         return
       }
 
-      const battle = await new LogicBattle()
+      const battle = await new LogicBattle(data)
       battle.battleType = '2v2'
       battle.clients.push(...group)
       battle.start(500, ...group)
@@ -78,7 +114,7 @@ class LogicStartMatchmakeCommand {
       for (const client of group) {
         const opponent = group.find(candidate => candidate.player.lowID !== client.player.lowID)
         if (opponent) {
-          await new SectorStateMessage(client, 2, opponent.player).send()
+          await new SectorStateMessage(client, 2, opponent.player, arena).send()
         }
       }
 

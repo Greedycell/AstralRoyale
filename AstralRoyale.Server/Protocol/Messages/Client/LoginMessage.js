@@ -2,15 +2,13 @@ const PiranhaMessage = require('../../PiranhaMessage')
 const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const LoginOkMessage = require('../Server/LoginOkMessage')
 const OwnHomeDataMessage = require('../Server/OwnHomeDataMessage')
-const StopHomeLogicMessage = require('../../Messages/Server/StopHomeLogicMessage')
-const UdpConnectionInfoMessage = require('../../Messages/Server/UdpConnectionInfoMessage')
-const SectorStateMessage = require('../Server/SectorStateMessage')
 const InboxCountMessage = require('../Server/InboxCountMessage')
 const AllianceStreamMessage = require('../Server/AllianceStreamMessage')
 const AllianceOnlineStatusUpdatedMessage = require('../Server/AllianceOnlineStatusUpdatedMessage')
+const GamecenterAccountBoundMessage = require('../Server/GamecenterAccountBoundMessage')
 
+const ConnectedClients = require('../../../Core/ConnectedClients')
 const config = require('../../../config.json')
-
 const LogicBattle = require('../../../Core/LogicBattle')
 
 class LoginMessage extends PiranhaMessage {
@@ -164,8 +162,15 @@ class LoginMessage extends PiranhaMessage {
       await new InboxCountMessage(this.client).send()
       if (this.client.player.inClan) {
         await new AllianceStreamMessage(this.client).send()
-        await new AllianceOnlineStatusUpdatedMessage(this.client).send()
+        for (const client of ConnectedClients) {
+          try {
+            await new AllianceOnlineStatusUpdatedMessage(client).send()
+          } catch (error) {
+            console.log(error)
+          }
+        }
       }
+      await new GamecenterAccountBoundMessage(this.client).send()
     } else {
       const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
       if (activeBattle) {

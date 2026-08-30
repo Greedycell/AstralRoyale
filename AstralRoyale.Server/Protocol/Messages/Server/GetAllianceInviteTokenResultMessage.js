@@ -12,7 +12,7 @@ class GetAllianceInviteTokenResultMessage extends PiranhaMessage {
     this.writeBoolean(true)
 
     generateToken(8, newToken => {
-      this.client.player.friendToken = newToken
+      //this.client.player.friendToken = newToken
       this.writeString(newToken)
       //console.log(newToken)
     })

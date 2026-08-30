@@ -1,10 +1,10 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 
-class SetDeviceTokenMessage extends PiranhaMessage {
+class Unknown5 extends PiranhaMessage {
   constructor (bytes, client) {
     super(bytes)
     this.client = client
-    this.id = 13363
+    this.id = 5
     this.version = 1
   }
 
@@ -13,4 +13,4 @@ class SetDeviceTokenMessage extends PiranhaMessage {
   async process () {}
 }
 
-module.exports = SetDeviceTokenMessage
+module.exports = Unknown5

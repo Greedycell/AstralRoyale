@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const PiranhaMessage = require('../../PiranhaMessage')
 const config = require('../../../config.json')
 
@@ -25,6 +27,7 @@ class LoginFailedMessage extends PiranhaMessage {
     */
    
     this.writeVInt(this.errorCode) // ErrorCode
+    this.writeString(JSON.parse(fs.readFileSync(path.join('Gamefiles/fingerprint.json'), 'utf-8')).sha)
     this.writeString(config.Server.Fingerprint) // Fingerprint
     this.writeString(config.Server.RedirectionURL) // Redirect
     this.writeString(config.Server.UpdateURL) // UpdateURL

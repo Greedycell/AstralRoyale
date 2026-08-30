@@ -34,6 +34,13 @@ class LogicStartSurvivalMatchmakeCommand {
   }
 
   async process(self) {
+    let arena = self.client.player.arena + 2 || 3
+    let data = {
+      arena: arena,
+      gamemode: 7,
+      live: false
+    }
+
     switch (this.data.GameMode)
     {
       case 0: // Grand Challenge/Classic Challenge
@@ -50,19 +57,19 @@ class LogicStartSurvivalMatchmakeCommand {
         }
         self.client.log(`${self.client.player.lowID} vs ${opponent.player.lowID}`)
 
-        const battle = await new LogicBattle()
+        const battle = await new LogicBattle(data)
         battle.battleType = 'tournament'
         battle.clients.push(self.client, opponent)
         battle.start(500, self.client, opponent)
 
         await new StopHomeLogicMessage(self.client).send()
         await new UdpConnectionInfoMessage(self.client).send()
-        await new SectorStateMessage(self.client, 1, opponent.player).send()
+        await new SectorStateMessage(self.client, 1, this.client, opponent, data).send()
 
         if (opponent) {
           await new StopHomeLogicMessage(opponent).sendOpponent(opponent)
           await new UdpConnectionInfoMessage(opponent).sendOpponent(opponent)
-          await new SectorStateMessage(opponent, 1, self.client.player).sendOpponent(opponent)
+          await new SectorStateMessage(opponent, 1, opponent, self.client, data).sendOpponent(opponent)
         }
 
         MatchmakingLobby.removePlayer(self.client, queueType)

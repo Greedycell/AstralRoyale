@@ -12,15 +12,31 @@ class AcceptTokenFriendMessage extends PiranhaMessage {
   async decode() {
     this.data = {}
 
-    const raw = this.readString()
-    const match = raw.match(/[a-z]{3,}/)
-    this.data.Token = (match ? match[0] : null)?.slice(0, 17)
+    const [highID, lowID] = this.readLong()
+    this.data.FriendHighID = highID
+    this.data.FriendLowID = lowID
+    this.data.FriendToken = this.readString()
 
     //console.log(this.data)
   }
 
   async process () {
-    await new FriendListUpdateMessage(this.client).send()
+    const db = this.client.mongoose
+
+    let targetPlayer = null
+    if (this.data.FriendHighID !== undefined && this.data.FriendLowID !== undefined) {
+      try {
+        targetPlayer = await db.getPlayerByID(this.data.FriendHighID, this.data.FriendLowID)
+      } catch (e) {
+        console.error(e)
+        targetPlayer = null
+      }
+    }
+    if (this.data.FriendHighID !== this.client.player.highID && this.data.FriendLowID !== this.client.player.lowID) return // make sure the friend isnt u
+
+    if (targetPlayer.friendToken === this.data.FriendToken && this.data.FriendToken !== '') { // make sure the tokens r matching and not blank
+      await new FriendListUpdateMessage(this.client, targetPlayer).send()
+    }
   }
 }
 

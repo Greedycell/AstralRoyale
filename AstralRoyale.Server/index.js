@@ -11,7 +11,7 @@ const config = require('./config.json')
 const PORT = config.Server.Port
 const connectedClients = require('./Core/ConnectedClients')
 
-const StreamEncrypter = require("./Crypto")
+const StreamEncrypter = require('./Crypto')
 
 let mongooseInstance = require('./Database/mongoose')
 mongooseInstance = new mongooseInstance()
@@ -122,7 +122,7 @@ server.on('connection', async (client) => {
   })
 
   client.on('error', async error => {
-    connectedClients.delete(client)
+    //connectedClients.delete(client)
 
     try {
       client.log('A wild error!')
@@ -143,13 +143,13 @@ mongooseInstance.connect(isSuccess => {
     server.listen(PORT)
   }
   else {
-    console.log("[SERVER] >> Server didn't start because of a database problem.")
+    console.log(`[SERVER] >> Server didn't start because of a database problem.`)
   }
 })
 
-process.on("uncaughtException", e => console.log(e))
+process.on('uncaughtException', e => console.log(e))
 
-process.on("unhandledRejection", e => console.log(e))
+process.on('unhandledRejection', e => console.log(e))
 
 async function resetBattleState () {
   for (const battle of LogicBattle.activeBattles.values()) {

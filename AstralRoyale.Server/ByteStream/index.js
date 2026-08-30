@@ -1,6 +1,6 @@
 const ByteArray = require('./ByteArray')
-const RC4Encrypter = require("../Crypto/RC4/RC4Encrypter")
-const { PepperEncrypter, PepperState } = require("../Crypto/PepperCrypto/PepperEncrypter")
+const RC4Encrypter = require('../Crypto/RC4/RC4Encrypter')
+const { PepperEncrypter, PepperState } = require('../Crypto/PepperCrypto/PepperEncrypter')
 const config = require('../config.json')
 
 /**
@@ -377,33 +377,43 @@ class ByteStream {
    * Send a packet to the server.
    */
   async send () {
-    if (this.id < 20000) return
-    await this.encode()
+    try {
+      if (this.id < 20000) return
+      await this.encode()
 
-    let payload = this.buffer.slice(0, this.offset)
-    if (config.Server.Crypto.Activated) {
-      payload = this.client.crypto.encrypt(this.id, payload)
-    }
+      let payload = this.buffer.slice(0, this.offset)
+      if (config.Server.Crypto.Activated) {
+        try {
+          payload = this.client.crypto.encrypt(this.id, payload)
+        } catch (error) {}
+      }
 
-    const header = Buffer.alloc(7)
-    header.writeUInt16BE(this.id, 0)
-    header.writeUIntBE(payload.length, 2, 3)
-    header.writeUInt16BE(this.version, 5)
+      try {
+      const header = Buffer.alloc(7)
+      header.writeUInt16BE(this.id, 0)
+      header.writeUIntBE(payload.length, 2, 3)
+      header.writeUInt16BE(this.version, 5)
 
-    if (config.Server.Crypto.Type === 1) { // nacl
-      if (this.client.crypto.state === PepperState.PEPPER_AUTH) {
-        const allowedMessages = [20100, 22280]
-        if (!allowedMessages.includes(this.id)) {
-          this.client.destroy()
-          return
+      if (config.Server.Crypto.Type === 1) { // nacl
+        if (this.client.crypto.state === PepperState.PEPPER_AUTH) {
+          const allowedMessages = [20100, 22280]
+          if (!allowedMessages.includes(this.id)) {
+            this.client.destroy()
+            return
+          }
         }
       }
-    }
 
-    this.client.write(Buffer.concat([header, payload]))//, Buffer.from([0xFF, 0xFF, 0x0, 0x0, 0x0, 0x0, 0x0])]))
-    
-    if (config.Server.Debug) {
-      this.client.log(`Packet ${this.id} (${this.constructor.name}) was sent.`)
+      this.client.write(Buffer.concat([header, payload]))
+      
+      if (config.Server.Debug) {
+        this.client.log(`Packet ${this.id} (${this.constructor.name}) was sent.`)
+      }
+      }
+      catch (error) {}
+    }
+    catch (error) {
+      console.log(error)
     }
   }
 
@@ -411,33 +421,38 @@ class ByteStream {
    * Send a packet to the server for the opponent.
    */
   async sendOpponent (opponentClient) {
-    if (this.id < 20000) return
-    await this.encode()
+    try {
+      if (this.id < 20000) return
+      await this.encode()
 
-    let payload = this.buffer.slice(0, this.offset)
-    if (config.Server.Crypto.Activated) {
-      payload = opponentClient.crypto.encrypt(this.id, payload)
-    }
+      let payload = this.buffer.slice(0, this.offset)
+      if (config.Server.Crypto.Activated) {
+        payload = opponentClient.crypto.encrypt(this.id, payload)
+      }
 
-    const header = Buffer.alloc(7)
-    header.writeUInt16BE(this.id, 0)
-    header.writeUIntBE(payload.length, 2, 3)
-    header.writeUInt16BE(this.version, 5)
+      const header = Buffer.alloc(7)
+      header.writeUInt16BE(this.id, 0)
+      header.writeUIntBE(payload.length, 2, 3)
+      header.writeUInt16BE(this.version, 5)
 
-    if (config.Server.Crypto.Type === 1) { // nacl
-      if (this.client.crypto.state === PepperState.PEPPER_AUTH) {
-        const allowedMessages = [20100, 22280]
-        if (!allowedMessages.includes(this.id)) {
-          opponentClient.destroy()
-          return
+      if (config.Server.Crypto.Type === 1) { // nacl
+        if (this.client.crypto.state === PepperState.PEPPER_AUTH) {
+          const allowedMessages = [20100, 22280]
+          if (!allowedMessages.includes(this.id)) {
+            opponentClient.destroy()
+            return
+          }
         }
       }
-    }
 
-    opponentClient.write(Buffer.concat([header, payload]))//, Buffer.from([0xFF, 0xFF, 0x0, 0x0, 0x0, 0x0, 0x0])]))
-    
-    if (config.Server.Debug) {
-      opponentClient.log(`Packet ${this.id} (${this.constructor.name}) was sent.`)
+      opponentClient.write(Buffer.concat([header, payload]))
+      
+      if (config.Server.Debug) {
+        opponentClient.log(`Packet ${this.id} (${this.constructor.name}) was sent.`)
+      }
+    }
+    catch (error) {
+      //console.log(error)
     }
   }
 }

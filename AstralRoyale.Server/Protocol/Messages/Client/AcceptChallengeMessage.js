@@ -5,7 +5,7 @@ const StopHomeLogicMessage = require('../Server/StopHomeLogicMessage')
 const UdpConnectionInfoMessage = require('../Server/UdpConnectionInfoMessage')
 const SectorStateMessage = require('../Server/SectorStateMessage')
 const AllianceStreamMessage = require('../Server/AllianceStreamMessage')
-const LoginFailedMessage = require('../Server/LoginFailedMessage')
+const ServerErrorMessage = require('../Server/ServerErrorMessage')
 
 class AcceptChallengeMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -25,7 +25,14 @@ class AcceptChallengeMessage extends PiranhaMessage {
   }
 
   async process () {
-    await new LoginFailedMessage(this.client, 3, 'Accepting a challenge is not implemented yet.').send()
+    let arena = this.client.player.arena + 2 || 3
+    let data = {
+      arena: arena,
+      gamemode: 7,
+      live: false
+    }
+    
+    await new ServerErrorMessage(this.client, 'Accepting a challenge is not implemented yet.').send()
 
     /*const db = this.client.mongoose
     const clan = await db.getClanByID(this.client.player?.clan?.ClanHighID, this.client.player?.clan?.ClanLowID)
@@ -59,18 +66,18 @@ class AcceptChallengeMessage extends PiranhaMessage {
     }
 
     if (senderClient && senderClient !== this.client) {
-      const battle = new LogicBattle()
+      const battle = new LogicBattle(data)
       battle.battleType = 'friendlyClan1v1'
       battle.clients.push(this.client, senderClient)
       await battle.start(500, this.client, senderClient)
 
       await new StopHomeLogicMessage(this.client).send()
       await new UdpConnectionInfoMessage(this.client).send()
-      await new SectorStateMessage(this.client, 1, senderClient.player).send()
+      await new SectorStateMessage(this.client, 1, this.client, senderClient, data).send()
 
       await new StopHomeLogicMessage(senderClient).sendOpponent(senderClient)
       await new UdpConnectionInfoMessage(senderClient).sendOpponent(senderClient)
-      await new SectorStateMessage(senderClient, 1, this.client.player).sendOpponent(senderClient)
+      await new SectorStateMessage(senderClient, 1, senderClient, this.client, data).sendOpponent(senderClient)
     }*/
   }
 }

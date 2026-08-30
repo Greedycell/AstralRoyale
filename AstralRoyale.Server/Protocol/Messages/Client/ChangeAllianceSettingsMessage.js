@@ -1,9 +1,23 @@
+const fs = require('fs')
+const path = require('path')
+
 const PiranhaMessage = require('../../PiranhaMessage')
+const AllianceChangeFailedMessage = require('../Server/AllianceChangeFailedMessage')
 const LoginFailedMessage = require('../Server/LoginFailedMessage')
 const AllianceDataMessage = require('../Server/AllianceDataMessage')
 const OutOfSyncMessage = require('../Server/OutOfSyncMessage')
 const AvailableServerCommandMessage = require('../Server/AvailableServerCommandMessage')
 const ServerErrorMessage = require('../Server/ServerErrorMessage')
+const config = require('../../../config.json')
+
+const filter = fs.readFileSync(path.join(__dirname, '../../../filter.json'), 'utf8').split(/\r?\n/).filter(word => word.length > 0)
+function containsFilteredWord (text) {
+  if (!config.Server.WordFilter) return false
+  return filter.some(word => {
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(escapedWord, 'i').test(text)
+  })
+}
 
 class ChangeAllianceSettingsMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -40,6 +54,11 @@ class ChangeAllianceSettingsMessage extends PiranhaMessage {
     const role = player.clan.ClanRole
     if (role !== 2 && role !== 4) {
       await new OutOfSyncMessage(this.client).send()
+      return
+    }
+
+    if (containsFilteredWord(this.data.Description || '')) {
+      await new AllianceChangeFailedMessage(this.client).send()
       return
     }
 

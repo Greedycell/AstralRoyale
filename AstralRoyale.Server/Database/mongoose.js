@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const config = require('../config.json');
+const ConnectedClients = require('../Core/ConnectedClients')
 
 module.exports = class Database {
     constructor() { }
@@ -70,6 +71,19 @@ module.exports = class Database {
     async getPlayerByID(highID, lowID) {
         if (highID === undefined || lowID === undefined) return null;
         return this.mongoosePlayers.findOne({ highID, lowID }).lean();
+    }
+    async getClientByID (highID, lowID) {
+        if (highID === undefined || lowID === undefined) return null
+        for (const client of ConnectedClients) {
+            if (!client?.player) continue
+            if (
+                Number(client.player.highID) === Number(highID) &&
+                Number(client.player.lowID) === Number(lowID)
+            ) {
+                return client
+            }
+        }
+        return null
     }
 
     /*async searchClans(nameQuery = '', limit = 20, filters = {}) {

@@ -21,7 +21,7 @@ class BattleEventMessage extends PiranhaMessage {
 
     switch (this.data.Type) {
       case 1:
-        this.client.log('Attempting to place down a card...')
+        //this.client.log('Attempting to place down a card...')
         break
       case 3:
         /*this.writeVInt(this.data.Unknown)

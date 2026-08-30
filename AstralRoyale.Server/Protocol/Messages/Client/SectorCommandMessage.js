@@ -31,32 +31,40 @@ class SectorCommandMessage extends PiranhaMessage {
           await new OutOfSyncMessage(this.client).send()
           return
         }
-        command.tick = this.readVInt()
-        command.checksum = this.readByte()
-        command.userId = []
-        command.userId.high = this.readVInt()
-        command.userId.low = this.readVInt()
-        command.deckIndex = this.readByte() // CardSlot
-        command.card = [] // SCID
-        command.card.high = this.readByte()
-        command.card.low = this.readVInt()
-        const cardEntry = cards.scid?.[command.card.high * 1000000 + command.card.low] ?? {}
-        command.card.id = cardEntry.id
-        command.spellIndex = this.readByte()
-        command.card.level = this.readByte()
-        command.coords = []
-        command.coords.x = this.readVInt()
-        command.coords.y = this.readVInt()
-        command.deb = cardEntry.name
-        if (this.data.commandCount === 1) {
-          this.data.commands.push(command)
-          if (this.client.player.battleID != 0) {
-            const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
-            if (activeBattle) {
-              activeBattle.commands.push(command)
-              return
+        switch (command.type) {
+          case 51: // Place card
+            command.tick = this.readVInt()
+            command.checksum = this.readByte()
+            command.userId = []
+            command.userId.high = this.readVInt()
+            command.userId.low = this.readVInt()
+            command.deckIndex = this.readByte() // CardSlot
+            command.card = [] // SCID
+            command.card.high = this.readByte()
+            command.card.low = this.readVInt()
+            const cardEntry = cards.scid?.[command.card.high * 1000000 + command.card.low] ?? {}
+            command.card.id = cardEntry.id
+            command.spellIndex = this.readByte()
+            command.card.level = this.readByte()
+            command.coords = []
+            command.coords.x = this.readVInt()
+            command.coords.y = this.readVInt()
+            command.deb = cardEntry.name
+            if (this.data.commandCount === 1) {
+              this.data.commands.push(command)
+              if (this.client.player.battleID != 0) {
+                const activeBattle = LogicBattle.getBattleById(this.client.player.battleID)
+                if (activeBattle) {
+                  activeBattle.commands.push(command)
+                  activeBattle.clientTurn = command.tick
+                  activeBattle.clientChecksum = command.checksum
+                  //console.log(this.data)
+                  return
+                }
+              }
             }
-          }
+          default:
+            this.client.log(`Unknown command type: ${command.type}`)
         }
       } catch (e) {
         console.log(e)
