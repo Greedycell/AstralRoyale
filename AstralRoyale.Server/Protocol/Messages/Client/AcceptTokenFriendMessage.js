@@ -1,5 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const FriendListUpdateMessage = require('../Server/FriendListUpdateMessage')
+const FriendsListMessage = require('../Server/FriendsListMessage')
 
 class AcceptTokenFriendMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -46,6 +47,7 @@ class AcceptTokenFriendMessage extends PiranhaMessage {
       }
 
       await new FriendListUpdateMessage(this.client, targetPlayer).send()
+      await FriendsListMessage.checkStatus(this.client)
     }
   }
 }
