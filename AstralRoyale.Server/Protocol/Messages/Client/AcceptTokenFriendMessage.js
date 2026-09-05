@@ -48,6 +48,11 @@ class AcceptTokenFriendMessage extends PiranhaMessage {
 
       await new FriendListUpdateMessage(this.client, targetPlayer).send()
       await FriendsListMessage.checkStatus(this.client)
+      const friendClient = await db.getClientByID(targetPlayer.highID, targetPlayer.lowID)
+      if (friendClient) {
+        await new FriendListUpdateMessage(friendClient, this.client.player).send()
+        await FriendsListMessage.checkStatus(friendClient)
+      }
     }
   }
 }
