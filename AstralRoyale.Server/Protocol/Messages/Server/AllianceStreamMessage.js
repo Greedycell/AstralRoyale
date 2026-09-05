@@ -49,52 +49,55 @@ class AllianceStreamMessage extends PiranhaMessage {
           break
         case 3: // JoinRequestAllianceStreamEntry
           this.writeString(entry.message || '')
-          this.writeString(entry.senderName || this.client.player?.name || '')
+          this.writeString(entry.senderName || this.client.player?.name)
           this.writeVInt(entry.state ?? 1) // State (1 = Pending, 2 = Accepted, 3 = Rejected)
           break
         case 4: // AllianceEventStreamEntry
           this.writeVInt(entry.eventType ?? 0) // EventType (1 = Kicked, 2 = Accepted, 3 = Joined, 4 = Left, 5 = Promoted, 6 = Demoted)
           this.writeLogicLong(entry.targetHighID ?? 0, entry.targetLowID ?? 1)
-          this.writeString(entry.targetName || '')
+          this.writeString(entry.targetName)
           break
         case 5: // ReplayStreamEntry
-          break
-        case 6: // CoOpenStreamEntry
-          break
-        case 7: // DonationReceivedStreamEntry
-          this.writeVInt(1) // Count
-          {
-            this.writeVInt(26)
-            this.writeVInt(1)
-          }
+          this.writeVInt(0)
+          this.writeLong(0, 0)
+          this.writeBoolean(false)
+          this.writeString('')
+          this.writeString('')
+          this.writeString('')
+          this.writeVInt(0)
+          this.writeVInt(0)
+          this.writeVInt(0)
+          this.writeVInt(0)
           break
         case 10: // ChallengeStreamEntry
-          this.writeString(entry.message || '')
-
+          this.writeString(entry.Message || '')
           this.writeBoolean(false) // AcceptingAvatarBoolean
-
           /*if (this.AcceptingAvatar != null)
           {
               this.writeString(this.AcceptingAvatar)
           }*/
-
-          this.writeVInt(0) // SenderScore
-          this.writeBoolean(false) // Closed
-          this.writeBoolean(false) // TournamentMode
-          this.writeVInt(0) // SpectatorCount
+          this.writeVInt(entry.SenderScore ?? 0) // SenderScore
+          this.writeBoolean(entry.Closed ?? false) // Closed
+          this.writeBoolean(entry.Tournament ?? false) // TournamentMode
+          this.writeVInt(entry.Spectators ?? 0) // SpectatorCount
           this.writeBoolean(false) // AcceptingAvatarBoolean
-
           /*if (this.AcceptingAvatar != 0)
           {
               this.writeLong(0, 1) // AcceptingAvatarHighID, AcceptingAvatarLowID
           }*/
-
           this.writeVInt(0)
-
           this.writeBoolean(false)
           this.writeBoolean(false)
           break
         case 11: // ChallengeDoneStreamEntry
+          this.writeString(entry.Message)
+          this.writeVInt(0)
+          this.writeVInt(0)
+          this.writeVInt(0)
+          this.writeVInt(0)
+          this.writeBoolean(false)
+          this.writeVInt(0)
+          this.writeLong(0, 0)
           break
         default:
           break

@@ -64,7 +64,7 @@ class LogicKickAllianceMemberCommand {
       StreamEntryType: 4,
       senderHighID: self.client.player.highID,
       senderLowID: self.client.player.lowID,
-      senderName: self.client.player.name || '',
+      senderName: self.client.player.name,
       senderRole: requesterEntry.role,
       timestamp: Date.now(),
       eventType: 1,

@@ -5,11 +5,11 @@ class GetTokenFriendResultMessage extends PiranhaMessage {
     super()
     this.id = 22089
     this.client = client
-    this.version = 1
+    this.version = 26
   }
 
   async encode () {
-    this.writeBoolean(true)
+    this.writeVInt(1)
 
     const newToken = await generateToken(8)
     this.client.player.friendToken = newToken

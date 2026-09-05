@@ -222,7 +222,7 @@ function buildMemberEntry(player, role) {
     return {
         highID: player.highID,
         lowID: player.lowID,
-        name: player.name || '',
+        name: player.name,
         role, // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
         trophies: player.trophies || 0,
         level: player.level || 1,

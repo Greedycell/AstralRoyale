@@ -5,10 +5,12 @@ class AllianceStreamEntryRemovedMessage extends PiranhaMessage {
     super()
     this.id = 25643
     this.client = client
-    this.version = 1
+    this.version = 11
   }
 
-  async encode () {}
+  async encode () {
+    this.writeLong(0, 0) // EntryId
+  }
 }
 
 module.exports = AllianceStreamEntryRemovedMessage

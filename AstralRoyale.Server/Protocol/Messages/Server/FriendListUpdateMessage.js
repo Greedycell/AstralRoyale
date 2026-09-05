@@ -12,6 +12,9 @@ class FriendListUpdateMessage extends PiranhaMessage {
   async encode () {
     this.writeLong(this.friend.highID, this.friend.lowID) // HighID, LowID
     this.writeBoolean(true)
+    {
+      this.writeLong(friend.highID, friend.lowID)
+    }
     this.writeLong(this.friend.highID, this.friend.lowID) // HighID, LowID
     this.writeString(this.friend.name) // Name
     this.writeVInt(0)

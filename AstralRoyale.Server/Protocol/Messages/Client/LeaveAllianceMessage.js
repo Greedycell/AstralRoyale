@@ -39,7 +39,7 @@ class LeaveAllianceMessage extends PiranhaMessage {
           StreamEntryType: 4,
           senderHighID: this.client.player.highID,
           senderLowID: this.client.player.lowID,
-          senderName: this.client.player.name || '',
+          senderName: this.client.player.name,
           senderRole: this.client.player.clan?.ClanRole || 1,
           timestamp: Date.now(),
           eventType: 4,

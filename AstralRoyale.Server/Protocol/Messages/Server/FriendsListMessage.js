@@ -23,8 +23,10 @@ class FriendsListMessage extends PiranhaMessage {
     for (const friend of friends) {
       this.writeLong(friend.highID, friend.lowID)
       this.writeBoolean(true)
-      this.writeLong(friend.highID, friend.lowID)
-      this.writeString(friend.name || '')
+      {
+        this.writeLong(friend.highID, friend.lowID)
+      }
+      this.writeString(friend.name)
       this.writeVInt(0)
       this.writeVInt(friend.trophies || 0)
       this.writeBoolean(friend.inClan === 1)

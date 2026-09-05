@@ -34,7 +34,7 @@ class LogicRequestSpellsCommand {
       StreamEntryType: 1,
       senderHighID: self.client.player.highID,
       senderLowID: self.client.player.lowID,
-      senderName: self.client.player.name || '',
+      senderName: self.client.player.name,
       senderRole: self.client.player.clan?.ClanRole || 1,
       timestamp: Date.now(),
       CardType: this.data.CardType,

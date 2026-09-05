@@ -5,7 +5,7 @@ class AllianceStreamEntryMessage extends PiranhaMessage {
     super()
     this.id = 21075
     this.client = client
-    this.version = 1
+    this.version = 11
     this.data = data || {}
     this.StreamEntryType = this.data.StreamEntryType ?? 2
   }
@@ -47,34 +47,49 @@ class AllianceStreamEntryMessage extends PiranhaMessage {
       case 4: // AllianceEventStreamEntry
           this.writeVInt(this.data.eventType ?? 0) // EventType (1 = Kicked, 2 = Accepted, 3 = Joined, 4 = Left, 5 = Promoted, 6 = Demoted)
           this.writeLogicLong(this.data.targetHighID ?? 0, this.data.targetLowID ?? 1)
-          this.writeString(this.data.targetName || '')
+          this.writeString(this.data.targetName)
         break
       case 5: // ReplayStreamEntry
-        break
-      case 6: // CoOpenStreamEntry
-        break
-      case 7: // DonationReceivedStreamEntry
-        this.writeVInt(1) // Count
-        {
-          this.writeVInt(26)
-          this.writeVInt(1)
-        }
+        this.writeVInt(0)
+        this.writeLong(0, 0)
+        this.writeBoolean(false)
+        this.writeString('')
+        this.writeString('')
+        this.writeString('')
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
         break
       case 10: // ChallengeStreamEntry
         this.writeString(this.data.Message)
-
-        this.writeBoolean(this.data.Active) // IsActive
-
-        if (this.data.Active) this.writeString(this.data.TargetName)
-
-        this.writeVInt(this.data.SenderScore)
-
-        this.writeBoolean(this.data.Closed) // Closed
-        this.writeVInt(this.data.Spectators) // Spectators
-
+        this.writeBoolean(false) // AcceptingAvatarBoolean
+        /*if (this.AcceptingAvatar != null)
+        {
+            this.writeString(this.AcceptingAvatar)
+        }*/
+        this.writeVInt(this.data.SenderScore ?? 0)
+        this.writeBoolean(this.data.Closed ?? false) // Closed
+        this.writeBoolean(this.data.Tournament ?? false) // TournamentMode
+        this.writeVInt(this.data.Spectators ?? 0) // SpectatorCount
+        this.writeBoolean(false) // AcceptingAvatarBoolean
+        /*if (this.AcceptingAvatar != 0)
+        {
+            this.writeLong(0, 1) // AcceptingAvatarHighID, AcceptingAvatarLowID
+        }*/
+        this.writeVInt(0)
+        this.writeBoolean(false)
         this.writeBoolean(false)
         break
       case 11: // ChallengeDoneStreamEntry
+        this.writeString(this.data.Message)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeVInt(0)
+        this.writeBoolean(false)
+        this.writeVInt(0)
+        this.writeLong(0, 0)
         break
       default:
         break
