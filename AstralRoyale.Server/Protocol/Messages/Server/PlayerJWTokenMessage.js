@@ -1,4 +1,5 @@
 const PiranhaMessage = require('../../PiranhaMessage')
+const GameRoomsMessage = require('../Server/GameRoomsMessage')
 
 class PlayerJWTokenMessage extends PiranhaMessage {
   constructor (client) {
@@ -8,7 +9,9 @@ class PlayerJWTokenMessage extends PiranhaMessage {
     this.version = 1
   }
 
-  async encode () {}
+  async encode () {
+    await new GameRoomsMessage(this.client, '').send()
+  }
 }
 
 module.exports = PlayerJWTokenMessage

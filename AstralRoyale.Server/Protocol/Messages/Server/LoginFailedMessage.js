@@ -27,14 +27,13 @@ class LoginFailedMessage extends PiranhaMessage {
     */
    
     this.writeVInt(this.errorCode) // ErrorCode
-    this.writeString(JSON.parse(fs.readFileSync(path.join('Gamefiles/fingerprint.json'), 'utf-8')).sha)
-    this.writeString(config.Server.Fingerprint) // Fingerprint
+    this.writeString(fs.readFileSync(path.join('Gamefiles', 'fingerprint.json'), 'utf-8')) // Fingerprint
     this.writeString(config.Server.RedirectionURL) // Redirect
     this.writeString(config.Server.UpdateURL) // UpdateURL
     this.writeString(this.reason) // Reason
-    this.writeString(null) // UpdatingToNewVersionMessage
-    this.writeVInt(this.maintenanceSeconds) // MaintenanceSeconds
-    this.writeBoolean(false) // UpdateURL
+    this.writeByte(127)
+    this.writeVInt(0)
+    this.writeString('') // UpdateURL
     this.writeVInt(2) // URLCount
     this.writeString(config.Server.UpdateURL) // GameAssetsURL
     this.writeString(config.Server.ContentURL) // ContentURL

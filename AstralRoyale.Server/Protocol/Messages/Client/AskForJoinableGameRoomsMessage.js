@@ -12,7 +12,7 @@ class AskForJoinableGameRoomsMessage extends PiranhaMessage {
   async decode () {}
 
   async process () {
-    await new JoinableGameRoomsMessage(this.client).send()
+    await new JoinableGameRoomsMessage(this.client, '').send()
   }
 }
 

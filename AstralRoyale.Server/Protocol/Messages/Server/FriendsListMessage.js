@@ -1,4 +1,6 @@
 const PiranhaMessage = require('../../PiranhaMessage')
+const ConnectedClients = require('../../../Core/ConnectedClients')
+const AvatarOnlineStatusUpdatedMessage = require('./AvatarOnlineStatusUpdatedMessage')
 
 class FriendsListMessage extends PiranhaMessage {
   constructor (client, type) {
@@ -11,54 +13,51 @@ class FriendsListMessage extends PiranhaMessage {
 
   async encode () {
     this.writeInt(this.type) // 0 = Invited | 1 = Facebook (?) | 2 = Gamecenter (?)
-    this.writeInt(0) // FriendsCount
-    {
-    }
+    const player = await this.client.mongoose.getPlayerByID(this.client.player.highID, this.client.player.lowID)
+    const friendIDs = player && Array.isArray(player.friends) ? player.friends : []
+    const friends = (await Promise.all(friendIDs.map(friend =>
+      this.client.mongoose.getPlayerByID(friend.highID, friend.lowID)
+    ))).filter(Boolean)
 
-    /*this.writeInt(this.type) // 0 = Invited | 1 = Facebook (?) | 2 = Gamecenter (?)
-    this.writeInt(2) // FriendsCount
-    {
-      this.writeLong(0, 27) // HighID, LowID
+    this.writeInt(friends.length) // FriendsCount
+    for (const friend of friends) {
+      this.writeLong(friend.highID, friend.lowID)
       this.writeBoolean(true)
-      this.writeLong(0, 27) // HighID, LowID
-      this.writeString('cartyrty') // Name
+      this.writeLong(friend.highID, friend.lowID)
+      this.writeString(friend.name || '')
       this.writeVInt(0)
-      this.writeVInt(3000) // Score
-      this.writeBoolean(true) // HasAlliance
-      {
-        this.writeLong(0, 1)
-        this.writeString('Clashers')
-        this.writeVInt(57)
-        this.writeVInt(1)
+      this.writeVInt(friend.trophies || 0)
+      this.writeBoolean(friend.inClan === 1)
+      if (friend.inClan === 1) {
+        let clan = null
+        try {
+          clan = await this.client.mongoose.getClanByID(friend.clan.ClanHighID, friend.clan.ClanLowID)
+        } catch (e) {
+          console.error(e)
+        }
+
+        this.writeLong(friend.clan.ClanHighID, friend.clan.ClanLowID)
+        this.writeString(clan ? String(clan.name || '') : '')
+        this.writeVInt(clan ? clan.badge + 1 : 1)
+        this.writeVInt(friend.clan.ClanRole)
       }
-      this.writeBoolean(true) // HasLeague
+      this.writeBoolean(true)
       this.writeVInt(54)
-      this.writeVInt(1) // Arena
+      this.writeVInt(friend.arena || 0)
       this.writeString(null)
       this.writeString(null)
-      this.writeVInt(0) // FriendType
+      this.writeVInt(0)
     }
-    {
-      this.writeLong(0, 28) // HighID, LowID
-      this.writeBoolean(true)
-      this.writeLong(0, 28) // HighID, LowID
-      this.writeString('Gamemaster2022') // Name
-      this.writeVInt(0)
-      this.writeVInt(3000) // Score
-      this.writeBoolean(true) // HasAlliance
-      {
-        this.writeLong(0, 1)
-        this.writeString('Clashers')
-        this.writeVInt(57)
-        this.writeVInt(1)
-      }
-      this.writeBoolean(true) // HasLeague
-      this.writeVInt(54)
-      this.writeVInt(1) // Arena
-      this.writeString(null)
-      this.writeString(null)
-      this.writeVInt(0) // FriendType
-    }*/
+  }
+
+  static async checkStatus (client) {
+    const player = await client.mongoose.getPlayerByID(client.player.highID, client.player.lowID)
+    const friendIDs = player && Array.isArray(player.friends) ? player.friends : []
+    for (const friend of friendIDs) {
+      const connectedFriend = Array.from(ConnectedClients).find(connectedClient => {return connectedClient && connectedClient.player && Number(connectedClient.player.highID) === Number(friend.highID) && Number(connectedClient.player.lowID) === Number(friend.lowID)})
+      const status = connectedFriend ? (Number(connectedFriend.player.battleID || 0) !== 0 ? 3 : 2) : 0
+      await new AvatarOnlineStatusUpdatedMessage(client, friend.highID, friend.lowID, status).send()
+    }
   }
 }
 

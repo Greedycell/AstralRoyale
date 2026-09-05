@@ -30,7 +30,7 @@ class FriendListUpdateMessage extends PiranhaMessage {
 
       this.writeLong(this.friend.clan.ClanHighID, this.friend.clan.ClanLowID)
       this.writeString(clan ? String(clan.name || '') : '')
-      this.writeVInt(clan.badge + 1)
+      this.writeVInt(clan ? clan.badge + 1 : 1)
       this.writeVInt(this.friend.clan.ClanRole) // 1 = Member, 2 = Leader, 3 = Elder, 4 = Co-Leader
     }
     this.writeBoolean(true) // HasLeague

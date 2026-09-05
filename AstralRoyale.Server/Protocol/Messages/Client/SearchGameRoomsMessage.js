@@ -9,10 +9,16 @@ class SearchGameRoomsMessage extends PiranhaMessage {
     this.version = 1
   }
 
-  async decode () {}
+  async decode () {
+    this.data = {}
+
+    this.data.searchString = this.readString()
+
+    //console.log(this.data)
+  }
 
   async process () {
-    await new GameRoomsMessage(this.client).send()
+    await new GameRoomsMessage(this.client, this.data.searchString).send()
   }
 }
 

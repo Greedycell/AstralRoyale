@@ -48,7 +48,7 @@ class LoginMessage extends PiranhaMessage {
 
     if (this.data.FingerprintSHA !== config.Server.Fingerprint) {
       if (config.Server.ContentPatchEnabled === true) {
-        await new LoginFailedMessage(this.client, 7, config.Server.Fingerprint).send()
+        await new LoginFailedMessage(this.client, 7).send()
         return
       }
     }

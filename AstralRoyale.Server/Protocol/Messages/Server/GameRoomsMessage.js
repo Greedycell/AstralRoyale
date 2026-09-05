@@ -1,11 +1,12 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 
 class GameRoomsMessage extends PiranhaMessage {
-  constructor (client) {
+  constructor (client, search) {
     super()
     this.id = 23160
     this.client = client
     this.version = 1
+    this.search = search
   }
 
   async encode () {
