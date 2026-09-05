@@ -14,8 +14,8 @@ class FriendsListMessage extends PiranhaMessage {
   async encode () {
     this.writeInt(this.type) // 0 = Invited | 1 = Facebook (?) | 2 = Gamecenter (?)
     const player = await this.client.mongoose.getPlayerByID(this.client.player.highID, this.client.player.lowID)
-    const friendIDs = player && Array.isArray(player.friends) ? player.friends : []
-    const friends = (await Promise.all(friendIDs.map(friend =>
+    const friendList = player && Array.isArray(player.friends) ? player.friends : []
+    const friends = (await Promise.all(friendList.map(friend =>
       this.client.mongoose.getPlayerByID(friend.highID, friend.lowID)
     ))).filter(Boolean)
 
@@ -52,11 +52,21 @@ class FriendsListMessage extends PiranhaMessage {
 
   static async checkStatus (client) {
     const player = await client.mongoose.getPlayerByID(client.player.highID, client.player.lowID)
-    const friendIDs = player && Array.isArray(player.friends) ? player.friends : []
-    for (const friend of friendIDs) {
+    const friends = player && Array.isArray(player.friends) ? player.friends : []
+    for (const friend of friends) {
       const connectedFriend = Array.from(ConnectedClients).find(connectedClient => {return connectedClient && connectedClient.player && Number(connectedClient.player.highID) === Number(friend.highID) && Number(connectedClient.player.lowID) === Number(friend.lowID)})
       const status = connectedFriend ? (Number(connectedFriend.player.battleID || 0) !== 0 ? 3 : 2) : 0
       await new AvatarOnlineStatusUpdatedMessage(client, friend.highID, friend.lowID, status).send()
+    }
+  }
+
+  static async updateFriendStatus (client) {
+    const player = await client.mongoose.getPlayerByID(client.player.highID, client.player.lowID)
+    const friends = player && Array.isArray(player.friends) ? player.friends : []
+    const status = Number(client.player.battleID || 0) !== 0 ? 3 : 2
+    for (const friend of friends) {
+      const friendClient = Array.from(ConnectedClients).find(connectedClient => {return connectedClient && connectedClient.player && Number(connectedClient.player.highID) === Number(friend.highID) && Number(connectedClient.player.lowID) === Number(friend.lowID)})
+      if (friendClient) await new AvatarOnlineStatusUpdatedMessage(friendClient, client.player.highID, client.player.lowID, status).send()
     }
   }
 }

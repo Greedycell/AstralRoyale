@@ -4,6 +4,7 @@ const BattleEventMessage = require('../Protocol/Messages/Server/BattleEventMessa
 const StopHomeLogicMessage = require('../Protocol/Messages/Server/StopHomeLogicMessage')
 const UdpConnectionInfoMessage = require('../Protocol/Messages/Server/UdpConnectionInfoMessage')
 const SectorStateMessage = require('../Protocol/Messages/Server/SectorStateMessage')
+const FriendsListMessage = require('../Protocol/Messages/Server/FriendsListMessage')
 
 class LogicBattle {
   constructor(data = null) {
@@ -145,6 +146,7 @@ class LogicBattle {
       client.player.battleID = this.id
       client.player.markModified('battleID')
       await client.player.save()
+      await FriendsListMessage.updateFriendStatus(client)
     }
   }
 
@@ -172,6 +174,7 @@ class LogicBattle {
       client.player.battleID = 0
       client.player.markModified('battleID')
       await client.player.save()
+      await FriendsListMessage.updateFriendStatus(client)
       if (client.battle === this) {
         client.battle = null
       }
