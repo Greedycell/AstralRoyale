@@ -63,13 +63,15 @@ class FriendsListMessage extends PiranhaMessage {
   }
 
   static async updateFriendStatus (client) {
-    const player = await client.mongoose.getPlayerByID(client.player.highID, client.player.lowID)
-    const friends = player && Array.isArray(player.friends) ? player.friends : []
-    const status = Number(client.player.battleID || 0) !== 0 ? 3 : 2
-    for (const friend of friends) {
-      const friendClient = Array.from(ConnectedClients).find(connectedClient => {return connectedClient && connectedClient.player && Number(connectedClient.player.highID) === Number(friend.highID) && Number(connectedClient.player.lowID) === Number(friend.lowID)})
-      if (friendClient) await new AvatarOnlineStatusUpdatedMessage(friendClient, client.player.highID, client.player.lowID, status).send()
-    }
+    try {
+      const player = await client.mongoose.getPlayerByID(client.player.highID, client.player.lowID)
+      const friends = player && Array.isArray(player.friends) ? player.friends : []
+      const status = Number(client.player.battleID || 0) !== 0 ? 3 : 2
+      for (const friend of friends) {
+        const friendClient = Array.from(ConnectedClients).find(connectedClient => {return connectedClient && connectedClient.player && Number(connectedClient.player.highID) === Number(friend.highID) && Number(connectedClient.player.lowID) === Number(friend.lowID)})
+        if (friendClient) await new AvatarOnlineStatusUpdatedMessage(friendClient, client.player.highID, client.player.lowID, status).send()
+      }
+    } catch (e) {}
   }
 }
 
