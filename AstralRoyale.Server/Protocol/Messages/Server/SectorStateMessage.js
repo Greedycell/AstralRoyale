@@ -624,11 +624,11 @@ class SectorStateMessage extends PiranhaMessage {
         // Trainer Deck
         this.writeHex('FF01')
         //this.writeHex('190B8F010B090B2102200B140A10051F0A')
-        let trainerDeck = this.player.player.decks[this.player.player.selectedDeck]
-        trainerDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
+        let trainerDeck2 = this.player.player.decks[this.player.player.selectedDeck]
+        trainerDeck2.forEach(cardSCID => {
+          let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+          this.writeVInt(card.ID)
+          this.writeVInt(card.level)
         })
 
         this.writeVInt(0)
@@ -637,9 +637,9 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeHex('FF01')
         let currentDeck = this.player.player.decks[this.player.player.selectedDeck]
         currentDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
+          let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+          this.writeVInt(card.ID)
+          this.writeVInt(card.level)
         })
 
         this.writeVInt(0)
@@ -1177,19 +1177,30 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(0)
         this.writeVInt(0)
         this.writeVInt(0)
-        this.writeVInt(36)
 
-        // Deck
+        this.writeVInt(1)
+
+        // Own Deck
         this.writeHex('FF01')
-        let playerDeck = this.player.player.decks[this.player.player.selectedDeck]
-        playerDeck.forEach(cardSCID => {
-            let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
-            this.writeVInt(card.ID)
-            this.writeVInt(card.level)
+        let playerDeck1 = this.player.player.decks[this.player.player.selectedDeck]
+        playerDeck1.forEach(cardSCID => {
+          let card = utils.findObjectByKey(this.player.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+          this.writeVInt(card.ID)
+          this.writeVInt(card.level)
         })
 
         this.writeVInt(0)
-        this.writeBoolean(false)
+
+        // Enemy Deck
+        this.writeHex('FF01')
+        let playerDeck2 = this.enemy.player.decks[this.enemy.player.selectedDeck]
+        playerDeck2.forEach(cardSCID => {
+          let card = utils.findObjectByKey(this.enemy.player.cards, 'ID', cardUtils.SCIDtoInstanceID(cardSCID))
+          this.writeVInt(card.ID)
+          this.writeVInt(card.level)
+        })
+
+        this.writeVInt(0)
         this.writeVInt(5)
         this.writeVInt(6)
         this.writeVInt(2)
@@ -1206,14 +1217,15 @@ class SectorStateMessage extends PiranhaMessage {
         this.writeVInt(0)
         this.writeBoolean(false)
         this.writeVInt(0)
-        this.writeVInt(1)
-        this.writeVInt(1)
+        this.writeVInt(0)
+        this.writeVInt(2)
+        this.writeVInt(4)
         this.writeVInt(0)
         this.writeVInt(12)
         this.writeVInt(0)
         this.writeVInt(0)
         this.writeVInt(0)
-        this.writeVInt(245431292)
+        this.writeVInt(1795684691)
         this.writeVInt(0)
         
         break
