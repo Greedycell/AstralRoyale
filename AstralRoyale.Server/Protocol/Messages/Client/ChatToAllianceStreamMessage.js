@@ -478,6 +478,9 @@ class ChatToAllianceStreamMessage extends PiranhaMessage {
           opponent.player.lowID = -1
           opponent.player.name = 'Trainer Astral'
           opponent.player.level = 13
+          opponent.player.decks = this.client.player.decks
+          opponent.player.cards = this.client.player.cards
+          opponent.player.selectedDeck = this.client.player.selectedDeck
           let data = {
             arena: 28,
             gamemode: 7,

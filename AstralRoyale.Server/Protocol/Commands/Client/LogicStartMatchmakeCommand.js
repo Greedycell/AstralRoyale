@@ -41,6 +41,9 @@ class LogicStartMatchmakeCommand {
       opponent.player.highID = -1
       opponent.player.lowID = -1
       opponent.player.name = 'Trainer Astral'
+      opponent.player.decks = self.client.player.decks
+      opponent.player.cards = self.client.player.cards
+      opponent.player.selectedDeck = self.client.player.selectedDeck
       const battle = await new LogicBattle(34)
       battle.battleType = '1v1'
       battle.clients.push(self.client, opponent)
