@@ -85,11 +85,7 @@ class LogicKickAllianceMemberCommand {
       if (!client?.player || !client.player.inClan) continue
       if (client.player.clan?.ClanHighID !== clan.highID || client.player.clan?.ClanLowID !== clan.lowID) continue
 
-      if (client === self.client) {
-        await new AllianceStreamMessage(client).send()
-      } else {
-        await new AllianceStreamEntryMessage(client, eventEntry).send()
-      }
+      await new AllianceStreamEntryMessage(client, eventEntry).send()
 
       await new AllianceDataMessage(client, client.player.clan.ClanHighID, client.player.clan.ClanLowID).send()
     }

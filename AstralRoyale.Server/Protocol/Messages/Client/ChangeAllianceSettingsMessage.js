@@ -82,6 +82,8 @@ class ChangeAllianceSettingsMessage extends PiranhaMessage {
         requiredTrophies: this.data.RequiredTrophies,
         location: this.data.Location
       })
+
+      await new AllianceDataMessage(this.client, player.clan.ClanHighID, player.clan.ClanLowID).send()
     } catch (error) {
       console.error(error)
       await new LoginFailedMessage(this.client, 3, 'Failed to update clan settings.').send()
