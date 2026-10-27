@@ -2,6 +2,7 @@ const OutOfSyncMessage = require('../../Messages/Server/OutOfSyncMessage')
 const KickAllianceMemberOkMessage = require('../../Messages/Server/KickAllianceMemberOkMessage')
 const AllianceStreamEntryMessage = require('../../Messages/Server/AllianceStreamEntryMessage')
 const AllianceStreamMessage = require('../../Messages/Server/AllianceStreamMessage')
+const AllianceDataMessage = require('../../Messages/Server/AllianceDataMessage')
 const ConnectedClients = require('../../../Core/ConnectedClients')
 
 class LogicKickAllianceMemberCommand {
@@ -62,15 +63,15 @@ class LogicKickAllianceMemberCommand {
     const eventEntry = {
       id: Date.now(),
       StreamEntryType: 4,
-      senderHighID: self.client.player.highID,
-      senderLowID: self.client.player.lowID,
-      senderName: self.client.player.name,
-      senderRole: requesterEntry.role,
+      senderHighID: this.data.MemberHighID,
+      senderLowID: this.data.MemberLowID,
+      senderName: targetEntry.name,
+      senderRole: targetEntry.role,
       timestamp: Date.now(),
       eventType: 1,
-      targetHighID: this.data.MemberHighID,
-      targetLowID: this.data.MemberLowID,
-      targetName: targetEntry.name || `${this.data.MemberHighID}:${this.data.MemberLowID}`
+      targetHighID: self.client.player.MemberHighID,
+      targetLowID: self.client.player.MemberLowID,
+      targetName: self.client.player.name
     }
 
     if (Array.isArray(clan.messages)) {
@@ -89,6 +90,8 @@ class LogicKickAllianceMemberCommand {
       } else {
         await new AllianceStreamEntryMessage(client, eventEntry).send()
       }
+
+      await new AllianceDataMessage(client, client.player.clan.ClanHighID, client.player.clan.ClanLowID).send()
     }
 
     await new KickAllianceMemberOkMessage(self.client).send()
